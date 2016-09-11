@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import ReactDOM from "react-dom";
+import $ from 'jquery';
 import GithubUrlInput from './github_url_input';
 import GitUrlInput from './git_url_input';
+import FlashMessage from '../flash_message';
 
 class DeploymentForm extends Component {
   constructor(props) {
@@ -15,7 +16,26 @@ class DeploymentForm extends Component {
 
   handleDeployClick(e) {
     e.preventDefault();
-    // TODO: Replace this with actual AJAX request to create deployment
+    let xhr = this.createRequest();
+    xhr.done(() => {
+      FlashMessage.showMessage("success", "Deployment was successfully queued.");
+    });
+    xhr.fail(() => {
+      FlashMessage.showMessage("danger", "Deployment cannot be queued.");
+    });
+  }
+
+  createRequest() {
+    return $.ajax({
+      url: '/api/deployments',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        git_url: this.state.gitUrl,
+        branch: this.state.branch,
+        callback_url: null
+      })
+    });
   }
 
   handleUrlChange(url) {
@@ -50,7 +70,7 @@ class DeploymentForm extends Component {
           {this.renderGitUrlInput()}
           <div className="form-group">
             <label htmlFor="branch">Branch</label>
-            <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}} className="form-control"/>
+            <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}}/>
           </div>
           <button type="submit" onClick={this.handleDeployClick.bind(this)} disabled={!this.validInputs()} className="btn btn-default">Deploy</button>
         </form>
