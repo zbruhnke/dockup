@@ -26,4 +26,13 @@ defmodule DockupUi.Deployment do
     model
     |> cast(params, @required_fields, @optional_fields)
   end
+
+  @doc """
+  This changeset is used when creating a deployment
+  """
+  def create_changeset(model, params \\ :empty) do
+    required_fields = ~w(git_url branch)
+    optional_fields = ~w(callback_url)
+    model |> cast(params, required_fields, optional_fields)
+  end
 end

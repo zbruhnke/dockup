@@ -6,7 +6,7 @@ defmodule DockupUi.DeployService do
 
   def run(deployment_params, deploy_job \\ Dockup.DeployJob) do
     with \
-      changeset <- Deployment.changeset(%Deployment{status: "queued"}, deployment_params),
+      changeset <- Deployment.create_changeset(%Deployment{status: "queued"}, deployment_params),
       {:ok, deployment} <- Repo.insert(changeset),
       :ok <- deploy_project(deploy_job, deployment),
       :ok <- DockupUi.DeploymentChannel.new_deployment(deployment)
