@@ -31,7 +31,7 @@ class DeploymentList extends Component {
         } else if(status == "deployment_failed") {
           deployment.urls = null;
         } else if(status == "starting") {
-          deployment.logUrl = payload.log_url;
+          deployment.log_url = payload.log_url;
         }
         found = true;
       }
@@ -112,7 +112,7 @@ class DeploymentList extends Component {
                   <td>{deployment.branch}</td>
                   <td>{deployment.status}</td>
                   <td>{this.renderDeploymentUrls(deployment.urls)}</td>
-                  <td>{this.renderLogUrl(deployment.logUrl)}</td>
+                  <td>{this.renderLogUrl(deployment.log_url)}</td>
                 </tr>
               )
              })}

@@ -14,7 +14,8 @@ defmodule DockupUi.DeploymentView do
       id: deployment.id,
       git_url: deployment.git_url,
       branch: deployment.branch,
-      status: deployment.status
+      status: deployment.status,
+      log_url: deployment.log_url,
     }
   end
 end

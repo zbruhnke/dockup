@@ -56,7 +56,7 @@ defmodule Dockup.DeployJob do
     project.start(project_id)
   end
 
-  def log_url(project_id) do
+  defp log_url(project_id) do
     %{ "log_url" => "/deployment_logs/#?projectName=#{project_id}" }
   end
 end

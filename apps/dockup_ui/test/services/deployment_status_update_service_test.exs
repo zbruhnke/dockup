@@ -8,6 +8,11 @@ defmodule DeploymentStatusUpdateServiceTest do
       :ok
     end
 
+    def update_deployment_status(_params, %{"log_url" => _url}) do
+      send self, :status_updated_on_channel
+      :ok
+    end
+
     def update_deployment_status(_params, _payload), do: :ok
   end
 
@@ -34,6 +39,19 @@ defmodule DeploymentStatusUpdateServiceTest do
 
     assert updated_deployment.status == "started"
     assert updated_deployment.service_urls == @service_urls
+  end
+
+  test "run persists log_url when starting" do
+    deployment = insert(:deployment)
+    payload = %{"log_url" => "/deployment_logs/#?projectName=foo-bar"}
+
+    DockupUi.DeploymentStatusUpdateService.run("starting", deployment.id, payload, FakeChannel)
+
+    updated_deployment = DockupUi.Repo.get(DockupUi.Deployment, deployment.id)
+
+    assert updated_deployment.status == "starting"
+    assert updated_deployment.log_url == payload["log_url"]
+    assert_received :status_updated_on_channel
   end
 
   test "run returns {:error, deployment_id} if deployment not found" do

@@ -6,7 +6,8 @@ defmodule DockupUi.Factory do
       git_url: "https://github.com/code-mancers/dockup.git",
       branch: "master",
       callback_url: "http://example.com/callback",
-      status: "deploying"
+      status: "deploying",
+      log_url: "http://example.com/log_url",
     }
   end
 end

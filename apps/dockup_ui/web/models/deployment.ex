@@ -1,20 +1,27 @@
 defmodule DockupUi.Deployment do
   use DockupUi.Web, :model
 
+  @moduledoc """
+  Contains the information about a deployment.
+
+  status - Refer to DockupUi.Callback for various states for this field.
+  """
+
   @derive {Poison.Encoder, only: [:id, :git_url, :branch, :callback_url, :status]}
 
   schema "deployments" do
     field :git_url, :string
     field :branch, :string
     field :callback_url, :string
-    field :status, :string # "deploying" -> "deployed"/"failed" -> "deleted"
+    field :status, :string
+    field :log_url, :string
     field :service_urls, :map
 
     timestamps
   end
 
   @required_fields ~w(git_url branch)
-  @optional_fields ~w(callback_url status service_urls)
+  @optional_fields ~w(callback_url status log_url service_urls)
 
   @doc """
   Creates a changeset based on the `model` and `params`.

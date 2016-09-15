@@ -7,6 +7,7 @@ defmodule DockupUi.Repo.Migrations.CreateDeployment do
       add :branch, :string
       add :callback_url, :string
       add :status, :string
+      add :log_url, :string
       add :service_urls, :map
 
       timestamps
