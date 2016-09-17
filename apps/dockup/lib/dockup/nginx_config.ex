@@ -96,7 +96,7 @@ defmodule Dockup.NginxConfig do
         map_acc
       else
         value = Enum.reduce(port_details, [], fn {container_port, _, url}, acc ->
-          acc ++ [%{"port" => container_port, "url" => url}]
+          acc ++ [%{"port" => container_port, "url" => "http://#{url}"}]
         end)
         Map.merge map_acc, %{service => value}
       end

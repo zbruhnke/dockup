@@ -49,8 +49,8 @@ defmodule Dockup.NginxConfigTest do
     """
 
     expected_return_value = %{
-      "web" => [%{"port" => "80", "url" => "fake_url"}, %{"port" => "4000", "url" => "fake_url"}],
-      "nginx" => [%{"port" => "80", "url" => "fake_url"}]
+      "web" => [%{"port" => "80", "url" => "http://fake_url"}, %{"port" => "4000", "url" => "http://fake_url"}],
+      "nginx" => [%{"port" => "80", "url" => "http://fake_url"}]
     }
     assert port_urls == expected_return_value
 
