@@ -44,10 +44,9 @@ defmodule Dockup.DeployJob do
   """
   def deploy(type, project_id, config_generator \\ Dockup.ConfigGenerator, project \\ Dockup.Project)
 
-  def deploy(:unknown, _project_id, _config_generator, _project) do
-    Logger.info "Deploying using custom configuration is yet to be turned on."
-    #Logger.info "Deploying using custom configuration #{project_id}"
-    #project.start(project_id)
+  def deploy(:unknown, project_id, _config_generator, project) do
+    Logger.info "Deploying #{project_id} using custom configuration"
+    project.start(project_id)
   end
 
   def deploy(type, project_id, config_generator, project) do
