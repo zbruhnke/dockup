@@ -1,23 +1,25 @@
 defmodule Dockup.NginxConfigTest do
   use ExUnit.Case, async: true
 
-  test "write_config writes nginx config given port mappings on containers" do
-    defmodule FakeHaikunator do
-      def haikunated_url, do: "haikunated_url"
-    end
+  doctest Dockup.NginxConfig
 
+  test "write_config writes nginx config given port mappings on containers" do
     service_port_mappings = %{
       "nginx" => {"fake_ip1", [{"80", "3229"}]},
       "no_ports" => {"fake_ip2", []},
       "web" => {"fake_ip3", [{"80", "3227"}, {"4000", "3228"}]}
     }
 
-    port_urls = Dockup.NginxConfig.write_config("foo", service_port_mappings, FakeHaikunator)
+    defmodule FakeNginxConfig do
+      def create_url, do: "fake_url"
+    end
+
+    port_urls = Dockup.NginxConfig.write_config("foo", service_port_mappings, FakeNginxConfig)
     {:ok, content} = File.read(Dockup.NginxConfig.config_file("foo"))
     assert content == """
     server {
       listen 80;
-      server_name haikunated_url;
+      server_name fake_url;
 
       location / {
         proxy_pass http://fake_ip1:80;
@@ -27,7 +29,7 @@ defmodule Dockup.NginxConfigTest do
 
     server {
       listen 80;
-      server_name haikunated_url;
+      server_name fake_url;
 
       location / {
         proxy_pass http://fake_ip3:80;
@@ -37,7 +39,7 @@ defmodule Dockup.NginxConfigTest do
 
     server {
       listen 80;
-      server_name haikunated_url;
+      server_name fake_url;
 
       location / {
         proxy_pass http://fake_ip3:4000;
@@ -47,8 +49,8 @@ defmodule Dockup.NginxConfigTest do
     """
 
     expected_return_value = %{
-      "web" => [%{"port" => "80", "url" => "haikunated_url"}, %{"port" => "4000", "url" => "haikunated_url"}],
-      "nginx" => [%{"port" => "80", "url" => "haikunated_url"}]
+      "web" => [%{"port" => "80", "url" => "fake_url"}, %{"port" => "4000", "url" => "fake_url"}],
+      "nginx" => [%{"port" => "80", "url" => "fake_url"}]
     }
     assert port_urls == expected_return_value
 

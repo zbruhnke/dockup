@@ -7,10 +7,10 @@ defmodule DockupUi.Callback do
   - "cloning_repo" - Called before cloning git repo. No payload.
   - "starting" - Called when docker containers are being started. Payload:
     %{"log_url" => "/deployment_logs/#?projectName=project-id"}
-  - "checking_urls" - Called when docker containers are started and haikunated
+  - "checking_urls" - Called when docker containers are started and service
     URLs are tested for 200 OK. Payload is of the format:
     %{"service_name" => [{"container_port", "url"}, ...], ...}
-  - "started" - Called when docker containers are started and haikunated URLs
+  - "started" - Called when docker containers are started and service URLs
     are assigned. Payload:
     %{"service_name" => [{"container_port", "url"}, ...], ...}
   - "stopping" - Called when docker containers are being stopped. No payload.

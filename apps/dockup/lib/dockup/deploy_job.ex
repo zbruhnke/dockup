@@ -40,7 +40,7 @@ defmodule Dockup.DeployJob do
 
   @doc """
   Given a project type and project id, deploys the app and
-  and returns a list : [{<port>, <http://ip_on_docker:port>, <haikunated_url>} ...]
+  and returns a list : [{<port>, <http://ip_on_docker:port>, <service_url>} ...]
   """
   def deploy(type, project_id, config_generator \\ Dockup.ConfigGenerator, project \\ Dockup.Project)
 
