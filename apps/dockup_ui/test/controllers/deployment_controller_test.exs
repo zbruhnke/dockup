@@ -15,7 +15,8 @@ defmodule DockupUi.DeploymentControllerTest do
         "branch" => deployment.branch,
         "git_url" => deployment.git_url,
         "status" => deployment.status,
-        "log_url" => deployment.log_url
+        "log_url" => deployment.log_url,
+        "urls" => deployment.service_urls
       }
     ]
   end
@@ -28,7 +29,8 @@ defmodule DockupUi.DeploymentControllerTest do
       "git_url" => deployment.git_url,
       "branch" => deployment.branch,
       "status" => deployment.status,
-      "log_url" => deployment.log_url
+      "log_url" => deployment.log_url,
+      "urls" => deployment.service_urls
     }
   end
 

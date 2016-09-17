@@ -15,7 +15,8 @@ class DeploymentList extends Component {
     xhr.open('GET', '/api/deployments');
     xhr.onload = () => {
       if (xhr.status === 200) {
-        this.setState({deployments: JSON.parse(xhr.responseText).data});
+        let deployments = JSON.parse(xhr.responseText).data;
+        this.setState({deployments});
       }
     };
     xhr.send();
@@ -51,12 +52,12 @@ class DeploymentList extends Component {
     if(urls) {
       let urlText = Object.keys(urls).map((key, index) =>{
         return(
-          <div key={index}>
-            <div>
-              {key} :
+          <div key={index} className="service-urls">
+            <kbd>{key}</kbd>
+            <div className="btn-group btn-group-sm">
               {urls[key].map((map, index) => {
                 return(
-                    <a key={index} href={map.url}>Port {map.port}</a>
+                  <a href={map.url} className="btn btn-default" role="button" key={index} target="_blank">Port {map.port}</a>
                 )
               })}
             </div>
