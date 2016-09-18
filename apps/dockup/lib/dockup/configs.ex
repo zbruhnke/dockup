@@ -24,6 +24,15 @@ defmodule Dockup.Configs do
     System.get_env("DOCKUP_DOMAIN") || Application.fetch_env!(:dockup, :domain)
   end
 
+  def whitelist_all? do
+    env_var = System.get_env("DOCKUP_WHITELIST_ALL")
+    if env_var do
+      env_var == "true"
+    else
+      Application.fetch_env(:dockup, :whitelist_all) == {:ok, true}
+    end
+  end
+
   defp ensure_dir_exists(dir) do
     unless File.exists?(dir) do
       Logger.info "Creating missing directory: #{dir}"

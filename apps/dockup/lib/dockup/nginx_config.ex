@@ -62,11 +62,6 @@ defmodule Dockup.NginxConfig do
   Returns a URL with a random subdomain. The subdomain string starts with "d"
   and ends with "p", a naive workaround to ensure it starts and ends with
   alphanumerics.
-
-      iex> url = Dockup.NginxConfig.create_url
-      ...> domain = Dockup.Configs.domain
-      ...> url =~ ~r/d\\w{10}p.#\{domain}/
-      true
   """
   def create_url(len \\ 10) do
     random_string =

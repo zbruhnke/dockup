@@ -7,20 +7,27 @@ defmodule DockupUi do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    # call these checks before starting the app.
-    if List.keymember?(Application.loaded_applications, :dockup, 0) do
+    # If dockup is loaded (running umbrella apps), run some checks
+    # to ensure environment looks good for running
+    if dockup_loaded? do
       Logger.debug "running preflight checks"
       Dockup.run_preflight_checks
     end
 
-    children = [
+    phoenix_supervision_tree = [
       # Start the endpoint when the application starts
       supervisor(DockupUi.Endpoint, []),
       # Start the Ecto repository
-      supervisor(DockupUi.Repo, []),
-      # Here you could define other workers and supervisors as children
-      # worker(DockupUi.Worker, [arg1, arg2, arg3]),
+      supervisor(DockupUi.Repo, [])
     ]
+    dockup_supervision_tree = worker(Dockup.WhitelistStore, [])
+
+    children =
+      if dockup_loaded? do
+        [dockup_supervision_tree | phoenix_supervision_tree]
+      else
+        phoenix_supervision_tree
+      end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
@@ -33,5 +40,9 @@ defmodule DockupUi do
   def config_change(changed, _new, removed) do
     DockupUi.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp dockup_loaded? do
+    List.keymember?(Application.loaded_applications, :dockup, 0)
   end
 end

@@ -37,9 +37,21 @@ defmodule DockupUi.Deployment do
   @doc """
   This changeset is used when creating a deployment
   """
-  def create_changeset(model, params \\ :empty) do
+  def create_changeset(model, params, whitelist_store) do
     required_fields = ~w(git_url branch)
     optional_fields = ~w(callback_url)
-    model |> cast(params, required_fields, optional_fields)
+    model
+    |> cast(params, required_fields, optional_fields)
+    |> validate_whitelisted_git_url(whitelist_store)
+  end
+
+  # Check if git URL is whitelisted
+  defp validate_whitelisted_git_url(changeset, whitelist_store) do
+    git_url = get_field(changeset, :git_url)
+    if whitelist_store.whitelisted?(git_url) do
+      changeset
+    else
+      add_error(changeset, :git_url, "is not whitelisted for deployment")
+    end
   end
 end

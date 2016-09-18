@@ -23,7 +23,7 @@ class GithubUrlInput extends Component {
   }
 
   updateUrl(org, repo) {
-    this.props.onUrlChange(`https://github.com/${org}/${repo}`);
+    this.props.onUrlChange(`https://github.com/${org}/${repo}.git`);
   }
 
   render() {
