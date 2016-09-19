@@ -37,12 +37,12 @@ defmodule Dockup.Project do
   # Waits until the urls all return expected HTTP status.
   # Currently, assuming that URLs are for static sites
   # and they return 200.
-  def wait_till_up(service_urls, http \\ __MODULE__, interval \\ 3000) do
+  def wait_till_up(service_urls, http \\ __MODULE__, interval \\ 5000) do
     service_urls
     |> Enum.reduce([], fn {_service, port_urls}, acc -> acc ++ Enum.map(port_urls, fn port_url_map -> {port_url_map["url"], 200}  end) end)
     |> Enum.each(fn {url, response} ->
-      # Retry 10 times in an interval of 3 seconds
-      retry 10 in interval do
+      # Retry 30 times in an interval of 5 seconds
+      retry 30 in interval do
         Logger.info "Checking if #{url} returns http satus #{response}"
         ^response = http.get_status(url)
       end

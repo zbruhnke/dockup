@@ -20,6 +20,8 @@ defmodule Dockup.DeployJobTest do
   end
 
   defmodule FakeDeployJob do
+    def ensure_whitelisted!("fake_repo"), do: :ok
+
     def deploy(:static_site, "123") do
       "fake_urls"
     end
@@ -36,12 +38,13 @@ defmodule Dockup.DeployJobTest do
 
   test "triggers deployment_failed callback when an exception occurs" do
     defmodule FailingDeployJob do
+      def ensure_whitelisted!("fake_repo"), do: true
       def deploy(:static_site, "123") do
         raise "ifuckedup"
       end
     end
     Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
                             project: FakeProject, deploy_job: FailingDeployJob)
-    assert_received {"deployment_failed", "An unexpected error occured when deploying 123 : ifuckedup"}
+    assert_received {"deployment_failed", "An error occured when deploying 123 : ifuckedup"}
   end
 end

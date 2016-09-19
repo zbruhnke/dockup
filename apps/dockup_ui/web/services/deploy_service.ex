@@ -4,9 +4,9 @@ defmodule DockupUi.DeployService do
     Repo
   }
 
-  def run(deployment_params, deploy_job \\ Dockup.DeployJob) do
+  def run(deployment_params, deploy_job \\ Dockup.DeployJob, whitelist_store \\ Dockup.WhitelistStore) do
     with \
-      changeset <- Deployment.create_changeset(%Deployment{status: "queued"}, deployment_params),
+      changeset <- Deployment.create_changeset(%Deployment{status: "queued"}, deployment_params, whitelist_store),
       {:ok, deployment} <- Repo.insert(changeset),
       :ok <- deploy_project(deploy_job, deployment),
       :ok <- DockupUi.DeploymentChannel.new_deployment(deployment)

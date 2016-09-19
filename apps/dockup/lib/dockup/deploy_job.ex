@@ -33,7 +33,7 @@ defmodule Dockup.DeployJob do
       Logger.error (inspect error)
       callback.("deployment_failed", (inspect error))
     e ->
-      message = "An unexpected error occured when deploying #{project_identifier} : #{e.message}"
+      message = "An error occured when deploying #{project_identifier} : #{e.message}"
       Logger.error message
       callback.("deployment_failed", message)
   end
@@ -56,6 +56,6 @@ defmodule Dockup.DeployJob do
   end
 
   defp log_url(project_id) do
-    %{ "log_url" => "/deployment_logs/#?projectName=#{project_id}" }
+    %{"log_url" => "/deployment_logs/#?projectName=#{project_id}"}
   end
 end
