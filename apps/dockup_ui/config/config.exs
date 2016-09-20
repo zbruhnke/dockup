@@ -28,3 +28,7 @@ config :phoenix, :generators,
   binary_id: false
 
 config :dockup_ui, ecto_repos: [DockupUi.Repo]
+
+config :quantum, cron: [
+    "@midnight": {DockupUi.DeleteExpiredDeploymentsService, :run}
+]

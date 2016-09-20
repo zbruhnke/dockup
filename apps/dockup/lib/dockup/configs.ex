@@ -24,6 +24,10 @@ defmodule Dockup.Configs do
     System.get_env("DOCKUP_DOMAIN") || Application.fetch_env!(:dockup, :domain)
   end
 
+  defmemo deployment_retention_days do
+    System.get_env("DOCKUP_DEPLOYMENT_RETENTION_DAYS") || Application.fetch_env!(:dockup, :deployment_retention_days)
+  end
+
   def whitelist_all? do
     env_var = System.get_env("DOCKUP_WHITELIST_ALL")
     if env_var do
