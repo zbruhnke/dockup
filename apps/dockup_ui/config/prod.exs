@@ -60,6 +60,10 @@ config :logger, level: :info
 #
 #     config :dockup_ui, DockupUi.Endpoint, root: "."
 
+config :quantum, cron: [
+    "@midnight": {DockupUi.DeleteExpiredDeploymentsService, :run}
+]
+
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 
