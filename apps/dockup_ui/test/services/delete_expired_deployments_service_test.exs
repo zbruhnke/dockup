@@ -5,13 +5,13 @@ defmodule DockupUi.DeleteExpiredDeploymentsServiceTest do
 
   alias DockupUi.DeleteExpiredDeploymentsService
 
-  test "cleanup " do
-    defmodule FakeDeleteDeploymentService do
-      def run(1) do
-        send self, :deployment_deleted
-      end
+  defmodule FakeDeleteDeploymentService do
+    def run(1) do
+      send self, :deployment_deleted
     end
+  end
 
+  test "deletes deployments older than 1 day" do
     insert_at =
       :erlang.universaltime
       |> :calendar.datetime_to_gregorian_seconds
@@ -22,5 +22,11 @@ defmodule DockupUi.DeleteExpiredDeploymentsServiceTest do
     insert(:deployment, %{id: 1, inserted_at: insert_at})
     DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService)
     assert_received :deployment_deleted
+  end
+
+  test "does not delete deployments less than 1 day ago" do
+    insert(:deployment, id: 1)
+    DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService)
+    refute_received :deployment_deleted
   end
 end
