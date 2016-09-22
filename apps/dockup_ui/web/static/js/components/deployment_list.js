@@ -27,11 +27,10 @@ class DeploymentList extends Component {
     let newDeployments = this.state.deployments.map((deployment) => {
       if(deployment.id == id) {
         deployment.status = status;
-        if(status == "checking_urls" || status == "started") {
+        if(status == "started") {
           deployment.urls = payload;
-        } else if(status == "deployment_failed") {
-          deployment.urls = null;
-        } else if(status == "starting") {
+        }
+        if(status == "starting" || status == "started") {
           deployment.log_url = payload.log_url;
         }
         found = true;

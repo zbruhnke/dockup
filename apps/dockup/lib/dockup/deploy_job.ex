@@ -12,30 +12,28 @@ defmodule Dockup.DeployJob do
 
   def perform(project_identifier, repository, branch,
               callback \\ DefaultCallback.lambda, deps \\ []) do
+    callback.(:queued, nil)
     project    = deps[:project]    || Project
     deploy_job = deps[:deploy_job] || __MODULE__
 
     project_id = to_string(project_identifier)
 
-    callback.("cloning_repo", nil)
+    callback.(:cloning_repo, nil)
     project.clone_repository(project_id, repository, branch)
 
     project_type = project.project_type(project_id)
-    callback.("starting", log_url(project_id))
+    callback.(:starting, log_url(project_id))
     urls = deploy_job.deploy(project_type, project_id)
 
-    callback.("checking_urls", urls)
+    callback.(:checking_urls, nil)
     project.wait_till_up(urls)
 
-    callback.("started", urls)
+    callback.(:started, urls)
   rescue
     error in MatchError ->
-      Logger.error (inspect error)
-      callback.("deployment_failed", (inspect error))
+      handle_error_message(callback, project_identifier, (inspect error))
     e ->
-      message = "An error occured when deploying #{project_identifier} : #{e.message}"
-      Logger.error message
-      callback.("deployment_failed", message)
+      handle_error_message(callback, project_identifier, e.message)
   end
 
   @doc """
@@ -56,6 +54,12 @@ defmodule Dockup.DeployJob do
   end
 
   defp log_url(project_id) do
-    %{"log_url" => "/deployment_logs/#?projectName=#{project_id}"}
+    "/deployment_logs/#?projectName=#{project_id}"
+  end
+
+  defp handle_error_message(callback, project_identifier, message) do
+    message = "An error occured when deploying #{project_identifier} : #{message}"
+    Logger.error message
+    callback.(:deployment_failed, message)
   end
 end
