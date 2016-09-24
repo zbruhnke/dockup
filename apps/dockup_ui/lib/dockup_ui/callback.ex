@@ -8,12 +8,17 @@ defmodule DockupUi.Callback do
 
   alias DockupUi.{
     DeploymentStatusUpdateService,
-    CallbackProtocol
+    CallbackProtocol,
+    Deployment,
+    Repo
   }
 
   def lambda(deployment, callback_data, status_update_service \\ DeploymentStatusUpdateService) do
     fn
       event, payload ->
+        status_update_service.run(event, deployment.id, payload)
+        deployment = Repo.get!(Deployment, deployment.id)
+
         # Trigger callback by spawning a new thread, we don't care if fails
         spawn fn ->
           try do
@@ -22,7 +27,6 @@ defmodule DockupUi.Callback do
             UndefinedFunctionError -> Logger.error "Unknown callback event triggered: #{inspect event}"
           end
         end
-        status_update_service.run(event, deployment.id, payload)
     end
   end
 end
