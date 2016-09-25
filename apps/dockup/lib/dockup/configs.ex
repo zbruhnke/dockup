@@ -24,6 +24,11 @@ defmodule Dockup.Configs do
     System.get_env("DOCKUP_DOMAIN") || Application.fetch_env!(:dockup, :domain)
   end
 
+  defmemo deployment_retention_days do
+    (System.get_env("DOCKUP_DEPLOYMENT_RETENTION_DAYS") || Application.fetch_env!(:dockup, :deployment_retention_days))
+    |> parse_as_integer
+  end
+
   def whitelist_all? do
     env_var = System.get_env("DOCKUP_WHITELIST_ALL")
     if env_var do
@@ -39,5 +44,14 @@ defmodule Dockup.Configs do
       File.mkdir_p! dir
     end
     dir
+  end
+
+  defp parse_as_integer(value) do
+    if is_integer(value) do
+      value
+    else
+      {value, _} = Integer.parse(value)
+      value
+    end
   end
 end
