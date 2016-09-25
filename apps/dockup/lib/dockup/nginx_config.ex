@@ -1,6 +1,8 @@
 defmodule Dockup.NginxConfig do
   require Logger
 
+  @subdomain_character_range ?a..?z
+
   def default_config(dockup_ip, logio_ip) do
     """
     server {
@@ -65,11 +67,10 @@ defmodule Dockup.NginxConfig do
   """
   def create_url(len \\ 10) do
     random_string =
-      len
-      |> :crypto.strong_rand_bytes
-      |> Base.url_encode64
-      |> binary_part(0, len)
-    "d#{random_string}p.#{Dockup.Configs.domain}"
+      @subdomain_character_range
+      |> Enum.take_random(len)
+      |> to_string
+    "#{random_string}.#{Dockup.Configs.domain}"
   end
 
   defp generate_service_port_urls(port_mappings, url_creator) do
