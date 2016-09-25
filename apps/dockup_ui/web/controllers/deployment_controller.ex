@@ -4,7 +4,8 @@ defmodule DockupUi.DeploymentController do
   alias DockupUi.{
     Deployment,
     DeployService,
-    StopDeploymentService
+    StopDeploymentService,
+    Callback.Web
   }
 
   def index(conn, _params) do
@@ -14,7 +15,8 @@ defmodule DockupUi.DeploymentController do
 
   def create(conn, deployment_params) do
     deploy_service = conn.assigns[:deploy_service] || DeployService
-    case deploy_service.run(deployment_params) do
+    callback_data = %Web{callback_url: deployment_params["callback_url"]}
+    case deploy_service.run(deployment_params, callback_data) do
       {:ok, deployment} ->
         conn
         |> put_status(:created)

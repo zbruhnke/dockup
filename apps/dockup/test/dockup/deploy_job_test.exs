@@ -30,10 +30,10 @@ defmodule Dockup.DeployJobTest do
   test "performing a deployment triggers deployment using the project type" do
     Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
                             project: FakeProject, deploy_job: FakeDeployJob)
-    assert_received {"cloning_repo", nil}
-    assert_received {"starting", %{"log_url" => "/deployment_logs/#?projectName=123"}}
-    assert_received {"checking_urls", "fake_urls"}
-    assert_received {"started", "fake_urls"}
+    assert_received {:cloning_repo, nil}
+    assert_received {:starting, "/deployment_logs/#?projectName=123"}
+    assert_received {:checking_urls, nil}
+    assert_received {:started, "fake_urls"}
   end
 
   test "triggers deployment_failed callback when an exception occurs" do
@@ -45,6 +45,6 @@ defmodule Dockup.DeployJobTest do
     end
     Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
                             project: FakeProject, deploy_job: FailingDeployJob)
-    assert_received {"deployment_failed", "An error occured when deploying 123 : ifuckedup"}
+    assert_received {:deployment_failed, "An error occured when deploying 123 : ifuckedup"}
   end
 end

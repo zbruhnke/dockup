@@ -1,32 +1,34 @@
 defmodule DockupUi.Callback do
   @moduledoc """
-  Calls DeploymentStatusUpdateService with the given event. The following
-  are the events to be handled:
-
-  - "queued" - All deployments are created with this initial status.
-  - "cloning_repo" - Called before cloning git repo. No payload.
-  - "starting" - Called when docker containers are being started. Payload:
-    %{"log_url" => "/deployment_logs/#?projectName=project-id"}
-  - "checking_urls" - Called when docker containers are started and service
-    URLs are tested for 200 OK. Payload is of the format:
-    %{"service_name" => [{"container_port", "url"}, ...], ...}
-  - "started" - Called when docker containers are started and service URLs
-    are assigned. Payload:
-    %{"service_name" => [{"container_port", "url"}, ...], ...}
-  - "stopping" - Called when docker containers are being stopped. No payload.
-  - "stopped" - Called when docker containers are stopped. No payload.
-  - "deployment_failed" - Called when deployment fails.
-    Payload: "Error message"
+  Triggers callbacks on implementors of CallbackProtocol
+  and calls DeploymentStatusUpdateService with the given event.
   """
 
+  require Logger
+
   alias DockupUi.{
-    DeploymentStatusUpdateService
+    DeploymentStatusUpdateService,
+    CallbackProtocol,
+    Deployment,
+    Repo
   }
 
-  def lambda(deployment, service \\ DeploymentStatusUpdateService) do
+  def lambda(deployment, callback_data, status_update_service \\ DeploymentStatusUpdateService) do
     fn
       event, payload ->
-        service.run(event, deployment.id, payload)
+        # Reload deployment
+        deployment = Repo.get!(Deployment, deployment.id)
+
+        status_update_service.run(event, deployment.id, payload)
+
+        # Trigger callback by spawning a new thread, we don't care if fails
+        spawn fn ->
+          try do
+            apply(CallbackProtocol, event, [callback_data, deployment, payload])
+          rescue
+            UndefinedFunctionError -> Logger.error "Unknown callback event triggered: #{inspect event}"
+          end
+        end
     end
   end
 end

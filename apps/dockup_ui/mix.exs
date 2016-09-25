@@ -43,6 +43,8 @@ defmodule DockupUi.Mixfile do
      {:ex_machina, "~> 1.0", only: [:test, :dev]},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
+     {:httpotion, "~> 3.0.0"},
+     {:poison, "~>2.1.0"},
      {:dockup, in_umbrella: true}]
   end
 

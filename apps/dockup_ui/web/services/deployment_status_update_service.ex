@@ -25,7 +25,7 @@ defmodule DockupUi.DeploymentStatusUpdateService do
 
   def run(status, deployment, payload, channel) do
     with \
-      changeset <- prepare_changeset(status, deployment, payload),
+      changeset <- Deployment.changeset(deployment, changeset_map(status, payload)),
       {:ok, deployment} <- Repo.update(changeset),
       :ok <- channel.update_deployment_status(deployment, payload)
     do
@@ -33,11 +33,7 @@ defmodule DockupUi.DeploymentStatusUpdateService do
     end
   end
 
-  defp prepare_changeset(status, deployment, payload) do
-    Deployment.changeset(deployment, changeset_map(status, payload))
-  end
-
-  defp changeset_map("starting", payload), do: %{status: "starting", log_url: payload["log_url"]}
-  defp changeset_map("started", payload), do: %{status: "started", service_urls: payload}
-  defp changeset_map(status, _payload), do: %{status: status}
+  defp changeset_map(:starting, log_url), do: %{status: "starting", log_url: log_url}
+  defp changeset_map(:started, service_urls), do: %{status: "started", service_urls: service_urls}
+  defp changeset_map(status, _payload), do: %{status: Atom.to_string(status)}
 end
