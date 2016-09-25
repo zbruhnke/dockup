@@ -47,11 +47,11 @@ defmodule Dockup.Configs do
   end
 
   defp parse_as_integer(value) do
-    case is_integer(value) do
-      true -> value
-      false ->
-        {value, _} = Integer.parse(value)
-        value
+    if is_integer(value) do
+      value
+    else
+      {value, _} = Integer.parse(value)
+      value
     end
   end
 end
