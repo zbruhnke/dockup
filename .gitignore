@@ -7,3 +7,4 @@ erl_crash.dump
 /workdir
 /projects.dets
 /.vagrant
+/dockup_config

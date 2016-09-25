@@ -79,38 +79,11 @@ defmodule Dockup.ContainerTest do
     Dockup.Container.check_docker_version(MatchingDockerVersion)
   end
 
-  test "run_nginx_container starts nginx container if it exists" do
+  test "run_nginx_container stops nginx container, writes default configs and starts nginx container" do
     defmodule NginxCommand do
       def run(cmd, args) do
         case {cmd, args} do
-          {"docker",  ["inspect", "--format='{{.State.Running}}'", "nginx"]} ->
-            {"false", 0}
-          {"docker", ["start", "nginx"]} -> {"okay", 0}
-        end
-      end
-    end
-
-    defmodule FakeLogioIpContainer do
-      def dockup_container_id, do: "dockup_container_id"
-      def container_ip("dockup_container_id"), do: "dockup_container_ip"
-      def container_ip("logio"), do: "logio_container_ip"
-    end
-
-    logs = capture_log(fn -> Dockup.Container.run_nginx_container(NginxCommand, FakeLogioIpContainer) end)
-    assert File.read!(Dockup.Configs.nginx_config_dir <> "/default.conf")
-      == Dockup.NginxConfig.default_config("dockup_container_ip", "logio_container_ip")
-    assert logs =~ "Nginx container seems to be down. Trying to start"
-    assert logs =~ "Nginx started"
-
-    File.rm! Dockup.Configs.nginx_config_dir <> "/default.conf"
-  end
-
-  test "run_nginx_container pulls and starts nginx container if it does not exist" do
-    defmodule NginxDoesNotExistCommand do
-      def run(cmd, args) do
-        case {cmd, args} do
-          {"docker",  ["inspect", "--format='{{.State.Running}}'", "nginx"]} ->
-            {"fake output", 1}
+          {"docker", ["rm", "-v", "-f", "nginx"]} -> {"", 0}
           {"docker", _} -> {"okay", 0}
         end
       end
@@ -118,17 +91,22 @@ defmodule Dockup.ContainerTest do
 
     defmodule FakeContainer do
       def nginx_config_dir_on_host, do: "fake_dir_on_host"
+      def config_dir_on_host, do: "config_dir_on_host"
       def dockup_container_id, do: "dockup_container_id"
       def container_ip("dockup_container_id"), do: "dockup_container_ip"
       def container_ip("logio"), do: "logio_container_ip"
     end
 
-    logs = capture_log(fn -> Dockup.Container.run_nginx_container(NginxDoesNotExistCommand, FakeContainer) end)
-    assert logs =~ "Nginx container not found."
-    assert logs =~ "Trying to pull nginx image"
-    assert logs =~ "Nginx pulled and started"
+    logs = capture_log(fn -> Dockup.Container.run_nginx_container(NginxCommand, FakeContainer) end)
+    assert File.read!(Dockup.Configs.config_file("dockup.conf"))
+      == Dockup.NginxConfig.dockup_config("127.0.0.1.xip.io", "dockup_container_ip", "logio_container_ip")
+    assert File.read!(Dockup.Configs.config_file("nginx.conf"))
+      == Dockup.NginxConfig.nginx_conf
+    assert logs =~ "Removing nginx container"
+    assert logs =~ "Nginx container started"
 
-    File.rm! Dockup.Configs.nginx_config_dir <> "/default.conf"
+    File.rm! Dockup.Configs.config_file("dockup.conf")
+    File.rm! Dockup.Configs.config_file("nginx.conf")
   end
 
   test "reload_nginx sends a kill signal to nginx docker container" do

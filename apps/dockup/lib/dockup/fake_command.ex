@@ -2,8 +2,7 @@ defmodule Dockup.FakeCommand do
   require Logger
   @registered_commands %{
     "docker" => %{
-      ["run", "--name", "cache", "-v", "/cache", "tianon/true"] => {"", 0},
-      ["inspect", "--format='{{.State.Running}}'", "nginx"] => {"true", 0},
+      ["rm", "-v", "-f", "nginx"] => {"", 0},
       ["inspect", "--format='{{.State.Running}}'", "logio"] => {"true", 0},
       ["-v"] => {"Docker version 1.8.1, build d12ea79", 0},
       ["kill", "-s", "HUP", "nginx"] => {"", 0},
@@ -34,7 +33,13 @@ defmodule Dockup.FakeCommand do
   }
 
   def run(command, args) do
-    {out, exit_status} = @registered_commands[command][args]
+    {out, exit_status} =
+      if command == "docker" and List.first(args) == "run" do
+        # Assume we can run all docker containers successfully
+        {"container", 0}
+      else
+        @registered_commands[command][args]
+      end
     Logger.info "Fake output of command #{command} with args #{inspect args}: '#{out}'"
     {out, exit_status}
   rescue
