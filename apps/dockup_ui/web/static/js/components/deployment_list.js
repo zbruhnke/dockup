@@ -30,8 +30,8 @@ class DeploymentList extends Component {
         if(status == "started") {
           deployment.urls = payload;
         }
-        if(status == "starting" || status == "started") {
-          deployment.log_url = payload.log_url;
+        if(status == "starting") {
+          deployment.log_url = payload;
         }
         found = true;
       }

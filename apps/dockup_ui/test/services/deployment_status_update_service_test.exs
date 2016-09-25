@@ -11,7 +11,7 @@ defmodule DeploymentStatusUpdateServiceTest do
 
   test "run returns {:ok, deployment} after updating the DB and broadcasting status update of deployment" do
     deployment = insert(:deployment)
-    {:ok, updated_deployment} = DockupUi.DeploymentStatusUpdateService.run("foo", deployment.id, "fake_payload", FakeChannel)
+    {:ok, updated_deployment} = DockupUi.DeploymentStatusUpdateService.run(:foo, deployment.id, "fake_payload", FakeChannel)
 
     assert updated_deployment.status == "foo"
     assert updated_deployment.service_urls == nil

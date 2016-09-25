@@ -16,8 +16,10 @@ defmodule DockupUi.Callback do
   def lambda(deployment, callback_data, status_update_service \\ DeploymentStatusUpdateService) do
     fn
       event, payload ->
-        status_update_service.run(event, deployment.id, payload)
+        # Reload deployment
         deployment = Repo.get!(Deployment, deployment.id)
+
+        status_update_service.run(event, deployment.id, payload)
 
         # Trigger callback by spawning a new thread, we don't care if fails
         spawn fn ->
