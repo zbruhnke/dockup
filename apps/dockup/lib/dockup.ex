@@ -1,6 +1,6 @@
 defmodule Dockup do
   def run_preflight_checks do
-    unless Application.fetch_env!(:dockup, :skip_preflight_checks) do
+    unless Application.get_env(:dockup, :skip_preflight_checks, false) do
       do_preflight_checks
     end
   end
