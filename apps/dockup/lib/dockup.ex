@@ -1,5 +1,11 @@
 defmodule Dockup do
   def run_preflight_checks do
+    unless Application.get_env(:dockup, :skip_preflight_checks, false) do
+      do_preflight_checks
+    end
+  end
+
+  defp do_preflight_checks do
     # Check if workdir exists
     Dockup.Configs.workdir
 

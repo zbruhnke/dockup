@@ -17,31 +17,36 @@ defmodule Dockup.Container do
   end
 
   def run_nginx_container(command \\ Dockup.Command, container \\ __MODULE__) do
+    # First remove nginx container
+    Logger.info "Removing nginx container if it's running"
+    {_status, _exit_code} = command.run("docker", ["rm", "-v", "-f", "nginx"])
+
     dockup_container_ip = container.container_ip(container.dockup_container_id)
     logio_container_ip = container.container_ip("logio")
-    "#{Dockup.Configs.nginx_config_dir}/default.conf"
-    |> File.write!(Dockup.NginxConfig.default_config(dockup_container_ip, logio_container_ip))
+    dockup_domain = Dockup.Configs.domain
 
-    {status, exit_code} = command.run("docker", ["inspect", "--format='{{.State.Running}}'", "nginx"])
-    if status == "false" do
-      Logger.info "Nginx container seems to be down. Trying to start."
-      {_output, 0} = command.run("docker", ["start", "nginx"])
-      Logger.info "Nginx started"
-    end
+    # Write the main nginx configuration
+    Dockup.NginxConfig.nginx_conf
+    |> write_file_unless_present("#{Dockup.Configs.config_dir}/nginx.conf")
+    # Write config for dockup server
+    Dockup.NginxConfig.dockup_config(dockup_domain, dockup_container_ip, logio_container_ip, Dockup.Configs.use_ssl?)
+    |> write_file_unless_present("#{Dockup.Configs.config_dir}/dockup.conf")
 
-    if exit_code == 1 do
-      Logger.info "Nginx container not found."
-      # Sometimes docker pull fails, so we retry -
-      # Try 5 times at an interval of 0.5 seconds
-      retry 5 in 500 do
-        Logger.info "Trying to pull nginx image"
-        {_output, 0} = command.run("docker", ["run", "--name", "nginx",
-          "-d", "-p", "80:80",
-          "-v", "#{container.nginx_config_dir_on_host}:/etc/nginx/conf.d",
-          "nginx:1.8"])
-      end
-      Logger.info "Nginx pulled and started"
+    # Sometimes docker pull fails, so we retry -
+    # Try 5 times at an interval of 0.5 seconds
+    retry 5 in 500 do
+      Logger.info "Trying to start nginx container"
+      {_output, 0} = command.run("docker", ["run", "--name", "nginx",
+        "-d",
+        "-p", "80:80",
+        "-p", "443:443",
+        "-v", "#{container.nginx_config_dir_on_host}:/etc/nginx/conf.d",
+        "-v", "#{container.config_dir_on_host}/dockup_ssl:/etc/nginx/dockup_ssl",
+        "-v", "#{container.config_dir_on_host}/nginx.conf:/etc/nginx/nginx.conf",
+        "-v", "#{container.config_dir_on_host}/dockup.conf:/etc/nginx/dockup.conf",
+        "nginx:1.8"])
     end
+    Logger.info "Nginx container started"
   end
 
   def run_logio_container(command \\ Dockup.Command) do
@@ -146,6 +151,10 @@ defmodule Dockup.Container do
     ensure_volume_host_dir_exists(Dockup.Configs.workdir)
   end
 
+  defmemo config_dir_on_host do
+    ensure_volume_host_dir_exists(Dockup.Configs.config_dir)
+  end
+
   def container_service_name(container_id, command \\ Dockup.Command) do
     {out, 0} = command.run("docker", ["inspect",
       "--format='{{index .Config.Labels \"com.docker.compose.service\"}}'", container_id])
@@ -192,5 +201,11 @@ defmodule Dockup.Container do
       map = Regex.named_captures(~r/(?<container_port>\d*)\/...:(?<host_port>\d*)/, port) # %{"container_port" => "80", "host_port" => "3227"}
       {map["container_port"], map["host_port"]}
     end)
+  end
+
+  defp write_file_unless_present(content, file) do
+    unless File.exists?(file) do
+      File.write! file, content
+    end
   end
 end

@@ -9,3 +9,5 @@ erl_crash.dump
 /mix.lock
 /test/fixtures/workdir
 /test/fixtures/nginx_config_dir
+/test/fixtures/dockup_config
+/dockup_config

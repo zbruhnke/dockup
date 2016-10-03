@@ -12,6 +12,15 @@ defmodule Dockup.Configs do
     |> ensure_dir_exists |> Path.expand
   end
 
+  defmemo config_dir do
+    config_dir =
+      (System.get_env("DOCKUP_CONFIG_DIR") || Application.fetch_env!(:dockup, :config_dir))
+      |> ensure_dir_exists
+      |> Path.expand
+    ensure_dir_exists(Path.join(config_dir, "dockup_ssl"))
+    config_dir
+  end
+
   defmemo cache_container do
     System.get_env("DOCKUP_CACHE_CONTAINER") || Application.fetch_env!(:dockup, :cache_container)
   end
@@ -29,13 +38,22 @@ defmodule Dockup.Configs do
     |> parse_as_integer
   end
 
-  def whitelist_all? do
+  defmemo whitelist_all? do
     env_var = System.get_env("DOCKUP_WHITELIST_ALL")
     if env_var do
       env_var == "true"
     else
       Application.fetch_env(:dockup, :whitelist_all) == {:ok, true}
     end
+  end
+
+  defmemo use_ssl? do
+    File.exists?(config_file("dockup_ssl/crt")) and
+    File.exists?(config_file("dockup_ssl/key"))
+  end
+
+  defmemo config_file(file) do
+    Path.join(config_dir, file)
   end
 
   defp ensure_dir_exists(dir) do

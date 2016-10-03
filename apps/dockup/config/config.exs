@@ -9,8 +9,9 @@ config :dockup,
   cache_volume: "/cache",
   command_module: Dockup.ShellCommand,
   nginx_config_dir: "nginx_config_dir",
-  domain: "127.0.0.1.xip.io",
-  deployment_retention_days: 1
+  config_dir: "dockup_config",
+  deployment_retention_days: 1,
+  domain: "127.0.0.1.xip.io"
 #
 # And access this configuration in your application as:
 #

@@ -3,33 +3,38 @@ defmodule Dockup.NginxConfig do
 
   @subdomain_character_range ?a..?z
 
-  def default_config(dockup_ip, logio_ip) do
+  def dockup_config(dockup_domain, dockup_ip, logio_ip, use_ssl \\ false) do
+    get_dockup_config(dockup_domain, dockup_ip, logio_ip, use_ssl)
+  end
+
+  def nginx_conf do
     """
-    server {
-      listen 80 default_server;
-      listen [::]:80 default_server ipv6only=on;
-      listen 443 default_server ssl;
-      listen [::]:443 default_server ssl ipv6only=on;
+    user  nginx;
+    worker_processes  1;
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
 
-      server_name _ ;
+    events {
+      worker_connections  1024;
+    }
 
-      location / {
-        proxy_pass http://#{dockup_ip}:4000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+      access_log  /var/log/nginx/access.log  main;
+      sendfile        on;
+      keepalive_timeout  65;
+
+      server {
+        return 404;
       }
-
-      location /deployment_logs/ {
-        proxy_pass http://#{logio_ip}:28778/;
-      }
-
-      location /socket.io {
-        proxy_pass http://#{logio_ip}:28778;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-      }
+      include /etc/nginx/dockup.conf;
+      include /etc/nginx/conf.d/*.conf;
     }
     """
   end
@@ -121,6 +126,59 @@ defmodule Dockup.NginxConfig do
         proxy_pass http://#{ip}:#{port};
         proxy_set_header Host $host;
       }
+    }
+    """
+  end
+
+  defp get_dockup_config(dockup_domain, dockup_ip, logio_ip, true) do
+    """
+    server {
+      listen 80;
+      server_name #{dockup_domain};
+      return 301 https://#{dockup_domain}$request_uri;
+    }
+
+    server {
+      listen 443 ssl;
+      server_name #{dockup_domain} ;
+      ssl_certificate /etc/nginx/dockup_ssl/crt;
+      ssl_certificate_key /etc/nginx/dockup_ssl/key;
+
+      #{default_proxy_passes(dockup_ip, logio_ip)}
+    }
+    """
+  end
+
+  defp get_dockup_config(dockup_domain, dockup_ip, logio_ip, false) do
+    """
+    server {
+      listen 80;
+
+      server_name #{dockup_domain} ;
+
+      #{default_proxy_passes(dockup_ip, logio_ip)}
+    }
+    """
+  end
+
+  defp default_proxy_passes(dockup_ip, logio_ip) do
+    """
+    location / {
+      proxy_pass http://#{dockup_ip}:4000;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+    }
+
+    location /deployment_logs/ {
+      proxy_pass http://#{logio_ip}:28778/;
+    }
+
+    location /socket.io {
+      proxy_pass http://#{logio_ip}:28778;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
     }
     """
   end
