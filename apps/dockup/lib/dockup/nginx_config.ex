@@ -139,9 +139,8 @@ defmodule Dockup.NginxConfig do
     }
 
     server {
-      listen 443;
+      listen 443 ssl;
       server_name #{dockup_domain} ;
-      ssl on;
       ssl_certificate /etc/nginx/dockup_ssl/crt;
       ssl_certificate_key /etc/nginx/dockup_ssl/key;
 

@@ -37,7 +37,9 @@ defmodule Dockup.Container do
     retry 5 in 500 do
       Logger.info "Trying to start nginx container"
       {_output, 0} = command.run("docker", ["run", "--name", "nginx",
-        "-d", "-p", "80:80",
+        "-d",
+        "-p", "80:80",
+        "-p", "443:443",
         "-v", "#{container.nginx_config_dir_on_host}:/etc/nginx/conf.d",
         "-v", "#{container.config_dir_on_host}/dockup_ssl:/etc/nginx/dockup_ssl",
         "-v", "#{container.config_dir_on_host}/nginx.conf:/etc/nginx/nginx.conf",
