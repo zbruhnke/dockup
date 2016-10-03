@@ -1,19 +1,19 @@
 # Dockup
 
-This is a redo of chatops_deployer using Elixir to solve the following problems
-with the Ruby implementation:
+This is a redo of [chatops_deployer](https://github.com/code-mancers/chatops_deployer)
+using Elixir to solve the following problems with the Ruby implementation:
 
-1. Dependency on Ruby
-2. Not able to deploy as self contained executable
-3. The app is not fault tolerant - sometimes gets stuck
+1. Dependency on Ruby and many other things required during runtime
+2. Not able to deploy as self contained package
+3. The app is not fault tolerant
 4. Streaming of logs can be done better
 
-Other goals:
+Also dockup will include many other features like:
 
-1. Better directory structure for cloned repos (check feasibility of git worktree)
-2. Ability to list currently deployed apps
-3. Ability to write a check to see if app is up
-4. Ability to deploy static sites
+1. SSL support
+2. Authentication
+3. Cleanup of expired environments
+4. etc ..
 
 ## Installation
 
@@ -78,10 +78,10 @@ configurations are possible.
 
 ### SSL
 
-If you want to enable SSL for the dockup domain, symlink your cert and key files
+If you want to enable SSL for the dockup domain, copy your cert and key files
 to: `<dockup_config_dir>/dockup_ssl/crt` and `<dockup_config_dir>/dockup_ssl/key`
-Please note that SSL will not be enabled for service URLs which are created
-dynamically.
+Please note that this will enable SSL only for dockup itself and not for the
+service URLs which are created dynamically.
 
 ### Custom Nginx configurations
 
@@ -94,7 +94,7 @@ Please note that as long as these files exist, dockup will never overwrite them.
 
 ## API
 
-### /deployments
+### /api/deployments
 
 This API endpoint is used to deploy a dockerized app.
 
