@@ -1,6 +1,8 @@
 defmodule DockupUi.DeploymentChannel do
   use Phoenix.Channel
 
+  alias DockupUi.Endpoint
+
   def update_deployment_status(deployment, payload) do
     if deployment.status == "queued" do
       deployment_event("deployment_created", deployment)
@@ -12,7 +14,7 @@ defmodule DockupUi.DeploymentChannel do
   #============== Internal API below=============#
 
   def deployment_event(event, args) do
-    DockupUi.Endpoint.broadcast("deployments:all", event, args)
+    Endpoint.broadcast("deployments:all", event, args)
   end
 
   def join("deployments:all", _message, socket) do

@@ -15,9 +15,16 @@
     <nav class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="/">
             Dockup
           </a>
+        </div>
+        <div className="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <%= link("Recent Deployments", to: deployment_path(@conn, :index)) %>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>

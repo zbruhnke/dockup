@@ -3,11 +3,13 @@ import $ from 'jquery';
 import GithubUrlInput from './github_url_input';
 import GitUrlInput from './git_url_input';
 import FlashMessage from '../flash_message';
+import DeploymentStatus from './deployment_status';
 
 class DeploymentForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      deploymentId: null,
       gitUrl: "",
       branch: "",
       gitUrlType: "github" // Can be either "github" or "generic"
@@ -17,8 +19,8 @@ class DeploymentForm extends Component {
   handleDeployClick(e) {
     e.preventDefault();
     let xhr = this.createRequest();
-    xhr.done(() => {
-      FlashMessage.showMessage("success", "Deployment was successfully queued.");
+    xhr.done((response) => {
+      this.setState({deploymentId: response.data.id})
     });
     xhr.fail(() => {
       FlashMessage.showMessage("danger", "Deployment cannot be queued.");
@@ -72,8 +74,11 @@ class DeploymentForm extends Component {
             <label htmlFor="branch">Branch</label>
             <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}}/>
           </div>
+
           <button type="submit" onClick={this.handleDeployClick.bind(this)} disabled={!this.validInputs()} className="btn btn-default">Deploy</button>
         </form>
+
+        <DeploymentStatus deploymentId={this.state.deploymentId}/>
       </div>
     )
   }
