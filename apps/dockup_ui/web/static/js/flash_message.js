@@ -11,7 +11,7 @@ const FlashMessage = {
       </p>
     </div>
     `
-    $('.js-flash-message').append($(content));
+    $('.js-flash-message').html($(content));
   }
 }
 

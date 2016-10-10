@@ -11,3 +11,9 @@
 .service-urls > * {
   margin: 5px 10px;
 }
+
+.deployment-status {
+  margin: auto;
+  margin-top: 20px;
+  padding: 10px;
+}

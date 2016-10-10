@@ -16,13 +16,16 @@ defmodule DockupUi.Router do
   scope "/", DockupUi do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", DeploymentController, :new
+    resources "/deployments", DeploymentController, only: [:new, :index]
   end
 
-  scope "/api", DockupUi do
+  scope "/api", as: :api, alias: DockupUi.API do
     pipe_through :api
 
     resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete]
+
+    #TODO: This can be removed
     post "/deployments/:id/stop", DeploymentController, :stop
   end
 end

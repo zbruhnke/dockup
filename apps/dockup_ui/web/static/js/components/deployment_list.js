@@ -44,7 +44,7 @@ class DeploymentList extends Component {
   }
 
   addDeployment(deployment) {
-    this.setState({deployments: this.state.deployments.concat(deployment)});
+    this.setState({deployments: [deployment, ...this.state.deployments]});
   }
 
   renderDeploymentUrls(urls) {
