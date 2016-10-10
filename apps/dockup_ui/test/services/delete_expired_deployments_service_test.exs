@@ -20,13 +20,13 @@ defmodule DockupUi.DeleteExpiredDeploymentsServiceTest do
       |> Ecto.DateTime.cast!
 
     insert(:deployment, %{id: 1, inserted_at: insert_at})
-    DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService)
+    DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService, 1)
     assert_received :deployment_deleted
   end
 
   test "does not delete deployments less than 1 day ago" do
     insert(:deployment, id: 1)
-    DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService)
+    DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService, 1)
     refute_received :deployment_deleted
   end
 end

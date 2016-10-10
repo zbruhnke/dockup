@@ -21,13 +21,15 @@ defmodule DeployServiceTest do
   end
 
   test "run returns {:error, changeset} if deployment cannot be saved" do
-    {:error, changeset} = DockupUi.DeployService.run(%{branch: "bar"}, nil)
+    deps = [deploy_job: FakeDeployJob, whitelist_store: FakeWhitelistStore]
+    {:error, changeset} = DockupUi.DeployService.run(%{branch: "bar"}, nil, deps)
     assert {:git_url, {"can't be blank", []}} in changeset.errors
     refute_received :ran_deploy_job
   end
 
   test "run returns {:error, changeset} if git url is not whitelisted" do
-    {:error, changeset} = DockupUi.DeployService.run(%{git_url: "not_whitelisted",branch: "bar"}, nil)
+    deps = [deploy_job: FakeDeployJob, whitelist_store: FakeWhitelistStore]
+    {:error, changeset} = DockupUi.DeployService.run(%{git_url: "not_whitelisted",branch: "bar"}, nil, deps)
     assert {:git_url, {"is not whitelisted for deployment", []}} in changeset.errors
     refute_received :ran_deploy_job
   end

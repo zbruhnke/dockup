@@ -1,11 +1,6 @@
 defmodule DockupUi.DeploymentController do
   use DockupUi.Web, :controller
 
-  #alias DockupUi.{
-    #Repo,
-    #Deployment
-  #}
-
   def new(conn, _params) do
     render conn, "new.html"
   end
