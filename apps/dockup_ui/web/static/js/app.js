@@ -19,4 +19,5 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 import "./dockup_ui_socket"
-import "./deployment"
+import Deployment from "./deployment"
+window.Deployment = Deployment;

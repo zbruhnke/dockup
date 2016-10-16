@@ -3,9 +3,10 @@ import React, {Component} from 'react';
 class DeploymentStatus extends Component {
   constructor(props) {
     super(props);
+    let payload = props.payload ? JSON.parse(props.payload) : null;
     this.state = {
-      status: null,
-      payload: null
+      status: props.status,
+      payload: payload
     };
     this.connectToDeploymentsChannel();
   }

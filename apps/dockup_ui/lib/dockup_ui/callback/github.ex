@@ -40,10 +40,11 @@ defmodule DockupUi.Callback.Github do
 
   def update_deployment_status(state, repo_full_name, deployment_id) do
     url = "https://#{github_oauth_token}@api.github.com/repos/#{repo_full_name}/deployments/#{deployment_id}/statuses"
+    deployment_url = DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, deployment_id)
 
     request_body = Poison.encode! %{
       state: state,
-      description: "WHAT"
+      target_url: deployment_url
     }
 
     HTTPotion.post url, [

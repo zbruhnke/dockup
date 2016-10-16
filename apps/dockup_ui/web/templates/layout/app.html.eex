@@ -8,6 +8,7 @@
     <meta name="author" content="">
 
     <title>Dockup</title>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
@@ -37,6 +38,5 @@
       </main>
 
     </div> <!-- /container -->
-    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

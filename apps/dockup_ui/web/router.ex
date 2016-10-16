@@ -17,7 +17,7 @@ defmodule DockupUi.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", DeploymentController, :new
-    resources "/deployments", DeploymentController, only: [:new, :index]
+    resources "/deployments", DeploymentController, only: [:new, :index, :show]
   end
 
   scope "/api", as: :api, alias: DockupUi.API do

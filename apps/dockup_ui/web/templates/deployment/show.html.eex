@@ -1,0 +1,11 @@
+<div id="deployment_item_container"></div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    Deployment.mountDeploymentItem('deployment_item_container',
+        <%= @deployment.id %>,
+        '<%= @deployment.status %>',
+        '<%= service_urls_as_json(@deployment) %>'
+    );
+  });
+</script>
