@@ -24,6 +24,7 @@ defmodule DockupUi.Router do
     pipe_through :api
 
     resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete]
+    resources "/github_webhook", GithubWebhookController, only: [:create]
 
     #TODO: This can be removed
     post "/deployments/:id/stop", DeploymentController, :stop

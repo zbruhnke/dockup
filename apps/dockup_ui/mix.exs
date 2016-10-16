@@ -23,7 +23,7 @@ defmodule DockupUi.Mixfile do
   def application do
     [mod: {DockupUi, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :quantum]]
+                    :phoenix_ecto, :postgrex, :quantum, :httpotion]]
   end
 
   # Specifies which paths to compile per environment.
