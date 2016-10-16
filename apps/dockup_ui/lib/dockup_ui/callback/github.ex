@@ -4,17 +4,19 @@ defmodule DockupUi.Callback.Github do
     CallbackProtocol.Defaults
   }
 
+  require Logger
+
   defstruct [:repo_full_name, :deployment_id]
 
   defimpl CallbackProtocol, for: __MODULE__ do
     use Defaults
 
-    def started(callback_data, _deployment, _payload) do
-      DockupUi.Callback.Github.update_deployment_status("success", callback_data.repo_full_name, callback_data.deployment_id)
+    def started(callback_data, deployment, _payload) do
+      DockupUi.Callback.Github.update_deployment_status("success", deployment.id, callback_data.repo_full_name, callback_data.deployment_id)
     end
 
-    def deployment_failed(callback_data, _deployment, _payload) do
-      DockupUi.Callback.Github.update_deployment_status("failure", callback_data.repo_full_name, callback_data.deployment_id)
+    def deployment_failed(callback_data, deployment, _payload) do
+      DockupUi.Callback.Github.update_deployment_status("failure", deployment.id, callback_data.repo_full_name, callback_data.deployment_id)
     end
   end
 
@@ -38,9 +40,10 @@ defmodule DockupUi.Callback.Github do
     ]
   end
 
-  def update_deployment_status(state, repo_full_name, deployment_id) do
+  def update_deployment_status(state, id, repo_full_name, deployment_id) do
+    Logger.info "Updating state of deployment #{id} to #{state} in github"
     url = "https://#{github_oauth_token}@api.github.com/repos/#{repo_full_name}/deployments/#{deployment_id}/statuses"
-    deployment_url = DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, deployment_id)
+    deployment_url = DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, id)
 
     request_body = Poison.encode! %{
       state: state,
