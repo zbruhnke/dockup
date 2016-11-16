@@ -13,14 +13,16 @@ defmodule DockupUi.DeleteDeploymentService do
     delete_deployment_job = deps[:delete_deployment_job] || Dockup.DeleteDeploymentJob
     callback = deps[:callback] || DockupUi.Callback
 
-    deployment = Repo.get!(Deployment, deployment_id)
-    callback_data = %Web{callback_url: deployment.callback_url}
-
     with \
-      :ok <- delete_deployment(delete_deployment_job, deployment, callback_data, callback)
+      deployment <- Repo.get!(Deployment, deployment_id),
+      :ok <- delete_deployment(delete_deployment_job, deployment, %Web{callback_url: deployment.callback_url}, callback)
     do
       {:ok, deployment}
     end
+  rescue
+    e ->
+      Logger.error "Cannot schedule deployment for deployment_id: #{deployment_id}. Error: #{inspect e}"
+      {:error, deployment_id}
   end
 
   defp delete_deployment(delete_deployment_job, deployment, callback_data, callback) do
