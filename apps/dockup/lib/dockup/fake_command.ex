@@ -21,6 +21,7 @@ defmodule Dockup.FakeCommand do
       ["-v"] => {"docker-compose version: 1.4.0", 0},
       ["-p", "1234", "up", "-d"] => {"", 0},
       ["-p", "1234", "ps", "-q"] => {"fake_container_1\nfake_container_2", 0},
+      ["-p", "1", "stop"] => {"", 0},
     },
 
     "git" => %{

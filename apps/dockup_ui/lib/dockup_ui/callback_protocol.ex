@@ -22,6 +22,10 @@ defprotocol DockupUi.CallbackProtocol do
   # the reason for failure
   def deployment_failed(callback_data, deployment, payload)
 
+  def deleting_deployment(callback_data, deployment, payload)
+  def deployment_deleted(callback_data, deployment, payload)
+  def delete_deployment_failed(callback_data, deployment, payload)
+
   # CallbackProtocol implementors may implement a function named
   # common_callback(data, deployment, payload) if multiple events are to
   # be handled in the same way
@@ -36,11 +40,15 @@ defmodule DockupUi.CallbackProtocol.Defaults do
       def checking_urls(data, deployment, payload), do: common_callback(data, deployment, payload)
       def started(data, deployment, payload), do: common_callback(data, deployment, payload)
       def deployment_failed(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def deleting_deployment(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def deployment_deleted(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def delete_deployment_failed(data, deployment, payload), do: common_callback(data, deployment, payload)
       def common_callback(_data, _deployment, _payload), do: :ok
 
       defoverridable [
         queued: 3, cloning_repo: 3, starting: 3, checking_urls: 3,
-        started: 3, deployment_failed: 3, common_callback: 3
+        started: 3, deployment_failed: 3, deleting_deployment: 3,
+        deployment_deleted: 3, delete_deployment_failed: 3,common_callback: 3
       ]
     end
   end
