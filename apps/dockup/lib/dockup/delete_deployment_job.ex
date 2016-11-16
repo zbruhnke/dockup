@@ -28,7 +28,7 @@ defmodule Dockup.DeleteDeploymentJob do
   end
 
   defp handle_error_message(callback, project_identifier, message) do
-    message = "An error occured when deleteing deployment #{project_identifier} : #{message}"
+    message = "An error occured when deleting deployment #{project_identifier} : #{message}"
     Logger.error message
     callback.(:delete_deployment_failed, message)
   end

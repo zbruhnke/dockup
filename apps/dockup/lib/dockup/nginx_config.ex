@@ -67,7 +67,7 @@ defmodule Dockup.NginxConfig do
 
   def delete_config(project_id) do
     Logger.info "Deleting deployment-#{project_id} nginx config file"
-    File.rm(config_file(project_id))
+    File.rm!(config_file(project_id))
   end
 
   @doc """

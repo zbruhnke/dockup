@@ -67,6 +67,7 @@ defmodule Dockup.Project do
   def stop(project_id, container \\ Dockup.Container, nginx_config \\ Dockup.NginxConfig) do
     container.stop_containers(project_id)
     nginx_config.delete_config(project_id)
+    container.reload_nginx
   end
 
   def get_status(url) do
