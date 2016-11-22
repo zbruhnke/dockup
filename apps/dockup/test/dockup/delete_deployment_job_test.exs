@@ -20,7 +20,7 @@ defmodule Dockup.DeleteDeploymentJobTest do
     assert_received {:deployment_deleted, nil}
   end
 
-  test "triggers deployment_failed callback when an exception occurs" do
+  test "triggers delete_deployment_failed callback when an exception occurs" do
     defmodule FailingProject do
       def delete_repository("123"), do: :ok
       def stop("123") do

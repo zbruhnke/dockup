@@ -13,7 +13,7 @@ defmodule Dockup.DeleteDeploymentJob do
   def perform(project_identifier, callback \\ DefaultCallback.lambda, deps \\ []) do
     callback.(:deleting_deployment, nil)
 
-    project    = deps[:project]    || Project
+    project = deps[:project] || Project
     project_id = to_string(project_identifier)
 
     project.stop(project_id)

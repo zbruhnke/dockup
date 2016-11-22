@@ -6,7 +6,7 @@ defmodule DockupUi.DeleteDeploymentServiceTest do
   alias DockupUi.DeleteDeploymentService
 
   defmodule FakeDeleteDeploymentJob do
-    def spawn_process(_id, _callback) do
+    def spawn_process(1, _callback) do
       send self, :ran_delete_deployment_job
       :ok
     end
