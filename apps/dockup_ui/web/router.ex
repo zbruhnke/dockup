@@ -17,13 +17,14 @@ defmodule DockupUi.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", DeploymentController, :new
-    resources "/deployments", DeploymentController, only: [:new, :index]
+    resources "/deployments", DeploymentController, only: [:new, :index, :show]
   end
 
   scope "/api", as: :api, alias: DockupUi.API do
     pipe_through :api
 
     resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete]
+    resources "/github_webhook", GithubWebhookController, only: [:create]
 
     #TODO: This can be removed
     post "/deployments/:id/stop", DeploymentController, :stop
