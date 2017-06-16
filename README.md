@@ -1,12 +1,22 @@
 # Dockup
 
-This is a redo of [chatops_deployer](https://github.com/code-mancers/chatops_deployer)
-using Elixir to solve the following problems with the Ruby implementation:
+Dockup creates disposable staging environments for your services using docker compose.
 
-1. Dependency on Ruby and many other things required during runtime
-2. Not able to deploy as self contained package
-3. The app is not fault tolerant
-4. Streaming of logs can be done better
+You can automate staging deployments when you submit pull requests:
+![github-webhook](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/k7WU2wiVbLzQMu6/upload.png "Github Webhook")
+
+Or whenever you feel like, using Slack etc:
+![chatops](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/YFBfOlZATG5ESNx/upload_censored.jpg "Chatops")
+
+Features:
+
+* Disposable environments using docker-compose
+* Simple API and UI to deploy apps in git reposisotries
+* Works with Github webhooks
+* Supports multi-container environments
+
+This repository is a redo of [chatops_deployer](https://github.com/code-mancers/chatops_deployer)
+using Elixir to solve fault tolerance issues.
 
 Also dockup will include many other features like:
 
