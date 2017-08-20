@@ -16,6 +16,12 @@ defmodule Dockup.Project do
       raise DockupException, "Cannot clone #{branch} of #{repository}. Error: #{error.message}"
   end
 
+  def delete_repository(project_id) do
+    project_dir = project_dir(project_id)
+    Logger.info "Deleteing project repository at #{project_dir}"
+    File.rm_rf(project_dir)
+  end
+
   def project_dir(project_id) do
     Path.join(Dockup.Configs.workdir, project_id)
   end
@@ -58,8 +64,10 @@ defmodule Dockup.Project do
     port_urls
   end
 
-  def stop(project_id, container \\ Dockup.Container) do
+  def stop(project_id, container \\ Dockup.Container, nginx_config \\ Dockup.NginxConfig) do
     container.stop_containers(project_id)
+    nginx_config.delete_config(project_id)
+    container.reload_nginx
   end
 
   def get_status(url) do

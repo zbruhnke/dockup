@@ -65,6 +65,11 @@ defmodule Dockup.NginxConfig do
     format_service_urls(service_port_urls)
   end
 
+  def delete_config(project_id) do
+    Logger.info "Deleting deployment-#{project_id} nginx config file"
+    File.rm!(config_file(project_id))
+  end
+
   @doc """
   Returns a URL with a random subdomain. The subdomain string starts with "d"
   and ends with "p", a naive workaround to ensure it starts and ends with

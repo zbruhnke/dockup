@@ -104,8 +104,8 @@ defmodule Dockup.Container do
   end
 
   def stop_containers(project_id, command \\ Dockup.Command) do
-    Logger.info "Stopping containers of project #{project_id}"
-    command.run("docker-compose", ["-p", "#{project_id}", "stop"], Dockup.Project.project_dir(project_id))
+    Logger.info "Stopping deployment-#{project_id} containers"
+    command.run("docker-compose", ["-p", "#{project_id}", "down", "-v"], Dockup.Project.project_dir(project_id))
   end
 
   # Returns a list of port mappings for each container in the format:

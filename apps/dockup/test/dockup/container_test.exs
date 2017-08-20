@@ -127,9 +127,9 @@ defmodule Dockup.ContainerTest do
     Dockup.Container.start_containers("foo", StartContainersCommand)
   end
 
-  test "stop_containers runs docker-compose stop" do
+  test "stop_containers runs docker-compose down" do
     defmodule StopContainersCommand do
-      def run("docker-compose", ["-p", "foo", "stop"], dir) do
+      def run("docker-compose", ["-p", "foo", "down", "-v"], dir) do
         # Ensure command is run inside project directory
         ^dir = Dockup.Project.project_dir("foo")
       end

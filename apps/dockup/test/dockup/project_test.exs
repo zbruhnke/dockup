@@ -143,4 +143,21 @@ defmodule Dockup.ProjectTest do
     assert_received :nginx_config_written
     assert_received :nginx_reloaded
   end
+
+  test "stop stops all containers, deletes nginx config and restarts nginx container" do
+    defmodule FakeContainerForStopping do
+      def stop_containers("foo"), do: send self, :containers_stopped
+      def reload_nginx, do: send self, :nginx_reloaded
+    end
+
+    defmodule FakeNginxConfigForStopping do
+      def delete_config("foo"), do: send self, :nginx_config_deleted
+    end
+
+    Dockup.Project.stop("foo", FakeContainerForStopping, FakeNginxConfigForStopping)
+
+    assert_received :containers_stopped
+    assert_received :nginx_config_deleted
+    assert_received :nginx_reloaded
+  end
 end
