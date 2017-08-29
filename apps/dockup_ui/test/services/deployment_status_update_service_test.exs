@@ -4,7 +4,7 @@ defmodule DeploymentStatusUpdateServiceTest do
 
   defmodule FakeChannel do
     def update_deployment_status(_params, _payload) do
-      send self, :status_updated_on_channel
+      send self(), :status_updated_on_channel
       :ok
     end
   end
@@ -14,24 +14,24 @@ defmodule DeploymentStatusUpdateServiceTest do
     {:ok, updated_deployment} = DockupUi.DeploymentStatusUpdateService.run(:foo, deployment.id, "fake_payload", FakeChannel)
 
     assert updated_deployment.status == "foo"
-    assert updated_deployment.service_urls == nil
+    assert updated_deployment.urls == nil
     assert_received :status_updated_on_channel
   end
 
   test "run returns {:ok, deployment} and persists payload" do
-    service_urls = %{"web" => [
-      %{"port" => "8000", "url" => "http://random_string_1.dockup.codemancers.com"},
-      %{"port" => "4000", "url" => "http://random_string_2.dockup.codemancers.com"}
-    ]}
+    urls = [
+      "http://random_string_1.dockup.codemancers.com",
+      "http://random_string_2.dockup.codemancers.com"
+    ]
 
     deployment = insert(:deployment)
     {:ok, _deployment} =
-      DockupUi.DeploymentStatusUpdateService.run(:started, deployment.id, service_urls, FakeChannel)
+      DockupUi.DeploymentStatusUpdateService.run(:started, deployment.id, urls, FakeChannel)
 
     updated_deployment = DockupUi.Repo.get(DockupUi.Deployment, deployment.id)
 
     assert updated_deployment.status == "started"
-    assert updated_deployment.service_urls == service_urls
+    assert updated_deployment.urls == urls
     assert_received :status_updated_on_channel
   end
 

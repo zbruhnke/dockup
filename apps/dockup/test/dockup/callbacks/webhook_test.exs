@@ -3,7 +3,7 @@ defmodule Dockup.Callbacks.WebhookTest do
 
   defmodule FakeHttp do
     def send_request(callback_url, body) do
-      send self, {callback_url, body}
+      send self(), {callback_url, body}
     end
   end
   test "deployment_success sends an http request to callback_url with a list of urls" do

@@ -5,7 +5,6 @@ defmodule DockupUi.API.DeploymentController do
   alias DockupUi.{
     Deployment,
     DeployService,
-    StopDeploymentService,
     Repo,
     Callback.Web
   }
@@ -39,18 +38,5 @@ defmodule DockupUi.API.DeploymentController do
   def show(conn, %{"id" => id}) do
     deployment = Repo.get!(Deployment, id)
     render(conn, "show.json", deployment: deployment)
-  end
-
-  # TODO: Expose API to destroy a deployment and remove this.
-  def stop(conn, %{"id" => id}) do
-    stop_deployment_service = conn.assigns[:stop_deployment_service] || StopDeploymentService
-    case stop_deployment_service.run(String.to_integer(id)) do
-      :ok ->
-        conn
-        |> send_resp(:no_content, "")
-      {:error, _} ->
-        conn
-        |> send_resp(:unprocessable_entity, "")
-    end
   end
 end

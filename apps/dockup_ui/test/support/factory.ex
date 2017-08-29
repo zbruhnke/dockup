@@ -1,7 +1,16 @@
 defmodule DockupUi.Factory do
-  use ExMachina.Ecto, repo: DockupUi.Repo
+  alias DockupUi.{
+    Deployment,
+    Repo
+  }
 
-  def deployment_factory do
+  def insert(:deployment, args \\ []) do
+    deployment_factory()
+    |> Deployment.changeset(Map.new(args))
+    |> Repo.insert!
+  end
+
+  defp deployment_factory do
     %DockupUi.Deployment{
       git_url: "https://github.com/code-mancers/dockup.git",
       branch: "master",

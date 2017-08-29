@@ -5,7 +5,7 @@
     Deployment.mountDeploymentItem('deployment_item_container',
         <%= @deployment.id %>,
         '<%= @deployment.status %>',
-        '<%= service_urls_as_json(@deployment) %>'
+        '<%= urls_as_json(@deployment) %>'
     );
   });
 </script>

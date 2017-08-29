@@ -8,9 +8,9 @@ defmodule DockupUi.Repo.Migrations.CreateDeployment do
       add :callback_url, :string
       add :status, :string
       add :log_url, :string
-      add :service_urls, :map
+      add :urls, {:array, :string}
 
-      timestamps
+      timestamps()
     end
 
   end

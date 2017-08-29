@@ -1,31 +1,37 @@
 defmodule Dockup.DockerComposeConfigTest do
   use ExUnit.Case, async: true
 
-  test "write_config for static_site writes docker-compose.yml with an nginx service" do
-    File.mkdir_p! Dockup.Project.project_dir("foo")
-    Dockup.DockerComposeConfig.write_config(:static_site, "foo")
-    {:ok, content} = File.read(Path.join(Dockup.Project.project_dir("foo"), "docker-compose.yml"))
-    assert content ==
-      """
-      site:
-        image: nginx
-        volumes:
-          - #{Dockup.Project.project_dir_on_host("foo")}:/usr/share/nginx/html
-        ports:
-          - 80
-      """
+  alias Dockup.{
+    DockerComposeConfig
+  }
+
+  defp file_content do
+    """
+    foo:
+      environment:
+        - DOCKUP_EXPOSE_URL=true
+    bar:
+      environment:
+        DOCKUP_EXPOSE_URL: 'true'
+    """
   end
 
-  test "write_config for jekyll_site writes docker-compose.yml that exposes port 4000" do
+  test "rewrite_variables replaces dockup placeholder env variables with generated virtual hosts" do
     File.mkdir_p! Dockup.Project.project_dir("foo")
-    Dockup.DockerComposeConfig.write_config(:jekyll_site, "foo")
-    {:ok, content} = File.read(Path.join(Dockup.Project.project_dir("foo"), "docker-compose.yml"))
-    assert content ==
-      """
-      site:
-        build: .
-        ports:
-          - 4000
+    config_file = DockerComposeConfig.config_file("foo")
+    File.write!(config_file, file_content())
+
+    DockerComposeConfig.rewrite_variables("foo")
+
+    content = File.read!(config_file)
+    assert content =~
+      ~r"""
+      foo:
+        environment:
+          - VIRTUAL_HOST=[a-z]{10}.127.0.0.1.xip.io
+      bar:
+        environment:
+          VIRTUAL_HOST: [a-z]{10}.127.0.0.1.xip.io
       """
   end
 end

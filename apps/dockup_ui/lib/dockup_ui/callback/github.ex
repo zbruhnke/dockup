@@ -22,7 +22,7 @@ defmodule DockupUi.Callback.Github do
 
   def create_github_deployment(pull_request) do
     repo_full_name = pull_request["head"]["repo"]["full_name"]
-    url = "https://#{github_oauth_token}@api.github.com/repos/#{repo_full_name}/deployments"
+    url = "https://#{github_oauth_token()}@api.github.com/repos/#{repo_full_name}/deployments"
 
     request_body = Poison.encode! %{
       ref: pull_request["head"]["ref"],
@@ -42,7 +42,7 @@ defmodule DockupUi.Callback.Github do
 
   def update_deployment_status(state, id, repo_full_name, deployment_id) do
     Logger.info "Updating state of deployment #{id} to #{state} in github"
-    url = "https://#{github_oauth_token}@api.github.com/repos/#{repo_full_name}/deployments/#{deployment_id}/statuses"
+    url = "https://#{github_oauth_token()}@api.github.com/repos/#{repo_full_name}/deployments/#{deployment_id}/statuses"
     deployment_url = DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, id)
 
     request_body = Poison.encode! %{
@@ -59,7 +59,7 @@ defmodule DockupUi.Callback.Github do
     ]
   end
 
-  defp github_oauth_token do
+  defp github_oauth_token() do
     System.get_env("DOCKUP_GITHUB_OAUTH_TOKEN") || Application.get_env(:dockup_ui, :github_oauth_token)
   end
 end
