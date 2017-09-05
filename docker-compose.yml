@@ -1,11 +1,29 @@
+dockup:
+  autoredeploy: true
+  environment:
+    - DOCKUP_DOMAIN=46.4.126.75.xip.io:4000
+    - POSTGRES_HOST=db
+    - POSTGRES_PASSWORD=secret
+    - POSTGRES_USER=user
+  build: .
+  links:
+    - db
+  volumes:
+    - '/usr/bin/docker:/usr/bin/docker'
+    - '/usr/local/bin/docker-compose:/usr/local/bin/docker-compose'
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - '/root/.ssh:/root/.ssh'
+    - '/root/.netrc:/root/.netrc'
+
 db:
-  image: postgres:9.4.4
   environment:
     - POSTGRES_PASSWORD=secret
     - POSTGRES_USER=user
-web:
-  build: .
-  dockerfile: Dockerfile.chatops
-  command: mix phoenix.server
+  image: 'postgres:9.4'
+
+nginx-proxy:
+  image: jwilder/nginx-proxy
   ports:
-    - "4000"
+    - "80:80"
+  volumes:
+    - '/var/run/docker.sock:/tmp/docker.sock:ro'
