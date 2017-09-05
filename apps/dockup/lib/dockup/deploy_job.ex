@@ -33,10 +33,11 @@ defmodule Dockup.DeployJob do
 
     callback.(:started, urls)
   rescue
-    error in MatchError ->
-      handle_error_message(callback, project_identifier, (inspect error))
-    e ->
-      handle_error_message(callback, project_identifier, e.message)
+    exception ->
+      stacktrace = System.stacktrace
+      message = Exception.message(exception)
+      handle_error_message(callback, project_identifier, message)
+      reraise(exception, stacktrace)
   end
 
   defp log_url(project_id) do

@@ -44,8 +44,11 @@ defmodule Dockup.DeployJobTest do
       end
     end
 
-    Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
-                            project: FakeProject, container: FakeFailingContainer, docker_compose_config: FakeDockerComposeConfig)
+    assert_raise RuntimeError, "ifuckedup", fn ->
+      Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
+                              project: FakeProject, container: FakeFailingContainer, docker_compose_config: FakeDockerComposeConfig)
+    end
+
     assert_received {:deployment_failed, "An error occured when deploying 123 : ifuckedup"}
   end
 end

@@ -29,7 +29,11 @@ defmodule Dockup.DeleteDeploymentJobTest do
         raise "cannot stop containers"
       end
     end
-    Dockup.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FailingContainer)
+
+    assert_raise RuntimeError, "cannot stop containers", fn ->
+      Dockup.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FailingContainer)
+    end
+
     assert_received {:deleting_deployment, nil}
     assert_received {:delete_deployment_failed, "An error occured when deleting deployment 123 : cannot stop containers"}
   end
