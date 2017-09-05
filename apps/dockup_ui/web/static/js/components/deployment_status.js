@@ -71,8 +71,9 @@ class DeploymentStatus extends Component {
     if(status == "started") {
       if(payload) {
         let urlText = payload.map((url, index) => {
+          let absoluteUrl = `//${url}`;
           return(
-            <a href={url} className="btn btn-default" role="button" key={index} target="_blank">Open</a>
+            <a href={absoluteUrl} className="btn btn-default" role="button" key={index} target="_blank">Open</a>
           )
         })
         return (
