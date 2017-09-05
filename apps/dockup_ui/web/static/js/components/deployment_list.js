@@ -49,21 +49,16 @@ class DeploymentList extends Component {
 
   renderDeploymentUrls(urls) {
     if(urls) {
-      let urlText = Object.keys(urls).map((key, index) =>{
+      let urlText = urls.map((url, index) =>{
         return(
-          <div key={index} className="service-urls">
-            <kbd>{key}</kbd>
-            <div className="btn-group btn-group-sm">
-              {urls[key].map((map, index) => {
-                return(
-                  <a href={map.url} className="btn btn-default" role="button" key={index} target="_blank">Port {map.port}</a>
-                )
-              })}
-            </div>
-          </div>
+          <a href={url} className="btn btn-default" role="button" key={index} target="_blank">Open</a>
         )
       })
-      return urlText;
+      return (
+        <div className="btn-group btn-group-sm">
+          {urlText}
+        </div>
+      );
     } else {
       return "-";
     }
