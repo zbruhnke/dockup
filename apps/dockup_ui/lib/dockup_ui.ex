@@ -33,6 +33,7 @@ defmodule DockupUi do
         dockup_supervision_tree = worker(Dockup.WhitelistStore, [urls])
         [dockup_supervision_tree | phoenix_supervision_tree]
       else
+        Logger.error "Whitelist store not started."
         phoenix_supervision_tree
       end
 
