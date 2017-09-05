@@ -1,14 +1,16 @@
 dockup:
-  autoredeploy: true
   environment:
-    - DOCKUP_DOMAIN=46.4.126.75.xip.io:4000
+    - DOCKUP_DOMAIN=dockup.codemancers.com
     - POSTGRES_HOST=db
     - POSTGRES_PASSWORD=secret
     - POSTGRES_USER=user
+    - VIRTUAL_HOST=dockup.codemancers.com
+    - DOCKUP_WORKDIR=/dockup/workdir
   build: .
   links:
     - db
   volumes:
+    - './workdir:/dockup/workdir'
     - '/usr/bin/docker:/usr/bin/docker'
     - '/usr/local/bin/docker-compose:/usr/local/bin/docker-compose'
     - '/var/run/docker.sock:/var/run/docker.sock'

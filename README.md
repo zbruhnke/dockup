@@ -74,10 +74,22 @@ $ cd /vagrant
 $ ./scripts/setup
 ```
 
-## Environment variables
+## Configuration and Environment variables
 
 Refer `apps/dockup/lib/dockup/config.ex` to see the list of environment variables
 supported.
+
+### Whitelisting Git URLs
+
+Dockup will not be able to deploy git repositories unless the git repo URLs
+are whitelisted. To do this, create a file named "whitelisted_urls" inside
+the "workdir" directory. Insert the git repo urls in this file, one URL on each
+line. For example:
+
+```
+https://github.com/code-mancers/repo1.git
+https://github.com/code-mancers/repo2.git
+```
 
 ## API
 
