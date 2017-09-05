@@ -65,4 +65,10 @@ defmodule Dockup.ProjectTest do
 
     Agent.stop(RetryCount)
   end
+
+  test "wait_till_up raises exception if there are no urls to wait for" do
+    assert_raise DockupException, "No URLs to wait for.", fn ->
+      Dockup.Project.wait_till_up([])
+    end
+  end
 end

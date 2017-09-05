@@ -32,7 +32,13 @@ defmodule Dockup.Project do
   # Waits until the urls all return expected HTTP status.
   # Currently, assuming that URLs are for static sites
   # and they return 200.
-  def wait_till_up(urls, http \\ __MODULE__, interval \\ 5000) do
+  def wait_till_up(urls, http \\ __MODULE__, interval \\ 5000)
+
+  def wait_till_up([], _, _) do
+    raise DockupException, "No URLs to wait for."
+  end
+
+  def wait_till_up(urls, http, interval) do
     for url <- urls do
       response = 200
       # Retry 30 times in an interval of 5 seconds
