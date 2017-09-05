@@ -21,17 +21,20 @@ defmodule Dockup.DockerComposeConfigTest do
     config_file = DockerComposeConfig.config_file("foo")
     File.write!(config_file, file_content())
 
-    DockerComposeConfig.rewrite_variables("foo")
+    [url1, url2] = DockerComposeConfig.rewrite_variables("foo")
+
+    assert url1 =~ ~r/[a-z]{10}.127.0.0.1.xip.io/
+    assert url2 =~ ~r/[a-z]{10}.127.0.0.1.xip.io/
 
     content = File.read!(config_file)
-    assert content =~
-      ~r"""
+    assert content,
+      """
       foo:
         environment:
-          - VIRTUAL_HOST=[a-z]{10}.127.0.0.1.xip.io
+          - VIRTUAL_HOST=#{url1}
       bar:
         environment:
-          VIRTUAL_HOST: [a-z]{10}.127.0.0.1.xip.io
+          VIRTUAL_HOST: #{url2}
       """
   end
 end
