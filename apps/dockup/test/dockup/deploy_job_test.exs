@@ -30,7 +30,7 @@ defmodule Dockup.DeployJobTest do
                              project: FakeProject, container: FakeContainer, docker_compose_config: FakeDockerComposeConfig)
     assert_received {:queued, nil}
     assert_received {:cloning_repo, nil}
-    assert_received {:starting, "/deployment_logs/#?projectName=123"}
+    assert_received {:starting, "logio.127.0.0.1.xip.io/#?projectName=123"}
     assert_received :docker_compose_config_prepared
     assert_received :containers_started
     assert_received {:checking_urls, nil}
