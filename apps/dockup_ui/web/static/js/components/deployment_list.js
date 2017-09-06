@@ -50,7 +50,7 @@ class DeploymentList extends Component {
   renderDeploymentUrls(urls) {
     if(urls) {
       let urlText = urls.map((url, index) =>{
-        let absoluteUrl = `//${url}`;
+        let absoluteUrl = `http://${url}`;
         return(
           <a href={absoluteUrl} className="btn btn-default" role="button" key={index} target="_blank">Open</a>
         )
