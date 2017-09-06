@@ -6,9 +6,7 @@ defmodule Dockup.Htpasswd do
       {:ok, htpasswd} ->
         domain = Application.fetch_env!(:dockup, :domain)
         logio_domain = "logio." <> domain
-
         htpasswd_dir = Application.fetch_env!(:dockup, :htpasswd_dir)
-        File.mkdir(htpasswd_dir)
 
         for host <- [domain, logio_domain] do
           file = Path.join(htpasswd_dir, host)

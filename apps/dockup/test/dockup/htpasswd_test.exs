@@ -3,6 +3,7 @@ defmodule Dockup.HtpasswdTest do
 
   test "write() writes htpasswd string into both dockup and logio host files" do
     Application.put_env(:dockup, :htpasswd, "foo:bar")
+    Application.fetch_env!(:dockup, :htpasswd_dir) |> File.mkdir_p!()
 
     Dockup.Htpasswd.write()
 
