@@ -1,6 +1,6 @@
 # Dockup
 
-Dockup creates disposable staging environments for your services using docker compose.
+Dockup creates disposable staging environments for your services using docker-compose.
 
 You can automate staging deployments when you submit pull requests:
 ![github-webhook](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/k7WU2wiVbLzQMu6/upload.png "Github Webhook")
@@ -8,22 +8,15 @@ You can automate staging deployments when you submit pull requests:
 Or whenever you feel like, using Slack etc:
 ![chatops](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/YFBfOlZATG5ESNx/upload_censored.jpg "Chatops")
 
-Features:
+# Features:
 
-* Disposable environments using docker-compose
-* Simple API and UI to deploy apps in git reposisotries
-* Works with Github webhooks
-* Supports multi-container environments
-
-This repository is a redo of [chatops_deployer](https://github.com/code-mancers/chatops_deployer)
-using Elixir to solve fault tolerance issues.
-
-Also dockup will include many other features like:
-
-1. SSL support
-2. Authentication
-3. Cleanup of expired environments
-4. etc ..
+[x] Automatic staging environments for PRs using Github webhooks
+[x] API and UI to deploy apps in git reposisotries
+[x] Supports multi-container environments
+[x] Automatic creation/renewal of SSL certs using Letsencrypt
+[x] Basic auth
+[x] Automatic cleanup of expired environments
+[x] Tail logs of running apps
 
 ## Installation
 
