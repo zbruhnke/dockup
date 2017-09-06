@@ -22,8 +22,9 @@ defmodule Dockup.DockerComposeConfig do
   defp rewrite_virtual_host(str, project) do
     if String.match?(str, ~r/DOCKUP_EXPOSE_URL/) do
       url = project.create_url()
-      replaced_string = String.replace(str, ~r/DOCKUP_EXPOSE_URL(\s*.\s*)'?true'?/, "VIRTUAL_HOST\\1#{url}")
-      {url, replaced_string}
+      virtual_host_string = String.replace(str, ~r/DOCKUP_EXPOSE_URL(\s*.\s*)'?true'?/, "VIRTUAL_HOST\\1#{url}")
+      https_redirect_string = String.replace(str, ~r/DOCKUP_EXPOSE_URL(\s*.\s*)'?true'?/, "HTTPS_METHOD\\1noredirect")
+      {url, virtual_host_string <> https_redirect_string}
     else
       {nil, str}
     end

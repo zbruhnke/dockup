@@ -32,9 +32,11 @@ defmodule Dockup.DockerComposeConfigTest do
       foo:
         environment:
           - VIRTUAL_HOST=#{url1}
+          - HTTPS_METHOD=noredirect
       bar:
         environment:
           VIRTUAL_HOST: #{url2}
+          HTTPS_METHOD: noredirect
       """
   end
 end
