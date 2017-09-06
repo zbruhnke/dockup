@@ -27,8 +27,9 @@ Also dockup will include many other features like:
 
 ## Installation
 
-Clone the repository and run `docker-compose up`. For this, you need to
-have docker-compose of course.
+1. Clone the repository
+2. Inside the project directory, copy `.env.example` to `.env` and modify environment variables as needed
+3. Run `docker-compose up`
 
 ## Development
 
