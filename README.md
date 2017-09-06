@@ -8,7 +8,7 @@ You can automate staging deployments when you submit pull requests:
 Or whenever you feel like, using Slack etc:
 ![chatops](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/YFBfOlZATG5ESNx/upload_censored.jpg "Chatops")
 
-# Features:
+## Features:
 
 - [x] Automatic staging environments for PRs using Github webhooks
 - [x] API and UI to deploy apps in git reposisotries
