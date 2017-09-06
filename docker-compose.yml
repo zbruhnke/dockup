@@ -42,6 +42,7 @@ nginx-proxy:
     - '/usr/share/nginx/html'
     - '/var/run/docker.sock:/tmp/docker.sock:ro'
     - '/etc/nginx/certs'
+    - './htpasswd:/etc/nginx/htpasswd'
 
 letsencrypt-nginx-proxy-companion:
   image: jrcs/letsencrypt-nginx-proxy-companion

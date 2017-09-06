@@ -12,6 +12,7 @@ defmodule DockupUi do
     if dockup_loaded?() do
       Logger.debug "Setting configuration from environment variables"
       Dockup.Config.set_configs_from_env()
+      Dockup.Htpasswd.write()
     end
 
     phoenix_supervision_tree = [

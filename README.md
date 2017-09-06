@@ -79,6 +79,14 @@ $ ./scripts/setup
 Refer `apps/dockup/lib/dockup/config.ex` to see the list of environment variables
 supported.
 
+### Basic Authentication
+
+Set `DOCKUP_HTPASSWD` environment variable with the contents of the htpasswd file
+generated using the desired username and password for basic auth. You can use
+[this tool](http://www.htaccesstools.com/htpasswd-generator/) to generate this
+string.
+
+
 ### Whitelisting Git URLs
 
 Dockup will not be able to deploy git repositories unless the git repo URLs
