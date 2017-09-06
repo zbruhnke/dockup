@@ -47,7 +47,7 @@ class DeploymentStatus extends Component {
       case 'started':
         statusText =
           <span>
-            Deployed and running. Access application logs <a href={`/deployment_logs/#?projectName=${this.props.deploymentId}`} target="_blank">here</a>.
+            Deployed and running.
           </span>
         alertClass = "success";
         break;

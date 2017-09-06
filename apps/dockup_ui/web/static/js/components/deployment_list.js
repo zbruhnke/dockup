@@ -67,7 +67,8 @@ class DeploymentList extends Component {
 
   renderLogUrl(url) {
     if(url) {
-      return <a href={url} target="_blank">Open</a>;
+      let absoluteUrl = `//${url}`;
+      return <a href={absoluteUrl} target="_blank">Open</a>;
     } else {
       return "-";
     }

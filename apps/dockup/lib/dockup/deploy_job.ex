@@ -41,7 +41,8 @@ defmodule Dockup.DeployJob do
   end
 
   defp log_url(project_id) do
-    "/deployment_logs/#?projectName=#{project_id}"
+    domain = Application.fetch_env!(:dockup, :domain)
+    "logio.#{domain}/#?projectName=#{project_id}"
   end
 
   defp handle_error_message(callback, project_identifier, message) do
