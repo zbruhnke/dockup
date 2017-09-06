@@ -10,13 +10,13 @@ Or whenever you feel like, using Slack etc:
 
 # Features:
 
-[x] Automatic staging environments for PRs using Github webhooks
-[x] API and UI to deploy apps in git reposisotries
-[x] Supports multi-container environments
-[x] Automatic creation/renewal of SSL certs using Letsencrypt
-[x] Basic auth
-[x] Automatic cleanup of expired environments
-[x] Tail logs of running apps
+- [x] Automatic staging environments for PRs using Github webhooks
+- [x] API and UI to deploy apps in git reposisotries
+- [x] Supports multi-container environments
+- [x] Automatic creation/renewal of SSL certs using Letsencrypt
+- [x] Basic auth
+- [x] Automatic cleanup of expired environments
+- [x] Tail logs of running apps
 
 ## Installation
 
