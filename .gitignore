@@ -4,7 +4,9 @@
 erl_crash.dump
 *.ez
 /nginx_config_dir
-/workdir
 /projects.dets
 /.vagrant
 /dockup_config
+/workdir/whitelisted_urls
+/workdir/clones
+/.env

@@ -3,48 +3,52 @@ defmodule Dockup.DeployJobTest do
 
   defmodule FakeProject do
     def clone_repository("123", "fake_repo", "fake_branch"), do: :ok
-    def project_type("123"), do: :static_site
     def wait_till_up(_urls), do: :ok
   end
 
-  defmodule FakeNginxConfig do
-    def write_config(:static_site, "fake_project_id"), do: send self, :nginx_config_added
+  defmodule FakeDockerComposeConfig do
+    def rewrite_variables("123") do
+      send self(), :docker_compose_config_prepared
+      ["dummy_url"]
+    end
+  end
+
+  defmodule FakeContainer do
+    def start_containers("123"), do: send self(), :containers_started
   end
 
   defmodule FakeCallback do
     def lambda do
       fn(event, payload) ->
-        send self, {event, payload}
+        send self(), {event, payload}
       end
-    end
-  end
-
-  defmodule FakeDeployJob do
-    def ensure_whitelisted!("fake_repo"), do: :ok
-
-    def deploy(:static_site, "123") do
-      "fake_urls"
     end
   end
 
   test "performing a deployment triggers deployment using the project type" do
     Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
-                            project: FakeProject, deploy_job: FakeDeployJob)
+                             project: FakeProject, container: FakeContainer, docker_compose_config: FakeDockerComposeConfig)
+    assert_received {:queued, nil}
     assert_received {:cloning_repo, nil}
-    assert_received {:starting, "/deployment_logs/#?projectName=123"}
+    assert_received {:starting, "logio.127.0.0.1.xip.io/#?projectName=123"}
+    assert_received :docker_compose_config_prepared
+    assert_received :containers_started
     assert_received {:checking_urls, nil}
-    assert_received {:started, "fake_urls"}
+    assert_received {:started, ["dummy_url"]}
   end
 
   test "triggers deployment_failed callback when an exception occurs" do
-    defmodule FailingDeployJob do
-      def ensure_whitelisted!("fake_repo"), do: true
-      def deploy(:static_site, "123") do
+    defmodule FakeFailingContainer do
+      def start_containers("123") do
         raise "ifuckedup"
       end
     end
-    Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
-                            project: FakeProject, deploy_job: FailingDeployJob)
+
+    assert_raise RuntimeError, "ifuckedup", fn ->
+      Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
+                              project: FakeProject, container: FakeFailingContainer, docker_compose_config: FakeDockerComposeConfig)
+    end
+
     assert_received {:deployment_failed, "An error occured when deploying 123 : ifuckedup"}
   end
 end

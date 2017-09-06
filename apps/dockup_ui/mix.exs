@@ -8,13 +8,13 @@ defmodule DockupUi.Mixfile do
      config_path: "../../config/config.exs",
      deps_path: "../../deps",
      lockfile: "../../mix.lock",
-     elixir: "~> 1.3",
+     elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases,
-     deps: deps]
+     aliases: aliases(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application.
@@ -35,17 +35,16 @@ defmodule DockupUi.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
-     {:postgrex, ">= 0.0.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:ex_machina, "~> 1.0", only: [:test, :dev]},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
+    [{:phoenix, "~> 1.3.0"},
+     {:postgrex, "~> 0.13.3"},
+     {:phoenix_ecto, "~> 3.2"},
+     {:phoenix_html, "~> 2.10"},
+     {:phoenix_live_reload, "~> 1.1", only: :dev},
+     {:gettext, "~> 0.13"},
+     {:cowboy, "~> 1.1"},
      {:httpotion, "~> 3.0.0"},
-     {:poison, "~>2.1.0"},
-     {:quantum, ">= 1.7.1"},
+     {:poison, "~> 3.1.0"},
+     {:quantum, "~> 2.0.2"},
      {:dockup, in_umbrella: true}]
   end
 

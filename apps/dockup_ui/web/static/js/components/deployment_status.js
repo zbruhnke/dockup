@@ -47,7 +47,7 @@ class DeploymentStatus extends Component {
       case 'started':
         statusText =
           <span>
-            Deployed and running. Access application logs <a href={`/deployment_logs/#?projectName=${this.props.deploymentId}`} target="_blank">here</a>.
+            Deployed and running.
           </span>
         alertClass = "success";
         break;
@@ -67,63 +67,27 @@ class DeploymentStatus extends Component {
     );
   }
 
-  /*
-  When status == "started", params will be:
-  status: "started",
-  payload: {
-    web: [{url: "foo", port: "1000"}, {url: "bar", port: "2000"}],
-    app: [{url: "foo", port: "1000"}]
-  }
-  */
   renderServiceUrls(status, payload) {
     if(status == "started") {
       if(payload) {
-        let urlText = Object.keys(payload).map((key, index) =>{
+        let urlText = payload.map((url, index) => {
+          let absoluteUrl = `http://${url}`;
           return(
-            <tr key={index}>
-              <td>{key}</td>
-              <td>
-                <div className="btn-group btn-group-sm">
-                  {payload[key].map((map, index) => {
-                    return(
-                      <a href={map.url} className="btn btn-default" role="button" key={index} target="_blank">Port {map.port}</a>
-                    )
-                  })}
-                </div>
-              </td>
-            </tr>
+            <a href={absoluteUrl} className="btn btn-default" role="button" key={index} target="_blank">Open</a>
           )
         })
-        return urlText;
+        return (
+          <div className="btn-group btn-group-sm">
+            {urlText}
+          </div>
+        );
       } else {
         return (
-          <tr>
-            <td colSpan={2}>
-              No service info available
-            </td>
-          </tr>
+          <div>
+            URLs not yet available
+          </div>
         );
       }
-    }
-  }
-
-  renderServiceUrlTable() {
-    if(this.state.status == "started") {
-      return(
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Service</th>
-              <th>URLs</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.renderServiceUrls(this.state.status, this.state.payload)}
-          </tbody>
-        </table>
-      );
-    } else {
-      return null;
     }
   }
 
@@ -135,7 +99,7 @@ class DeploymentStatus extends Component {
     return(
       <div className="deployment-status panel panel-default">
         {this.renderStatusText()}
-        {this.renderServiceUrlTable()}
+        {this.renderServiceUrls(this.state.status, this.state.payload)}
       </div>
     )
   }

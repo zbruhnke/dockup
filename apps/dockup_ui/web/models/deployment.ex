@@ -15,13 +15,12 @@ defmodule DockupUi.Deployment do
     field :callback_url, :string
     field :status, :string
     field :log_url, :string
-    field :service_urls, :map
+    field :urls, {:array, :string}
 
-    timestamps
+    timestamps()
   end
 
-  @required_fields ~w(git_url branch)
-  @optional_fields ~w(callback_url status log_url service_urls)
+  @permitted_fields ~w(id git_url branch callback_url status log_url urls inserted_at)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -31,7 +30,7 @@ defmodule DockupUi.Deployment do
   """
   def changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, @permitted_fields)
   end
 
   @doc """

@@ -16,7 +16,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
         "git_url" => deployment.git_url,
         "status" => deployment.status,
         "log_url" => deployment.log_url,
-        "urls" => deployment.service_urls
+        "urls" => deployment.urls
       }
     ]
   end
@@ -30,7 +30,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
       "branch" => deployment.branch,
       "status" => deployment.status,
       "log_url" => deployment.log_url,
-      "urls" => deployment.service_urls
+      "urls" => deployment.urls
     }
   end
 
@@ -57,7 +57,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
   test "create renders errors on model when DeployService fails", %{conn: conn} do
     defmodule FakeFailingDeployService do
       def run(%{}, _callback_data) do
-        {:error, DockupUi.Deployment.changeset(%DockupUi.Deployment{}, %{})}
+        {:error, DockupUi.Deployment.create_changeset(%DockupUi.Deployment{}, %{}, nil)}
       end
     end
 
@@ -67,29 +67,5 @@ defmodule DockupUi.API.DeploymentControllerTest do
       "branch" => ["can't be blank"],
       "git_url" => ["can't be blank"]
     }
-  end
-
-  test "stop responds with 204 when deployment can be stopped", %{conn: conn} do
-    defmodule FakeStopDeploymentService do
-      def run(123) do
-        :ok
-      end
-    end
-
-    conn = conn |> assign(:stop_deployment_service, FakeStopDeploymentService)
-    conn = post conn, "/api/deployments/123/stop"
-    assert response(conn, 204)
-  end
-
-  test "stop responds with 422 when deployment cannot be stopped", %{conn: conn} do
-    defmodule FailingStopDeploymentService do
-      def run(123) do
-        {:error, nil}
-      end
-    end
-
-    conn = conn |> assign(:stop_deployment_service, FailingStopDeploymentService)
-    conn = post conn, "/api/deployments/123/stop"
-    assert response(conn, 422)
   end
 end

@@ -3,7 +3,8 @@ defmodule Dockup.DeleteDeploymentJob do
 
   alias Dockup.{
     DefaultCallback,
-    Project,
+    Container,
+    Project
   }
 
   def spawn_process(id, callback) do
@@ -13,18 +14,20 @@ defmodule Dockup.DeleteDeploymentJob do
   def perform(project_identifier, callback \\ DefaultCallback.lambda, deps \\ []) do
     callback.(:deleting_deployment, nil)
 
+    container = deps[:container] || Container
     project = deps[:project] || Project
     project_id = to_string(project_identifier)
 
-    project.stop(project_id)
+    container.stop_containers(project_id)
     project.delete_repository(project_id)
 
     callback.(:deployment_deleted, nil)
   rescue
-    error in MatchError ->
-      handle_error_message(callback, project_identifier, (inspect error))
-    e ->
-      handle_error_message(callback, project_identifier, e.message)
+    exception ->
+      stacktrace = System.stacktrace
+      message = Exception.message(exception)
+      handle_error_message(callback, project_identifier, message)
+      reraise(exception, stacktrace)
   end
 
   defp handle_error_message(callback, project_identifier, message) do

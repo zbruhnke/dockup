@@ -19,7 +19,7 @@ defmodule DockupUi.CallbackTest do
   test "callback runs DeploymentStatusUpdateService" do
     defmodule FakeStatusUpdateService do
       def run(_status, 1, "fake_payload") do
-        send self, :status_updated
+        send self(), :status_updated
       end
     end
 
@@ -40,16 +40,16 @@ defmodule DockupUi.CallbackTest do
     lambda = Callback.lambda(deployment, %FakeCallbackData{}, NoopStatusUpdateService)
 
     # When event is not implemented, falls back to common_callback
-    lambda.(:queued, {self, "fake_payload"})
+    lambda.(:queued, {self(), "fake_payload"})
     assert_receive {:common_callback, ^deployment, "fake_payload"}
 
     # When event is implemented, uses the overridden implementation
-    lambda.(:started, {self, "fake_payload"})
+    lambda.(:started, {self(), "fake_payload"})
     assert_receive {:started, ^deployment, "fake_payload"}
 
     # When event is invalid
     logs = capture_log(fn ->
-      lambda.(:not_a_real_event, {self, "fake_payload"})
+      lambda.(:not_a_real_event, {self(), "fake_payload"})
       refute_receive {:not_a_real_event, ^deployment, "fake_payload"}
     end)
     assert logs =~ "Unknown callback event triggered: :not_a_real_event"

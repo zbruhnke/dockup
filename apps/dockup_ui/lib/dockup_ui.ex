@@ -7,11 +7,12 @@ defmodule DockupUi do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    # If dockup is loaded (running umbrella apps), run some checks
-    # to ensure environment looks good for running
-    if dockup_loaded? do
-      Logger.debug "running preflight checks"
-      Dockup.run_preflight_checks
+    # If dockup is loaded (running umbrella apps), set the runtime configs
+    # from environment variables
+    if dockup_loaded?() do
+      Logger.debug "Setting configuration from environment variables"
+      Dockup.Config.set_configs_from_env()
+      Dockup.Htpasswd.write()
     end
 
     phoenix_supervision_tree = [
@@ -20,12 +21,20 @@ defmodule DockupUi do
       # Start the Ecto repository
       supervisor(DockupUi.Repo, [])
     ]
-    dockup_supervision_tree = worker(Dockup.WhitelistStore, [])
 
     children =
-      if dockup_loaded? do
+      if dockup_loaded?() && load_whitelist_store?() do
+        urls =
+          :dockup
+          |> Application.fetch_env!(:workdir)
+          |> Path.join("whitelisted_urls")
+          |> File.read!
+          |> String.split()
+
+        dockup_supervision_tree = worker(Dockup.WhitelistStore, [urls])
         [dockup_supervision_tree | phoenix_supervision_tree]
       else
+        Logger.error "Whitelist store not started."
         phoenix_supervision_tree
       end
 
@@ -44,5 +53,12 @@ defmodule DockupUi do
 
   defp dockup_loaded? do
     List.keymember?(Application.loaded_applications, :dockup, 0)
+  end
+
+  defp load_whitelist_store? do
+    :dockup
+    |> Application.fetch_env!(:workdir)
+    |> Path.join("whitelisted_urls")
+    |> File.exists?
   end
 end

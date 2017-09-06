@@ -1,34 +1,47 @@
 defmodule Dockup.DockerComposeConfig do
   require Logger
 
-  def write_config(type, project_id) do
-    Logger.info "Writing a '#{type}' docker-compose.yml into project #{project_id}"
-    config = config(type, project_id)
-    File.write!(config_file(project_id), config)
+  alias Dockup.{
+    Project
+  }
+
+  def rewrite_variables(project_id, project \\ Project) do
+    Logger.info "Rewriting variables in docker-compose.yml of project #{project_id}"
+    config_file = config_file(project_id)
+
+    config_file
+    |> File.stream!()
+    |> Stream.map(& rewrite_virtual_host(&1, project) )
+    |> write_file(config_file)
   end
 
-  defp config(:static_site, project_id) do
-    directory_on_host = Dockup.Project.project_dir_on_host(project_id)
-    """
-    site:
-      image: nginx
-      volumes:
-        - #{directory_on_host}:/usr/share/nginx/html
-      ports:
-        - 80
-    """
-  end
-
-  defp config(:jekyll_site, _project_id) do
-    """
-    site:
-      build: .
-      ports:
-        - 4000
-    """
-  end
-
-  defp config_file(project_id) do
+  def config_file(project_id) do
     Path.join(Dockup.Project.project_dir(project_id), "docker-compose.yml")
+  end
+
+  defp rewrite_virtual_host(str, project) do
+    if String.match?(str, ~r/DOCKUP_EXPOSE_URL/) do
+      url = project.create_url()
+      virtual_host_string = String.replace(str, ~r/DOCKUP_EXPOSE_URL(\s*.\s*)'?true'?/, "VIRTUAL_HOST\\1#{url}")
+      https_redirect_string = String.replace(str, ~r/DOCKUP_EXPOSE_URL(\s*.\s*)'?true'?/, "HTTPS_METHOD\\1noredirect")
+      {url, virtual_host_string <> https_redirect_string}
+    else
+      {nil, str}
+    end
+  end
+
+  defp write_file(urls_and_content, config_file) do
+    {urls, content} =
+      Enum.reduce(urls_and_content, {[], ""}, fn {url, string}, {urls, content} ->
+        if url do
+          {[url | urls], content <> string}
+        else
+          {urls, content <> string}
+        end
+      end)
+
+    File.write!(config_file, content)
+
+    Enum.reverse(urls)
   end
 end

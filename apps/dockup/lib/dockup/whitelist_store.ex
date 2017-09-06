@@ -5,32 +5,16 @@ defmodule Dockup.WhitelistStore do
   from a file and providing functions to check if a URL is whitelisted or not.
   """
 
-  def start_link(name \\ __MODULE__) do
-    Agent.start_link(__MODULE__, :get_urls, [], name: name)
+  def start_link(name \\ __MODULE__, urls) do
+    Logger.info "Whitelisted Git URLs: #{inspect urls}"
+    Agent.start_link(fn -> urls end, name: name)
   end
 
   @doc """
   Returns true if git url is whitelisted
   """
   def whitelisted?(git_url, name \\ __MODULE__) do
-    Dockup.Configs.whitelist_all? || whitelisted_url?(git_url, name)
-  end
-
-  def whitelist_file do
-    Path.join(Dockup.Configs.workdir, "whitelisted_urls")
-  end
-
-  def get_urls do
-    urls =
-      whitelist_file
-      |> File.read!
-      |> String.split
-    Logger.info "Whitelisted Git URLs: #{inspect urls}"
-    urls
-  rescue
-    _e ->
-      Logger.warn "Cannot load #{whitelist_file}"
-      []
+    whitelisted_url?(git_url, name)
   end
 
   defp whitelisted_url?(git_url, name) do

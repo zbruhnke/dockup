@@ -2,10 +2,9 @@ defmodule Dockup.ProjectTest do
   use ExUnit.Case, async: true
   import ExUnit.CaptureLog
 
-  alias Dockup.Project
-
-  test "project_dir of a project is <Dockup workdir>/<project_id>" do
-    assert Dockup.Project.project_dir("foo") == "#{Dockup.Configs.workdir}/foo"
+  test "project_dir of a project is <Dockup workdir>/clones/<project_id>" do
+    workdir = Application.fetch_env!(:dockup, :workdir)
+    assert Dockup.Project.project_dir("foo") == "#{workdir}/clones/foo"
   end
 
   # Remove mocking in favor of dependency injection and make this test pass
@@ -48,56 +47,6 @@ defmodule Dockup.ProjectTest do
     end
   end
 
-  test "project_type returns :jekyll_site if project uses jekyll gem" do
-    project_id = "auto/detect/jekyll"
-    project_dir = Project.project_dir(project_id)
-    File.mkdir_p project_dir
-    File.write! "#{project_dir}/Gemfile", """
-      source "https://rubygems.org"
-
-      gem 'capistrano', '~> 2.15'
-      gem 'jekyll'
-    """
-
-    assert Dockup.Project.project_type(project_id) == :jekyll_site
-    File.rm_rf Dockup.Configs.workdir <> "/auto"
-  end
-
-  test "project_type returns :jekyll_site if project uses jekyll gem and index.html file is also present" do
-    project_id = "auto/detect/jekyll"
-    project_dir = Dockup.Project.project_dir project_id
-    File.mkdir_p project_dir
-    File.write! "#{project_dir}/Gemfile", """
-      source "https://rubygems.org"
-
-      gem 'capistrano', '~> 2.15'
-      gem 'jekyll'
-    """
-    File.touch "#{project_dir}/index.html"
-
-    assert Dockup.Project.project_type(project_id) == :jekyll_site
-    File.rm_rf Dockup.Configs.workdir <> "/auto"
-  end
-
-  test "project_type returns :static_site if index.html is found" do
-    project_id = "auto/detect/static"
-    project_dir = Dockup.Project.project_dir project_id
-    File.mkdir_p project_dir
-    File.touch "#{project_dir}/index.html"
-
-    assert Dockup.Project.project_type(project_id) == :static_site
-    File.rm_rf Dockup.Configs.workdir <> "/auto"
-  end
-
-  test "project_type returns :unknown if auto detection fails" do
-    project_id = "auto/detect/none"
-    project_dir = Dockup.Project.project_dir project_id
-    File.mkdir_p project_dir
-
-    assert Dockup.Project.project_type(project_id) == :unknown
-    File.rm_rf Dockup.Configs.workdir <> "/auto"
-  end
-
   test "wait_till_up waits until http response of url is 200" do
     Agent.start_link(fn -> 1 end, name: RetryCount)
     defmodule FakeHttp do
@@ -108,7 +57,7 @@ defmodule Dockup.ProjectTest do
       end
     end
 
-    urls = %{"web" => [%{"port" => "80", "url" => "dummy_url"}]}
+    urls = ["dummy_url"]
     logs = capture_log(fn -> Dockup.Project.wait_till_up(urls, FakeHttp, 0) end)
     assert logs =~ "Attempt 1 failed"
     assert logs =~ "Attempt 2 failed"
@@ -117,47 +66,9 @@ defmodule Dockup.ProjectTest do
     Agent.stop(RetryCount)
   end
 
-  test "project_dir_on_host host returns the dir of project on host" do
-    defmodule FakeContainer do
-      def workdir_on_host do
-        "/fake_workdir"
-      end
+  test "wait_till_up raises exception if there are no urls to wait for" do
+    assert_raise DockupException, "No URLs to wait for.", fn ->
+      Dockup.Project.wait_till_up([])
     end
-    assert Dockup.Project.project_dir_on_host("foo", FakeContainer) == "/fake_workdir/foo"
-  end
-
-  test "start starts all containers, writes nginx config and restarts nginx container" do
-    defmodule FakeContainerForStarting do
-      def start_containers("foo"), do: send self, :containers_started
-      def port_mappings("foo"), do: "fake_ports"
-      def reload_nginx, do: send self, :nginx_reloaded
-    end
-
-    defmodule FakeNginxConfigForStarting do
-      def write_config("foo", "fake_ports"), do: send self, :nginx_config_written
-    end
-
-    Dockup.Project.start("foo", FakeContainerForStarting, FakeNginxConfigForStarting)
-
-    assert_received :containers_started
-    assert_received :nginx_config_written
-    assert_received :nginx_reloaded
-  end
-
-  test "stop stops all containers, deletes nginx config and restarts nginx container" do
-    defmodule FakeContainerForStopping do
-      def stop_containers("foo"), do: send self, :containers_stopped
-      def reload_nginx, do: send self, :nginx_reloaded
-    end
-
-    defmodule FakeNginxConfigForStopping do
-      def delete_config("foo"), do: send self, :nginx_config_deleted
-    end
-
-    Dockup.Project.stop("foo", FakeContainerForStopping, FakeNginxConfigForStopping)
-
-    assert_received :containers_stopped
-    assert_received :nginx_config_deleted
-    assert_received :nginx_reloaded
   end
 end

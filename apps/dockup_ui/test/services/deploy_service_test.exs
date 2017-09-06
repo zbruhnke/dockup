@@ -3,7 +3,7 @@ defmodule DeployServiceTest do
 
   defmodule FakeDeployJob do
     def spawn_process(_params, _callback) do
-      send self, :ran_deploy_job
+      send self(), :ran_deploy_job
       :ok
     end
   end
@@ -23,7 +23,7 @@ defmodule DeployServiceTest do
   test "run returns {:error, changeset} if deployment cannot be saved" do
     deps = [deploy_job: FakeDeployJob, whitelist_store: FakeWhitelistStore]
     {:error, changeset} = DockupUi.DeployService.run(%{branch: "bar"}, nil, deps)
-    assert {:git_url, {"can't be blank", []}} in changeset.errors
+    assert {:git_url, {"can't be blank", [validation: :required]}} in changeset.errors
     refute_received :ran_deploy_job
   end
 
