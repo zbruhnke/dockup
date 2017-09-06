@@ -2,7 +2,7 @@ dockup:
   environment:
     - DOCKUP_WORKDIR=/dockup/workdir
     - DOCKUP_DOMAIN=${DOCKUP_DOMAIN}
-    - DOCKUP_HTPASSWD='${DOCKUP_HTPASSWD}'
+    - DOCKUP_HTPASSWD=${DOCKUP_HTPASSWD}
     - POSTGRES_HOST=db
     - POSTGRES_PASSWORD=secret
     - POSTGRES_USER=user
