@@ -1,11 +1,12 @@
 dockup:
   environment:
+    - DOCKUP_WORKDIR=/dockup/workdir
     - DOCKUP_DOMAIN=${DOCKUP_DOMAIN}
+    - DOCKUP_HTPASSWD='${DOCKUP_HTPASSWD}'
     - POSTGRES_HOST=db
     - POSTGRES_PASSWORD=secret
     - POSTGRES_USER=user
     - VIRTUAL_HOST=${DOCKUP_DOMAIN}
-    - DOCKUP_WORKDIR=/dockup/workdir
     - LETSENCRYPT_HOST=${DOCKUP_DOMAIN},logio.${DOCKUP_DOMAIN}
     - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
   build: .
@@ -13,6 +14,7 @@ dockup:
     - db
   volumes:
     - './workdir:/dockup/workdir'
+    - './htpasswd:/dockup/htpasswd'
     - '/usr/bin/docker:/usr/bin/docker'
     - '/usr/local/bin/docker-compose:/usr/local/bin/docker-compose'
     - '/var/run/docker.sock:/var/run/docker.sock'

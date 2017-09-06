@@ -8,3 +8,5 @@ erl_crash.dump
 /.vagrant
 /dockup_config
 /workdir/whitelisted_urls
+/workdir/clones
+/.env
