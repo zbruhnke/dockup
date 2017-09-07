@@ -9,11 +9,11 @@
     "copycat-brunch": "~1.1.0",
     "css-brunch": "~1.7.0",
     "javascript-brunch": "~2.0.0",
-    "jquery": "~3.1.0",
-    "phoenix": "file:../../deps/phoenix",
-    "phoenix_html": "file:../../deps/phoenix_html",
-    "react": "~15.3.0",
-    "react-dom": "~15.3.0",
+    "jquery": "3.1.1",
+    "phoenix": "file:///Users/emil/OpenSource/dockup/deps/phoenix",
+    "phoenix_html": "file:///Users/emil/OpenSource/dockup/deps/phoenix_html",
+    "react": "15.3.2",
+    "react-dom": "15.3.2",
     "sass-brunch": "~2.6.3",
     "uglify-js-brunch": "~2.0.1"
   }

@@ -18,6 +18,7 @@ defmodule DockupUi.Router do
 
     get "/", DeploymentController, :new
     resources "/deployments", DeploymentController, only: [:new, :index, :show]
+    resources "/whitelisted_urls", WhitelistedUrlController
   end
 
   scope "/api", as: :api, alias: DockupUi.API do
@@ -25,8 +26,5 @@ defmodule DockupUi.Router do
 
     resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete]
     resources "/github_webhook", GithubWebhookController, only: [:create]
-
-    #TODO: This can be removed
-    post "/deployments/:id/stop", DeploymentController, :stop
   end
 end

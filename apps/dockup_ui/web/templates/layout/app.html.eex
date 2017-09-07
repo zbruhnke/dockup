@@ -23,6 +23,9 @@
         <div className="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li>
+              <%= link("Whitelisted URLs", to: whitelisted_url_path(@conn, :index)) %>
+            </li>
+            <li>
               <%= link("Recent Deployments", to: deployment_path(@conn, :index)) %>
             </li>
           </ul>

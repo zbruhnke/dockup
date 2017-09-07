@@ -1,0 +1,6 @@
+<h2>New whitelisted url</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: whitelisted_url_path(@conn, :create) %>
+
+<span><%= link "Back", to: whitelisted_url_path(@conn, :index) %></span>

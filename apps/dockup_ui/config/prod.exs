@@ -14,7 +14,7 @@ use Mix.Config
 config :dockup_ui, DockupUi.Endpoint,
   http: [port: {:system, "PORT"}],
   url: [host: (System.get_env("DOCKUP_DOMAIN") || "example.com"), port: (System.get_env("DOCKUP_PORT") || 80)],
-  cache_static_manifest: "priv/static/manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
 config :logger, level: :info

@@ -1,0 +1,13 @@
+<h2>Show whitelisted url</h2>
+
+<ul>
+
+  <li>
+    <strong>Git url:</strong>
+    <%= @whitelisted_url.git_url %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: whitelisted_url_path(@conn, :edit, @whitelisted_url) %></span>
+<span><%= link "Back", to: whitelisted_url_path(@conn, :index) %></span>
