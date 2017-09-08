@@ -3,10 +3,10 @@
 Dockup creates disposable staging environments for your services using docker-compose.
 
 You can automate staging deployments when you submit pull requests:
-![github-webhook](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/k7WU2wiVbLzQMu6/upload.png "Github Webhook")
+![github-webhook](https://user-images.githubusercontent.com/1707078/30229184-8715715c-94fe-11e7-8416-527e30128044.png)
 
 Or whenever you feel like, using Slack etc:
-![chatops](https://s3-ap-southeast-1.amazonaws.com/uploads-ap.hipchat.com/39906/538857/YFBfOlZATG5ESNx/upload_censored.jpg "Chatops")
+![chatops](https://user-images.githubusercontent.com/1707078/30229222-a5d8ed30-94fe-11e7-83de-fa5dda3af8d5.png)
 
 ## Features:
 
@@ -60,6 +60,13 @@ line. For example:
 https://github.com/code-mancers/repo1.git
 https://github.com/code-mancers/repo2.git
 ```
+
+### Github webhooks
+
+To enable Github webhooks, you need to generate personal access token (OAuth token)
+of a user who has access to the repos you are planning to deploy using dockup.
+Once you have it, set it in the environment variable `DOCKUP_GITHUB_OAUTH_TOKEN`
+before starting dockup.
 
 ## API
 
