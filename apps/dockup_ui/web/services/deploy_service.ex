@@ -4,8 +4,10 @@ defmodule DockupUi.DeployService do
     Repo
   }
 
+  @backend Application.fetch_env!(:dockup_ui, :backend_module)
+
   def run(deployment_params, callback_data, deps \\ []) do
-    deploy_job = deps[:deploy_job] || Dockup.DeployJob
+    deploy_job = deps[:deploy_job] || @backend
     callback = deps[:callback] || DockupUi.Callback
 
     with \
@@ -18,7 +20,7 @@ defmodule DockupUi.DeployService do
   end
 
   defp deploy_project(deploy_job, deployment, callback_data, callback) do
-    deploy_job.spawn_process(deployment, callback.lambda(deployment, callback_data))
+    deploy_job.deploy(deployment, callback.lambda(deployment, callback_data))
     :ok
   end
 end

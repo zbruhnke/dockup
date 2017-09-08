@@ -5,6 +5,9 @@
 # is restricted to this project.
 use Mix.Config
 
+config :dockup_ui,
+  backend_module: FakeDockup
+
 # Configures the endpoint
 config :dockup_ui, DockupUi.Endpoint,
   url: [host: "localhost"],

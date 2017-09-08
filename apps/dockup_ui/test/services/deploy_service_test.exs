@@ -4,7 +4,7 @@ defmodule DeployServiceTest do
   import DockupUi.Factory
 
   defmodule FakeDeployJob do
-    def spawn_process(_params, _callback) do
+    def deploy(_params, _callback) do
       send self(), :ran_deploy_job
       :ok
     end

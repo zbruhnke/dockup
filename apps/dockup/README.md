@@ -12,9 +12,3 @@ mix local.hex
 mix deps.get
 mix compile
 ```
-
-If you are running this on OSX, unless you have docker CLI available in the
-development environment, you need to enable dry run mode in order to start
-Dockup. Run:
-
-    DOCKUP_DRY_RUN=true iex -S mix

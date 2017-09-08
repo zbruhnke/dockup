@@ -52,7 +52,8 @@ class DeploymentStatus extends Component {
         alertClass = "success";
         break;
       case 'deployment_failed':
-        statusText = "Deployment failed";
+        let message = this.state.payload;
+        statusText = `Deployment failed: ${message}`;
         alertClass = "danger";
         break;
       default:
