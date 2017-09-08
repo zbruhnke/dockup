@@ -16,9 +16,9 @@ const Deployment = {
     ReactDOM.render(<DeploymentList/>, element);
   },
 
-  mountDeploymentForm: (elementId) => {
+  mountDeploymentForm: (elementId, whitelistedUrls) => {
     let element = document.getElementById(elementId);
-    ReactDOM.render(<DeploymentForm/>, element);
+    ReactDOM.render(<DeploymentForm urls={whitelistedUrls}/>, element);
   },
 
   mountDeploymentItem: (elementId, deploymentId, status, payload) => {

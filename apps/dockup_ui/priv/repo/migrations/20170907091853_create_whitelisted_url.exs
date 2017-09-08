@@ -7,5 +7,7 @@ defmodule DockupUi.Repo.Migrations.CreateWhitelistedUrl do
 
       timestamps()
     end
+
+    create index(:whitelisted_urls, [:git_url], unique: true)
   end
 end

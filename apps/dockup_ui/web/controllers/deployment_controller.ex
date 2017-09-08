@@ -1,10 +1,20 @@
 defmodule DockupUi.DeploymentController do
   use DockupUi.Web, :controller
 
-  alias DockupUi.Deployment
+  alias DockupUi.{
+    Deployment,
+    WhitelistedUrl
+  }
+
+  import Ecto.Query
 
   def new(conn, _params) do
-    render conn, "new.html"
+    query =
+      from w in WhitelistedUrl,
+      select: w.git_url
+
+    whitelisted_urls = Repo.all(query)
+    render conn, "new.html", whitelisted_urls_json: Poison.encode!(whitelisted_urls)
   end
 
   def index(conn, _params) do

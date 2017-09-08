@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import $ from 'jquery';
-import GithubUrlInput from './github_url_input';
 import GitUrlInput from './git_url_input';
 import FlashMessage from '../flash_message';
 import DeploymentStatus from './deployment_status';
@@ -11,9 +10,11 @@ class DeploymentForm extends Component {
     this.state = {
       deploymentId: null,
       gitUrl: "",
-      branch: "",
-      gitUrlType: "github" // Can be either "github" or "generic"
+      branch: ""
     }
+
+    this.handleUrlChange = this.handleUrlChange.bind(this);
+    this.urls = JSON.parse(this.props.urls);
   }
 
   handleDeployClick(e) {
@@ -48,28 +49,18 @@ class DeploymentForm extends Component {
     this.setState({branch: branch});
   }
 
-  handleUrlTypeChange(urlType) {
-    this.setState({gitUrl: ""});
-    this.setState({gitUrlType: urlType});
-  }
-
   validInputs() {
     return (this.state.gitUrl.length > 0 && this.state.branch.length > 0);
-  }
-
-  renderGitUrlInput() {
-    if(this.state.gitUrlType == "github") {
-      return <GithubUrlInput onUrlChange={this.handleUrlChange.bind(this)} onUrlTypeChange={this.handleUrlTypeChange.bind(this)}/>;
-    } else {
-      return <GitUrlInput onUrlChange={this.handleUrlChange.bind(this)} onUrlTypeChange={this.handleUrlTypeChange.bind(this)}/>;
-    }
   }
 
   render() {
     return (
       <div>
-        <form role="form">
-          {this.renderGitUrlInput()}
+        <form>
+          <div className="form-group">
+            <label>Git URL</label>
+            <GitUrlInput urls={this.urls} onUrlChange={this.handleUrlChange}/>
+          </div>
           <div className="form-group">
             <label htmlFor="branch">Branch</label>
             <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}}/>

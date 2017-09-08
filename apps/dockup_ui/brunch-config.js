@@ -63,7 +63,7 @@ exports.config = {
     },
     sass: {
       options: {
-        includePaths: ["node_modules/bootstrap-sass/assets/stylesheets"],
+        includePaths: ["node_modules/bootstrap-sass/assets/stylesheets", "node_modules/react-bootstrap-typeahead/css"],
         precision: 8
       }
     }
