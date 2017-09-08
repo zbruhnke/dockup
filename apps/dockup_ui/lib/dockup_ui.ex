@@ -15,28 +15,12 @@ defmodule DockupUi do
       Dockup.Htpasswd.write()
     end
 
-    phoenix_supervision_tree = [
+    children = [
       # Start the endpoint when the application starts
       supervisor(DockupUi.Endpoint, []),
       # Start the Ecto repository
       supervisor(DockupUi.Repo, [])
     ]
-
-    children =
-      if dockup_loaded?() && load_whitelist_store?() do
-        urls =
-          :dockup
-          |> Application.fetch_env!(:workdir)
-          |> Path.join("whitelisted_urls")
-          |> File.read!
-          |> String.split()
-
-        dockup_supervision_tree = worker(Dockup.WhitelistStore, [urls])
-        [dockup_supervision_tree | phoenix_supervision_tree]
-      else
-        Logger.error "Whitelist store not started."
-        phoenix_supervision_tree
-      end
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
@@ -53,12 +37,5 @@ defmodule DockupUi do
 
   defp dockup_loaded? do
     List.keymember?(Application.loaded_applications, :dockup, 0)
-  end
-
-  defp load_whitelist_store? do
-    :dockup
-    |> Application.fetch_env!(:workdir)
-    |> Path.join("whitelisted_urls")
-    |> File.exists?
   end
 end

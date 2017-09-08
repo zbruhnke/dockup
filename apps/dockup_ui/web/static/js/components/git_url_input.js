@@ -1,12 +1,28 @@
-import React from 'react';
+import React, {Component} from 'react';
+import {Typeahead} from 'react-bootstrap-typeahead';
 
-const GitUrlInput = (props) => {
-  return (
-    <div className="form-group">
-      <label htmlFor="git-url">Git Url</label>
-      <small className="github-swap-link"><a onClick={() => {props.onUrlTypeChange("github")}}>Using Github?</a></small>
-      <input className="form-control" id="git-url" onChange={(e) => {props.onUrlChange(e.target.value)}} className="form-control"/>
-    </div>
-  )
+class GitUrlInput extends Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange([url, ...rest]) {
+    if(url) {
+      this.props.onUrlChange(url);
+    }
+  }
+
+  render() {
+    return(
+      <div>
+        <Typeahead
+          onChange={this.handleChange}
+          options={this.props.urls}
+        />
+      </div>
+    );
+  }
 }
+
 export default GitUrlInput

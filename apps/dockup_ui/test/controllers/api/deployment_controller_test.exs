@@ -57,7 +57,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
   test "create renders errors on model when DeployService fails", %{conn: conn} do
     defmodule FakeFailingDeployService do
       def run(%{}, _callback_data) do
-        {:error, DockupUi.Deployment.create_changeset(%DockupUi.Deployment{}, %{}, nil)}
+        {:error, DockupUi.Deployment.create_changeset(%DockupUi.Deployment{}, %{})}
       end
     end
 
