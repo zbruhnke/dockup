@@ -33,6 +33,12 @@ defmodule DockupUi.API.GithubWebhookController do
         |> put_status(:created)
         |> render(DockupUi.API.DeploymentView, "show.json", deployment: deployment)
       {:error, changeset} ->
+        Logger.error "Github webhook error: #{inspect changeset.errors}"
+
+        Task.async(fn ->
+          Github.update_deployment_status("failure", nil, repo_full_name, deployment_id)
+        end)
+
         conn
         |> put_status(:unprocessable_entity)
         |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
