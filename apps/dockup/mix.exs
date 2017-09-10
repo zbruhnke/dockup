@@ -23,7 +23,8 @@ defmodule Dockup.Mixfile do
   defp deps do
     [
       {:poison, "~> 3.1.0"},
-      {:httpotion, "~> 3.0.3"}
+      {:httpotion, "~> 3.0.3"},
+      {:dockup_spec, in_umbrella: true}
     ]
   end
 end

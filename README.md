@@ -26,47 +26,15 @@ Or whenever you feel like, using Slack etc:
 
 ## Development
 
-Clone the repo and run:
-
-    mix deps.get
-    iex -S mix phoenix.server
-
-You can access Dockup UI at http://localhost:4000.
-
-### Development on OSX
-
     # Install latest elixir
     brew install elixir
 
     cd dockup
     ./scripts/setup
+    mix deps.get
+    iex -S mix phx.server
 
-
-Once compilation runs fine, you can start dockup.
-If you are running this on OSX, unless you have docker CLI available in the
-development environment, you need to enable dry run mode in order to start
-Dockup. Run:
-
-    # Use this instead of iex -S mix phoenix.server
-    DOCKUP_DRY_RUN=true iex -S mix phoenix.server
-
-
-### Using Vagrant
-
-It is recommended to use Vagrant for the following reasons:
-
-1. You can use real docker and do real deployments on OSX
-2. You can destroy containers and restart from a clean slate
-
-A `Vagrantfile` is checked in which will provision an ubuntu machine with
-everything ready for testing the app. Here's how you can set it up:
-
-```
-$ vagrant up
-$ vagrant ssh
-$ cd /vagrant
-$ ./scripts/setup
-```
+You can access Dockup UI at http://localhost:4000.
 
 ## Configuration and Environment variables
 

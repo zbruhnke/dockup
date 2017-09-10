@@ -45,7 +45,8 @@ defmodule DockupUi.Mixfile do
      {:httpotion, "~> 3.0.0"},
      {:poison, "~> 3.1.0"},
      {:quantum, "~> 2.0.2"},
-     {:dockup, in_umbrella: true}]
+     {:dockup, in_umbrella: true, only: [:prod]},
+     {:fake_dockup, in_umbrella: true, only: [:dev, :test]}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

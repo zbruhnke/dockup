@@ -7,10 +7,12 @@ defmodule DockupUi.DeleteDeploymentService do
     Callback.Web
   }
 
+  @backend Application.fetch_env!(:dockup_ui, :backend_module)
+
   def run(deployment_id, deps \\ []) do
     Logger.info "Deleting deployment with ID: #{deployment_id}"
 
-    delete_deployment_job = deps[:delete_deployment_job] || Dockup.DeleteDeploymentJob
+    delete_deployment_job = deps[:delete_deployment_job] || @backend
     callback = deps[:callback] || DockupUi.Callback
 
     with \
@@ -26,7 +28,7 @@ defmodule DockupUi.DeleteDeploymentService do
   end
 
   defp delete_deployment(delete_deployment_job, deployment, callback_data, callback) do
-    delete_deployment_job.spawn_process(deployment.id, callback.lambda(deployment, callback_data))
+    delete_deployment_job.destroy(deployment.id, callback.lambda(deployment, callback_data))
     :ok
   end
 end
