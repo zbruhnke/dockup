@@ -31,32 +31,38 @@ defmodule DockupUi.Callback.Github do
       required_contexts: []
     }
 
-    HTTPotion.post url, [
-      body: request_body,
-      headers: [
-        "Content-Type": "application/json",
-        "User-Agent": "Dockup"
-      ]
-    ]
+    post_to_github(url, request_body)
   end
 
   def update_deployment_status(state, id, repo_full_name, deployment_id) do
     Logger.info "Updating state of deployment #{id} to #{state} in github"
     url = "https://#{github_oauth_token()}@api.github.com/repos/#{repo_full_name}/deployments/#{deployment_id}/statuses"
-    deployment_url = DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, id)
+
+    deployment_url =
+      if is_nil(id) do
+        nil
+      else
+        DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, id)
+      end
 
     request_body = Poison.encode! %{
       state: state,
       target_url: deployment_url
     }
 
-    HTTPotion.post url, [
-      body: request_body,
-      headers: [
-        "Content-Type": "application/json",
-        "User-Agent": "Dockup"
+    post_to_github(url, request_body)
+  end
+
+  defp post_to_github(url, request_body) do
+    Task.async fn ->
+      HTTPotion.post url, [
+        body: request_body,
+        headers: [
+          "Content-Type": "application/json",
+          "User-Agent": "Dockup"
+        ]
       ]
-    ]
+    end
   end
 
   defp github_oauth_token() do
