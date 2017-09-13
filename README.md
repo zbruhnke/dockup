@@ -38,35 +38,51 @@ You can access Dockup UI at http://localhost:4000.
 
 ## Configuration and Environment variables
 
-Refer `apps/dockup/lib/dockup/config.ex` to see the list of environment variables
-supported.
+All required environment variables are present in `.env.example`. Modify them
+as needed when copying the file to `.env`. For additional configuration options,
+refer `apps/dockup/lib/dockup/config.ex`.
 
 ### Basic Authentication
 
 Set `DOCKUP_HTPASSWD` environment variable with the contents of the htpasswd file
 generated using the desired username and password for basic auth. You can use
 [this tool](http://www.htaccesstools.com/htpasswd-generator/) to generate this
-string.
+string. The same username/password combo works for both dockup app and the log
+tailing page.
 
 
 ### Whitelisting Git URLs
 
 Dockup will not be able to deploy git repositories unless the git repo URLs
-are whitelisted. To do this, create a file named "whitelisted_urls" inside
-the "workdir" directory. Insert the git repo urls in this file, one URL on each
-line. For example:
+are whitelisted. To do this, use the "Whitelisted URLs" navbar link to create
+whitelisted git URLs.
+
+
+### Configuring github bot
+
+To enable Github webhooks, you need to generate personal access token (OAuth token)
+of a user(preferably a bot user) who has access to the repos you are planning to deploy using dockup.
+Once you have it, set it in the environment variable `DOCKUP_GITHUB_OAUTH_TOKEN`
+before starting dockup. This token will need "repo" scope which is configurable from
+[the settings page](https://github.com/settings/tokens).
+
+Also make sure the private key of the user is present in the host that
+runs dockup and you also need to have the following line inside `~/.netrc` file of the host:
 
 ```
-https://github.com/code-mancers/repo1.git
-https://github.com/code-mancers/repo2.git
+machine github.com login <personal access token of github user> password
+```
+
+You will need to modify the following lines in docker-compose.yml if the locations
+are not `/root/.ssh` and `/root/.netrc` on the host:
+
+```yaml
+    - '/custom/.ssh:/root/.ssh'
+    - '/custom/.netrc:/root/.netrc'
 ```
 
 ### Github webhooks
 
-To enable Github webhooks, you need to generate personal access token (OAuth token)
-of a user who has access to the repos you are planning to deploy using dockup.
-Once you have it, set it in the environment variable `DOCKUP_GITHUB_OAUTH_TOKEN`
-before starting dockup.
 
 ## API
 
