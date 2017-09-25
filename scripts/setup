@@ -2,5 +2,5 @@
 
 mix do local.hex, deps.get, compile
 cd apps/dockup_ui && npm install
-mix do ecto.drop, ecto.create, mix ecto.migrate
+mix ecto.reset
 cd ../..
