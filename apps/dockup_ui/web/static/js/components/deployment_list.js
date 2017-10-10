@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import TimeAgo from 'react-timeago';
 
 class DeploymentList extends Component {
   constructor(props) {
@@ -92,7 +93,7 @@ class DeploymentList extends Component {
           <caption>Deployments</caption>
           <thead>
             <tr>
-              <th>#</th>
+              <th>Updated at</th>
               <th>Git URL</th>
               <th>Branch</th>
               <th>Status</th>
@@ -104,7 +105,7 @@ class DeploymentList extends Component {
             {this.state.deployments.map((deployment) => {
               return (
                 <tr key={deployment.id}>
-                  <td>{deployment.id}</td>
+                  <td><TimeAgo date={deployment.updated_at} title={new Date(deployment.updated_at)}/></td>
                   <td>{deployment.git_url}</td>
                   <td>{deployment.branch}</td>
                   <td>{deployment.status}</td>
