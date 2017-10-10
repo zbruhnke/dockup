@@ -9,6 +9,7 @@ defmodule DockupUi.Repo.Migrations.CreateDeployment do
       add :status, :string
       add :log_url, :string
       add :urls, {:array, :string}
+      add :deleted_at, :utc_datetime
 
       timestamps()
     end

@@ -45,6 +45,7 @@ defmodule DockupUi.Mixfile do
      {:httpotion, "~> 3.0.0"},
      {:poison, "~> 3.1.0"},
      {:quantum, "~> 2.0.2"},
+     {:flow, "~> 0.12.0"},
      {:dockup, in_umbrella: true, only: [:prod]},
      {:fake_dockup, in_umbrella: true, only: [:dev, :test]}]
   end

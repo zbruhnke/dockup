@@ -14,13 +14,19 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
   }
 
   def run(service \\ DeleteDeploymentService, retention_days \\ nil) do
-    retention_days = retention_days || Application.fetch_env!(:dockup, :deployment_retention_days)
+    retention_days = retention_days || get_retention_days()
     query = from d in Deployment,
       where: d.inserted_at < ago(^retention_days, "day"),
       select: d.id
 
     query
     |> Repo.all
-    |> Enum.each(&service.run/1)
+    |> Flow.from_enumerable()
+    |> Flow.map(&service.run/1)
+    |> Flow.run()
+  end
+
+  defp get_retention_days() do
+    System.get_env("DOCKUP_RETENTION_DAYS") || Application.fetch_env!(:dockup_ui, :retention_days)
   end
 end
