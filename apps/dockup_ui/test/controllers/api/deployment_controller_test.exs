@@ -12,6 +12,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
     assert json_response(conn, 200)["data"] == [
       %{
         "id" => deployment.id,
+        "updated_at" => DateTime.to_iso8601(deployment.updated_at),
         "branch" => deployment.branch,
         "git_url" => deployment.git_url,
         "status" => deployment.status,
@@ -26,6 +27,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
     conn = get conn, api_deployment_path(conn, :show, deployment)
     assert json_response(conn, 200)["data"] == %{
       "id" => deployment.id,
+      "updated_at" => DateTime.to_iso8601(deployment.updated_at),
       "git_url" => deployment.git_url,
       "branch" => deployment.branch,
       "status" => deployment.status,
