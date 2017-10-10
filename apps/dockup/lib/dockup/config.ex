@@ -14,6 +14,7 @@ defmodule Dockup.Config do
       {"DOCKUP_DEPLOYMENT_RETENTION_DAYS", :deployment_retention_days, :integer},
       {"DOCKUP_HTPASSWD_DIR", :htpasswd_dir, :directory},
       {"DOCKUP_HTPASSWD", :htpasswd, :string},
+      {"DOCKUP_GITHUB_OAUTH_TOKEN", :github_oauth_token, :string},
     ]
   end
 

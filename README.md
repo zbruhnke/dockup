@@ -21,7 +21,7 @@ Or whenever you feel like, using Slack etc:
 ## Installation
 
 1. Clone the repository
-2. Inside the project directory, copy `.env.example` to `.env` and modify environment variables as needed
+2. Inside the project directory, copy `.env.example` to `.env` and replace dummy values with actual ones
 3. Run `docker-compose up`
 
 ## Development
@@ -65,24 +65,6 @@ of a user(preferably a bot user) who has access to the repos you are planning to
 Once you have it, set it in the environment variable `DOCKUP_GITHUB_OAUTH_TOKEN`
 before starting dockup. This token will need "repo" scope which is configurable from
 [the settings page](https://github.com/settings/tokens).
-
-Also make sure the private key of the user is present in the host that
-runs dockup and you also need to have the following line inside `~/.netrc` file of the host:
-
-```
-machine github.com login <personal access token of github user> password
-```
-
-You will need to modify the following lines in docker-compose.yml if the locations
-are not `/root/.ssh` and `/root/.netrc` on the host:
-
-```yaml
-    - '/custom/.ssh:/root/.ssh'
-    - '/custom/.netrc:/root/.netrc'
-```
-
-### Github webhooks
-
 
 ## API
 
