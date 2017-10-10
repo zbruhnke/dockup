@@ -5,6 +5,7 @@ defmodule Dockup do
   def initialize do
     Dockup.Config.set_configs_from_env()
     Dockup.Htpasswd.write()
+    Dockup.Netrc.write()
   end
 
   @impl DockupSpec
