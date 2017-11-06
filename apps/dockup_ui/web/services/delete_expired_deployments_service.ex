@@ -7,6 +7,8 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
 
   import Ecto.Query, only: [from: 2]
 
+  require Logger
+
   alias DockupUi.{
     DeleteDeploymentService,
     Deployment,
@@ -14,6 +16,8 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
   }
 
   def run(service \\ DeleteDeploymentService, retention_days \\ nil) do
+    Logger.info "Running DeleteExpiredDeploymentsService"
+
     retention_days = retention_days || get_retention_days()
     query = from d in Deployment,
       where: d.inserted_at < ago(^retention_days, "day"),
