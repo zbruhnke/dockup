@@ -17,7 +17,7 @@ defmodule DockupUi.WhitelistedUrlController do
     changeset = WhitelistedUrl.changeset(%WhitelistedUrl{}, whitelisted_url_params)
 
     case Repo.insert(changeset) do
-      {:ok, whitelisted_url} ->
+      {:ok, _whitelisted_url} ->
         conn
         |> put_flash(:info, "Whitelisted url created successfully.")
         |> redirect(to: whitelisted_url_path(conn, :new))
