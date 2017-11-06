@@ -18,6 +18,7 @@ ENV PORT 4000
 RUN mix local.hex --force
 RUN mix local.rebar --force
 RUN mix deps.get --force --only prod
+RUN mix compile
 
 # Precompile DockupUi assets
 WORKDIR /dockup/apps/dockup_ui
@@ -25,8 +26,9 @@ RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash
 RUN apt-get update && apt-get install -y nodejs build-essential
 RUN npm install
 RUN ./node_modules/brunch/bin/brunch build --production
+RUN mix phoenix.digest
 
 WORKDIR /dockup
 EXPOSE 4000
-CMD ["./scripts/run"]
+CMD ./scripts/run
 
