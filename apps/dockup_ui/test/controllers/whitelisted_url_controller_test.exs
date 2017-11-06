@@ -17,8 +17,7 @@ defmodule DockupUi.WhitelistedUrlControllerTest do
 
   test "creates resource and redirects when data is valid", %{conn: conn} do
     conn = post conn, whitelisted_url_path(conn, :create), whitelisted_url: @valid_attrs
-    whitelisted_url = Repo.get_by!(WhitelistedUrl, @valid_attrs)
-    assert redirected_to(conn) == whitelisted_url_path(conn, :show, whitelisted_url.id)
+    assert redirected_to(conn) == whitelisted_url_path(conn, :new)
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
