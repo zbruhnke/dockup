@@ -14,4 +14,3 @@ defmodule Dockup.HtpasswdTest do
     assert File.read!(logio_host), "foo:bar"
   end
 end
-

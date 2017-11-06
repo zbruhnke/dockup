@@ -19,8 +19,6 @@ dockup:
     - '/usr/bin/docker:/usr/bin/docker'
     - '/usr/local/bin/docker-compose:/usr/local/bin/docker-compose'
     - '/var/run/docker.sock:/var/run/docker.sock'
-    - '/root/.ssh:/root/.ssh'
-    - '/root/.netrc:/root/.netrc'
 
 db:
   environment:
