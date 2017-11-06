@@ -20,7 +20,7 @@ defmodule DockupUi.WhitelistedUrlController do
       {:ok, whitelisted_url} ->
         conn
         |> put_flash(:info, "Whitelisted url created successfully.")
-        |> redirect(to: whitelisted_url_path(conn, :show, whitelisted_url))
+        |> redirect(to: whitelisted_url_path(conn, :new))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end

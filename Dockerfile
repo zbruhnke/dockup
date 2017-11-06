@@ -26,9 +26,6 @@ RUN apt-get update && apt-get install -y nodejs build-essential
 RUN npm install
 RUN ./node_modules/brunch/bin/brunch build --production
 
-# Install pg client
-RUN apt-get install -y postgresql-client-9.4
-
 WORKDIR /dockup
 EXPOSE 4000
 CMD ["./scripts/run"]
