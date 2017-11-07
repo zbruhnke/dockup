@@ -21,6 +21,7 @@ defmodule DockupUi.Deployment do
     field :status, :string
     field :log_url, :string
     field :urls, {:array, :string}
+    field :deleted_at, :utc_datetime
 
     timestamps type: :utc_datetime
   end
@@ -48,6 +49,13 @@ defmodule DockupUi.Deployment do
     |> cast(params, required_fields ++ optional_fields)
     |> validate_required(required_fields)
     |> validate_whitelisted_git_url()
+  end
+
+  @doc """
+  This changeset is used when deleting a deployment
+  """
+  def delete_changeset(model) do
+    cast(model, %{deleted_at: DateTime.utc_now}, [:deleted_at])
   end
 
   # Check if git URL is whitelisted

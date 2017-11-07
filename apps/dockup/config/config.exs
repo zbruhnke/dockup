@@ -7,7 +7,6 @@ config :dockup,
   workdir: "workdir",
   htpasswd_dir: "htpasswd",
   command_module: Dockup.ShellCommand,
-  deployment_retention_days: 1,
   domain: "127.0.0.1.xip.io"
 #
 # And access this configuration in your application as:
