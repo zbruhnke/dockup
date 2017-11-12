@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import TimeAgo from 'react-timeago';
+import DeploymentStatus from './deployment_status';
+import {getStatusColorClass} from '../status_colors';
 
 class DeploymentCard extends Component {
   constructor(props) {
@@ -41,9 +43,10 @@ class DeploymentCard extends Component {
   }
 
   render() {
+    let borderClass = `border-${getStatusColorClass(this.props.deployment.status)}`;
     return(
       <div className="row mt-5">
-        <div className="card border-success text-primary dockup-card">
+        <div className={`card ${borderClass} text-primary dockup-card`}>
           <div className="card-body">
             <div className="row">
               <div className="col-8">
@@ -66,15 +69,7 @@ class DeploymentCard extends Component {
                 {this.renderLogButton()}
               </div>
 
-              <div className="col text-right text-success dockup-card-status">
-                <div>
-                  {this.props.deployment.status}
-                </div>
-
-                <div>
-                  <i className="fa fa-check-circle dockup-card-icon" aria-hidden="true"></i>
-                </div>
-              </div>
+              <DeploymentStatus status={this.props.deployment.status}/>
             </div>
           </div>
         </div>
