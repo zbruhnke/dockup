@@ -43,22 +43,24 @@ class DeploymentCard extends Component {
   }
 
   render() {
-    let borderClass = `border-${getStatusColorClass(this.props.deployment.status)}`;
+    let statusClass = getStatusColorClass(this.props.deployment.status);
+    let borderClass = `border-${statusClass}`;
+    let textClass = `text-${statusClass}`;
     return(
       <div className="row mt-5">
-        <div className={`card ${borderClass} text-primary dockup-card`}>
+        <div className={`card ${borderClass} ${textClass} dockup-card`}>
           <div className="card-body">
             <div className="row">
               <div className="col-8">
                 <h4 className="card-title display-4 dockup-card-branch">{this.props.deployment.branch}</h4>
               </div>
-              <div className="col text-muted text-right dockup-card-timeago">
+              <div className="col text-right dockup-card-timeago">
                 <TimeAgo date={this.props.deployment.inserted_at} title={new Date(this.props.deployment.inserted_at)}/>
               </div>
 
             </div>
 
-            <h6 className="card-subtitle mb-2 text-secondary">{this.getGithubRepo()}</h6>
+            <h6 className="card-subtitle mb-2">{this.getGithubRepo()}</h6>
 
 
           </div>

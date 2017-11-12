@@ -55,7 +55,7 @@ defmodule DockupUi.Deployment do
   This changeset is used when deleting a deployment
   """
   def delete_changeset(model) do
-    cast(model, %{deleted_at: DateTime.utc_now}, [:deleted_at])
+    cast(model, %{deleted_at: DateTime.utc_now, log_url: nil, urls: nil}, [:deleted_at, :log_url, :urls])
   end
 
   # Check if git URL is whitelisted
