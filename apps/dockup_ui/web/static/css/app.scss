@@ -1,5 +1,42 @@
+@import "bootstrap";
+@import "font-awesome";
+
 .container {
   max-width: 800px;
 }
 
+.dockup-body {
+  padding-top: 30px;
+}
+
 .alert:empty { display: none; }
+
+.dockup-card {
+width: 100%
+}
+
+.dockup-card-timeago {
+  font-size: 1rem;
+  min-width: 100px;
+}
+
+.dockup-card-footer {
+  background-color: transparent;
+  border: none;
+}
+
+.dockup-card-icon {
+  font-size: 4rem !important;
+  margin-left: 10px;
+}
+
+.dockup-card-status {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.dockup-card-branch {
+  font-size: 1.5rem;
+}

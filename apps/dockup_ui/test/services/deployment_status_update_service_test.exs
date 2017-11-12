@@ -35,15 +35,15 @@ defmodule DeploymentStatusUpdateServiceTest do
     assert_received :status_updated_on_channel
   end
 
-  test "run persists log_url when starting" do
+  test "run persists log_url when checking_urls" do
     deployment = insert(:deployment)
     payload = "log_url"
 
-    DockupUi.DeploymentStatusUpdateService.run(:starting, deployment.id, payload, FakeChannel)
+    DockupUi.DeploymentStatusUpdateService.run(:checking_urls, deployment.id, payload, FakeChannel)
 
     updated_deployment = DockupUi.Repo.get(DockupUi.Deployment, deployment.id)
 
-    assert updated_deployment.status == "starting"
+    assert updated_deployment.status == "checking_urls"
     assert updated_deployment.log_url == payload
     assert_received :status_updated_on_channel
   end

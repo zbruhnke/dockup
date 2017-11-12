@@ -24,11 +24,11 @@ defmodule Dockup.DeployJob do
     callback.(:cloning_repo, nil)
     project.clone_repository(project_id, repository, branch)
 
-    callback.(:starting, log_url(project_id))
+    callback.(:starting, nil)
     urls = docker_compose_config.rewrite_variables(project_id)
     container.start_containers(project_id)
 
-    callback.(:checking_urls, nil)
+    callback.(:checking_urls, log_url(project_id))
     project.wait_till_up(urls)
 
     callback.(:started, urls)

@@ -12,7 +12,7 @@ defmodule DockupUi.Deployment do
   status - Refer to DockupUi.Callback for various states for this field.
   """
 
-  @derive {Poison.Encoder, only: [:id, :git_url, :branch, :callback_url, :status, :updated_at]}
+  @derive {Poison.Encoder, only: [:id, :git_url, :branch, :callback_url, :status, :updated_at, :inserted_at, :log_url, :urls]}
 
   schema "deployments" do
     field :git_url, :string
