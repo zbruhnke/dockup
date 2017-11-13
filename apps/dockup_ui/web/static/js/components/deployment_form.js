@@ -14,6 +14,7 @@ class DeploymentForm extends Component {
     }
 
     this.handleUrlChange = this.handleUrlChange.bind(this);
+    this.handleDeployClick = this.handleDeployClick.bind(this);
     this.urls = JSON.parse(this.props.urls);
 
     this.connectToDeploymentsChannel();
@@ -89,7 +90,7 @@ class DeploymentForm extends Component {
             <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}}/>
           </div>
 
-          <button type="submit" onClick={this.handleDeployClick.bind(this)} disabled={!this.validInputs()} className="btn btn-default">Deploy</button>
+          <button type="submit" onClick={this.handleDeployClick} disabled={!this.validInputs()} className="btn btn-default">Deploy</button>
         </form>
 
         {this.renderDeploymentCard()}

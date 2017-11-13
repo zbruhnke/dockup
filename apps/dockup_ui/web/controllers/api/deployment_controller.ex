@@ -5,6 +5,7 @@ defmodule DockupUi.API.DeploymentController do
   alias DockupUi.{
     Deployment,
     DeployService,
+    DeleteDeploymentService,
     Repo,
     Callback.Web
   }
@@ -38,5 +39,23 @@ defmodule DockupUi.API.DeploymentController do
   def show(conn, %{"id" => id}) do
     deployment = Repo.get!(Deployment, id)
     render(conn, "show.json", deployment: deployment)
+  end
+
+  def delete(conn, destroy_params) do
+    delete_deployment_service = conn.assigns[:delete_deployment_service] || DeleteDeploymentService
+    callback_data = %Web{callback_url: destroy_params["callback_url"]}
+    deployment_id = destroy_params["id"]
+
+    case delete_deployment_service.run(deployment_id, callback_data) do
+      {:ok, deployment} ->
+        conn
+        |> put_status(:ok)
+        |> put_resp_header("location", api_deployment_path(conn, :show, deployment))
+        |> render("show.json", deployment: deployment)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
+    end
   end
 end

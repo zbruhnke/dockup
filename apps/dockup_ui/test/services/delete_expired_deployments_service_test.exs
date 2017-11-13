@@ -6,7 +6,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsServiceTest do
   alias DockupUi.DeleteExpiredDeploymentsService
 
   defmodule FakeDeleteDeploymentService do
-    def run(1) do
+    def run(1, _callback_data) do
       IO.write "Deployment deleted"
     end
   end
