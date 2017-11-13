@@ -25,7 +25,7 @@ class DeploymentCard extends Component {
 
     let [url] = this.props.deployment.urls;
     if(url) {
-      let absoluteUrl = `//${url}`;
+      let absoluteUrl = `http://${url}`;
       return(
         <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Open</a>
       )
