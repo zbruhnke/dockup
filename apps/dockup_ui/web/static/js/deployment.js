@@ -2,7 +2,6 @@ import React from "react"
 import ReactDOM from "react-dom"
 import DeploymentList from "./components/deployment_list"
 import DeploymentForm from "./components/deployment_form"
-import DeploymentStatus from "./components/deployment_status"
 
 let deployment_form_container = document.getElementById('deployment_form_container');
 
@@ -19,18 +18,6 @@ const Deployment = {
   mountDeploymentForm: (elementId, whitelistedUrls) => {
     let element = document.getElementById(elementId);
     ReactDOM.render(<DeploymentForm urls={whitelistedUrls}/>, element);
-  },
-
-  mountDeploymentItem: (elementId, deploymentId, status, payload) => {
-    let element = document.getElementById(elementId);
-    ReactDOM.render(
-      <DeploymentStatus
-        deploymentId={deploymentId}
-        status={status}
-        payload={payload}
-      />,
-      element
-    );
   }
 }
 

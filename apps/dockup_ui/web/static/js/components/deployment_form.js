@@ -2,26 +2,43 @@ import React, {Component} from 'react';
 import $ from 'jquery';
 import GitUrlInput from './git_url_input';
 import FlashMessage from '../flash_message';
-import DeploymentStatus from './deployment_status';
+import DeploymentCard from './deployment_card';
 
 class DeploymentForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deploymentId: null,
+      deployment: null,
       gitUrl: "",
       branch: ""
     }
 
     this.handleUrlChange = this.handleUrlChange.bind(this);
     this.urls = JSON.parse(this.props.urls);
+
+    this.connectToDeploymentsChannel();
+  }
+
+  connectToDeploymentsChannel() {
+    let channel = DockupUiSocket.getDeploymentsChannel();
+
+    channel.on("status_updated", ({deployment, _payload}) => {
+      this.updateDeployment(deployment);
+    })
+  }
+
+  updateDeployment(newDeployment) {
+    if(this.state.deployment.id == newDeployment.id) {
+      this.setState({deployment: Object.assign({}, newDeployment)});
+    }
   }
 
   handleDeployClick(e) {
+    this.setState({deployment: null});
     e.preventDefault();
     let xhr = this.createRequest();
     xhr.done((response) => {
-      this.setState({deploymentId: response.data.id})
+      this.setState({deployment: Object.assign({}, response.data)});
     });
     xhr.fail(() => {
       FlashMessage.showMessage("danger", "Deployment cannot be queued.");
@@ -53,6 +70,12 @@ class DeploymentForm extends Component {
     return (this.state.gitUrl.length > 0 && this.state.branch.length > 0);
   }
 
+  renderDeploymentCard() {
+    if(this.state.deployment) {
+      return(<DeploymentCard deployment={this.state.deployment}/>);
+    }
+  }
+
   render() {
     return (
       <div>
@@ -69,7 +92,7 @@ class DeploymentForm extends Component {
           <button type="submit" onClick={this.handleDeployClick.bind(this)} disabled={!this.validInputs()} className="btn btn-default">Deploy</button>
         </form>
 
-        <DeploymentStatus deploymentId={this.state.deploymentId}/>
+        {this.renderDeploymentCard()}
       </div>
     )
   }

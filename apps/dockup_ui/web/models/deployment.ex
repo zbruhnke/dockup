@@ -12,7 +12,7 @@ defmodule DockupUi.Deployment do
   status - Refer to DockupUi.Callback for various states for this field.
   """
 
-  @derive {Poison.Encoder, only: [:id, :git_url, :branch, :callback_url, :status, :updated_at]}
+  @derive {Poison.Encoder, only: [:id, :git_url, :branch, :callback_url, :status, :updated_at, :inserted_at, :log_url, :urls]}
 
   schema "deployments" do
     field :git_url, :string
@@ -55,7 +55,7 @@ defmodule DockupUi.Deployment do
   This changeset is used when deleting a deployment
   """
   def delete_changeset(model) do
-    cast(model, %{deleted_at: DateTime.utc_now}, [:deleted_at])
+    cast(model, %{deleted_at: DateTime.utc_now, log_url: nil, urls: nil}, [:deleted_at, :log_url, :urls])
   end
 
   # Check if git URL is whitelisted

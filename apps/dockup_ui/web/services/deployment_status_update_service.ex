@@ -33,7 +33,7 @@ defmodule DockupUi.DeploymentStatusUpdateService do
     end
   end
 
-  defp changeset_map(:starting, log_url), do: %{status: "starting", log_url: log_url}
+  defp changeset_map(:checking_urls, log_url), do: %{status: "checking_urls", log_url: log_url}
   defp changeset_map(:started, urls), do: %{status: "started", urls: urls}
   defp changeset_map(status, _payload), do: %{status: Atom.to_string(status)}
 end

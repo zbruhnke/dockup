@@ -17,6 +17,7 @@ defmodule DockupUi.API.DeploymentView do
       status: deployment.status,
       log_url: deployment.log_url,
       urls: deployment.urls,
+      inserted_at: deployment.inserted_at,
       updated_at: deployment.updated_at
     }
   end

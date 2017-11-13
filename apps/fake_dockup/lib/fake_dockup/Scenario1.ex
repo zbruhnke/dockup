@@ -12,10 +12,10 @@ defmodule FakeDockup.Scenario1 do
     callback.(:cloning_repo, nil)
     Process.sleep(2000)
 
-    callback.(:starting, "logio.example.com/#?projectName=project_id")
+    callback.(:starting, nil)
     Process.sleep(2000)
 
-    callback.(:checking_urls, nil)
+    callback.(:checking_urls, "logio.example.com/#?projectName=project_id")
     Process.sleep(2000)
 
     callback.(:started, ["codemancers.com", "crypt.codemancers.com"])

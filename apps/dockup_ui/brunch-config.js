@@ -58,12 +58,11 @@ exports.config = {
       ignore: [/web\/static\/vendor/]
     },
     copycat: {
-      // Copy bootstrap fonts to priv/static/fonts
-      "fonts": ["node_modules/bootstrap-sass/assets/fonts/bootstrap"]
+      "fonts": ["node_modules/font-awesome/fonts"]
     },
     sass: {
       options: {
-        includePaths: ["node_modules/bootstrap-sass/assets/stylesheets", "node_modules/react-bootstrap-typeahead/css"],
+        includePaths: ["node_modules/bootstrap/scss", "node_modules/react-bootstrap-typeahead/css", "node_modules/font-awesome/scss"],
         precision: 8
       }
     }
@@ -78,8 +77,7 @@ exports.config = {
   npm: {
     globals: {
       $: 'jquery',
-      jQuery: 'jquery',
-      bootstrap: 'bootstrap-sass'
+      jQuery: 'jquery'
     }
   }
 };
