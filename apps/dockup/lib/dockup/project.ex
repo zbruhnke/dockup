@@ -5,11 +5,12 @@ defmodule Dockup.Project do
   @subdomain_character_range ?a..?z
 
   def clone_repository(project_id, repository, branch, command \\ Dockup.Command) do
+    workdir = Application.fetch_env!(:dockup, :workdir)
     project_dir = project_dir(project_id)
     Logger.info "Cloning #{repository} : #{branch} into #{project_dir}"
     File.rm_rf(project_dir)
     File.mkdir_p!(project_dir)
-    case command.run("git", ["clone", "--branch=#{branch}", "--depth=1", repository, project_dir]) do
+    case command.run("git", ["clone", "--branch=#{branch}", "--depth=1", repository, project_dir], workdir) do
       {_out, 0} -> :ok
       {out, _} -> raise out
     end
