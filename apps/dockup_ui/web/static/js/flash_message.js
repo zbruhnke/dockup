@@ -1,17 +1,11 @@
-import $ from 'jquery';
+import {alert} from 'notie';
 
 const FlashMessage = {
   // type is one of:
   // "success", "info", "warning", "danger"
   showMessage(type, message) {
-    let content = `
-    <div class="alert alert-${type}">
-      <p>
-        ${message}
-      </p>
-    </div>
-    `
-    $('.js-flash-message').html($(content));
+    type = type == 'danger' ? 'error' : type;
+    alert({type: type, text: message});
   }
 }
 
