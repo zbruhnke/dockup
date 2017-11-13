@@ -20,13 +20,13 @@ const DeploymentStatus = ({status}) => {
 
   switch (status) {
     case 'queued':
-      return renderStatus('Queued', textClass, "fa-hourglass-start");
+      return renderStatus('Queued', textClass, "fa-circle-o-notch fa-spin");
       break;
     case 'cloning_repo':
       return renderStatus('Cloning', textClass, "fa-download");
       break;
     case 'starting':
-      return renderStatus('Starting', textClass, "fa-cogs");
+      return renderStatus('Starting', textClass, "fa-cog fa-spin");
       break;
     case 'checking_urls':
       return renderStatus('Pinging', textClass, "fa-exchange");
@@ -36,6 +36,9 @@ const DeploymentStatus = ({status}) => {
       break;
     case 'deployment_deleted':
       return renderStatus('Deleted', textClass, "fa-trash");
+      break;
+    case 'deleting_deployment':
+      return renderStatus('Deleting', textClass, "fa-cog fa-spin");
       break;
     case 'deployment_failed':
       return renderStatus('Error', textClass, "fa-times-circle");

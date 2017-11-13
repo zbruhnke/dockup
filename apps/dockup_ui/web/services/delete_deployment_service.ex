@@ -3,13 +3,12 @@ defmodule DockupUi.DeleteDeploymentService do
 
   alias DockupUi.{
     Deployment,
-    Repo,
-    Callback.Web
+    Repo
   }
 
   @backend Application.fetch_env!(:dockup_ui, :backend_module)
 
-  def run(deployment_id, deps \\ []) do
+  def run(deployment_id, callback_data, deps \\ []) do
     Logger.info "Deleting deployment with ID: #{deployment_id}"
 
     delete_deployment_job = deps[:delete_deployment_job] || @backend
@@ -19,14 +18,10 @@ defmodule DockupUi.DeleteDeploymentService do
       deployment <- Repo.get!(Deployment, deployment_id),
       changeset <- Deployment.delete_changeset(deployment),
       {:ok, deployment} <- Repo.update(changeset),
-      :ok <- delete_deployment(delete_deployment_job, deployment, %Web{callback_url: deployment.callback_url}, callback)
+      :ok <- delete_deployment(delete_deployment_job, deployment, callback_data, callback)
     do
       {:ok, deployment}
     end
-  rescue
-    e ->
-      Logger.error "Cannot delete deployment_id: #{deployment_id}. Error: #{inspect e}"
-      {:error, deployment_id}
   end
 
   defp delete_deployment(delete_deployment_job, deployment, callback_data, callback) do

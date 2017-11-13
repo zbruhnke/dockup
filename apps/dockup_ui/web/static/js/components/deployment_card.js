@@ -2,10 +2,12 @@ import React, {Component} from 'react';
 import TimeAgo from 'react-timeago';
 import DeploymentStatus from './deployment_status';
 import {getStatusColorClass} from '../status_colors';
+import FlashMessage from '../flash_message';
 
 class DeploymentCard extends Component {
   constructor(props) {
     super(props);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   getGithubRepo() {
@@ -37,8 +39,35 @@ class DeploymentCard extends Component {
     if(url) {
       let absoluteUrl = `//${url}`;
       return(
-        <a href={absoluteUrl} className="btn btn-outline-primary" target="_blank">Logs</a>
+        <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Logs</a>
       )
+    }
+  }
+
+  handleDelete(e) {
+    e.preventDefault();
+    let xhr = this.deleteRequest();
+    xhr.done((response) => {
+      this.setState({deployment: Object.assign({}, response.data)});
+    });
+    xhr.fail(() => {
+      FlashMessage.showMessage("danger", "Deployment cannot be deleted.");
+    });
+  }
+
+  deleteRequest(id) {
+    return $.ajax({
+      url: `/api/deployments/${this.props.deployment.id}`,
+      type: 'DELETE',
+      contentType: 'application/json'
+    });
+  }
+
+  renderDeleteButton() {
+    if(this.props.deployment.status != "deployment_deleted" && this.props.deployment.status != "deleting_deployment") {
+      return(
+        <button type="button" onClick={this.handleDelete} className="btn btn-outline-danger">Delete</button>
+      );
     }
   }
 
@@ -69,6 +98,7 @@ class DeploymentCard extends Component {
               <div className="col-8">
                 {this.renderOpenButton()}
                 {this.renderLogButton()}
+                {this.renderDeleteButton()}
               </div>
 
               <DeploymentStatus status={this.props.deployment.status}/>
