@@ -1,6 +1,8 @@
 FROM elixir:1.5.1
 
 RUN apt-get update
+RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash
+RUN apt-get update && apt-get install -y nodejs build-essential
 
 # Install docker and docker-compose
 #RUN curl -sSL https://get.docker.com/ | sh
@@ -22,8 +24,6 @@ RUN mix compile
 
 # Precompile DockupUi assets
 WORKDIR /dockup/apps/dockup_ui
-RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash
-RUN apt-get update && apt-get install -y nodejs build-essential
 RUN npm install
 RUN ./node_modules/brunch/bin/brunch build --production
 RUN mix phoenix.digest

@@ -77,8 +77,7 @@ exports.config = {
   npm: {
     globals: {
       $: 'jquery',
-      jQuery: 'jquery',
-      bootstrap: 'bootstrap-sass'
+      jQuery: 'jquery'
     }
   }
 };
