@@ -14,7 +14,7 @@ defmodule Dockup.ProjectTest do
     project_dir = Dockup.Project.project_dir("foo")
 
     defmodule GitCloneCommand do
-      def run(cmd, args) do
+      def run(cmd, args, _dir) do
         send self(), {cmd, args}
         {"", 0}
       end
@@ -35,7 +35,7 @@ defmodule Dockup.ProjectTest do
     branch = "master"
 
     defmodule FailingGitCloneCommand do
-      def run(_cmd, _args) do
+      def run(_cmd, _args, _dir) do
         {"cannot clone this shitz", 1}
       end
     end
