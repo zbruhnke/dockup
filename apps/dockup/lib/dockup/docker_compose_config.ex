@@ -7,7 +7,7 @@ defmodule Dockup.DockerComposeConfig do
 
   def rewrite_variables(project_id, project \\ Project) do
     Logger.info "Rewriting variables in docker-compose.yml of project #{project_id}"
-    config_file = config_file(project_id)
+    config_file = compose_file(project_id)
 
     config_file
     |> File.stream!()
@@ -15,8 +15,12 @@ defmodule Dockup.DockerComposeConfig do
     |> write_file(config_file)
   end
 
-  def config_file(project_id) do
-    Path.join(Dockup.Project.project_dir(project_id), "docker-compose.yml")
+  def compose_file(project_id) do
+    Path.join(Project.project_dir(project_id), compose_file_name(project_id))
+  end
+
+  def compose_file_name(project_id) do
+    Project.config(project_id)["docker_compose_file"] || "docker-compose.yml"
   end
 
   defp rewrite_virtual_host(str, project) do

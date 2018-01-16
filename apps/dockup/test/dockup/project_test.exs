@@ -71,4 +71,17 @@ defmodule Dockup.ProjectTest do
       Dockup.Project.wait_till_up([])
     end
   end
+
+  test "config returns map from json config" do
+    File.mkdir_p! Dockup.Project.project_dir("foo")
+    config_file = Dockup.Project.config_file("foo")
+    file_content = """
+    {
+      "docker_compose_file": "custom-docker-compose.yml"
+    }
+    """
+    File.write!(config_file, file_content)
+
+    assert Dockup.Project.config("foo") == %{"docker_compose_file" => "custom-docker-compose.yml"}
+  end
 end
