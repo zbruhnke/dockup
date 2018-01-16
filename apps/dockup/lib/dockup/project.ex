@@ -51,20 +51,6 @@ defmodule Dockup.Project do
     end
   end
 
-  #def start(project_id, container \\ Dockup.Container, nginx_config \\ Dockup.NginxConfig) do
-    #container.start_containers(project_id)
-    #port_mappings = container.port_mappings(project_id)
-    #port_urls = nginx_config.write_config(project_id, port_mappings)
-    #container.reload_nginx
-    #port_urls
-  #end
-
-  #def stop(project_id, container \\ Dockup.Container, nginx_config \\ Dockup.NginxConfig) do
-    #container.stop_containers(project_id)
-    #nginx_config.delete_config(project_id)
-    #container.reload_nginx
-  #end
-
   def create_url(len \\ 10) do
     domain = Application.fetch_env!(:dockup, :domain)
     random_string =
@@ -76,5 +62,27 @@ defmodule Dockup.Project do
 
   def get_status(url) do
     HTTPotion.get(url).status_code
+  end
+
+  def config(project_id) do
+    config_file = config_file(project_id)
+    case File.read(config_file) do
+      {:ok, binary} ->
+        try_json_parse(binary)
+      {:error, _} ->
+        %{}
+    end
+  end
+
+  def config_file(project_id) do
+    workdir = project_dir(project_id)
+    Path.join(workdir, ".dockup.json")
+  end
+
+  defp try_json_parse(binary) do
+    case Poison.decode(binary) do
+      {:ok, map} when is_map(map) -> map
+      _ -> %{}
+    end
   end
 end

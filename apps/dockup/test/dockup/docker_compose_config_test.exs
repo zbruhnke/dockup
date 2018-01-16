@@ -18,7 +18,7 @@ defmodule Dockup.DockerComposeConfigTest do
 
   test "rewrite_variables replaces dockup placeholder env variables with generated virtual hosts" do
     File.mkdir_p! Dockup.Project.project_dir("foo")
-    config_file = DockerComposeConfig.config_file("foo")
+    config_file = DockerComposeConfig.compose_file("foo")
     File.write!(config_file, file_content())
 
     [url1, url2] = DockerComposeConfig.rewrite_variables("foo")

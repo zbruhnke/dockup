@@ -3,21 +3,34 @@ defmodule Dockup.ContainerTest do
 
   test "start_containers runs docker-compose up" do
     defmodule StartContainersCommand do
-      def run("docker-compose", ["-p", "foo", "up", "-d"], dir) do
+      def run("docker-compose", ["-f", "my-docker-compose.yml", "-p", "foo", "up", "-d"], dir) do
         # Ensure command is run inside project directory
         ^dir = Dockup.Project.project_dir("foo")
       end
     end
+
+    File.rm_rf Dockup.Project.project_dir("foo")
+    File.mkdir_p! Dockup.Project.project_dir("foo")
+    config_file = Dockup.Project.config_file("foo")
+    file_content = """
+    {
+      "docker_compose_file": "my-docker-compose.yml"
+    }
+    """
+    File.write!(config_file, file_content)
+
     Dockup.Container.start_containers("foo", StartContainersCommand)
   end
 
   test "stop_containers runs docker-compose down" do
     defmodule StopContainersCommand do
-      def run("docker-compose", ["-p", "foo", "down", "-v"], dir) do
+      def run("docker-compose", ["-f", "docker-compose.yml", "-p", "foo", "down", "-v"], dir) do
         # Ensure command is run inside project directory
         ^dir = Dockup.Project.project_dir("foo")
       end
     end
+
+    File.rm_rf Dockup.Project.project_dir("foo")
     Dockup.Container.stop_containers("foo", StopContainersCommand)
   end
 end
