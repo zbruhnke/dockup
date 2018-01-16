@@ -42,8 +42,8 @@ defmodule Dockup.Project do
   def wait_till_up(urls, http, interval) do
     for url <- urls do
       response = 200
-      # Retry 30 times in an interval of 5 seconds
-      retry 30 in interval do
+      # Retry 60 times in an interval of 5 seconds
+      retry 60 in interval do
         Logger.info "Checking if #{url} returns http satus #{response}"
         ^response = http.get_status(url)
       end
