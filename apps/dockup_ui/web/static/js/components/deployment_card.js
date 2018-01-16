@@ -11,7 +11,7 @@ class DeploymentCard extends Component {
   }
 
   getGithubRepo() {
-    let match = this.props.deployment.git_url.match(/https:\/\/github.com\/(.*).git/);
+    let match = this.props.deployment.git_url.match(/.*[:\/](.*\/.*).git/)
     if(match) {
       let [_, repo] = match;
       return repo;
