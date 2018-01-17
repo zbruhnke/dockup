@@ -3,7 +3,7 @@ defmodule Dockup.DeployJobTest do
 
   defmodule FakeProject do
     def clone_repository("123", "fake_repo", "fake_branch"), do: :ok
-    def wait_till_up(_urls), do: :ok
+    def wait_till_up(_urls, "123"), do: :ok
   end
 
   defmodule FakeDockerComposeConfig do

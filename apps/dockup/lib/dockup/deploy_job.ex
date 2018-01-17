@@ -29,7 +29,7 @@ defmodule Dockup.DeployJob do
     container.start_containers(project_id)
 
     callback.(:checking_urls, log_url(project_id))
-    project.wait_till_up(urls)
+    project.wait_till_up(urls, project_id)
 
     callback.(:started, urls)
   rescue

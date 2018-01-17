@@ -58,7 +58,7 @@ defmodule Dockup.ProjectTest do
     end
 
     urls = ["dummy_url"]
-    logs = capture_log(fn -> Dockup.Project.wait_till_up(urls, FakeHttp, 0) end)
+    logs = capture_log(fn -> Dockup.Project.wait_till_up(urls, "foo", FakeHttp, 0) end)
     assert logs =~ "Attempt 1 failed"
     assert logs =~ "Attempt 2 failed"
     refute logs =~ "Attempt 3 failed"
@@ -68,7 +68,7 @@ defmodule Dockup.ProjectTest do
 
   test "wait_till_up raises exception if there are no urls to wait for" do
     assert_raise DockupException, "No URLs to wait for.", fn ->
-      Dockup.Project.wait_till_up([])
+      Dockup.Project.wait_till_up([], "foo")
     end
   end
 
