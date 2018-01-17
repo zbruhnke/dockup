@@ -50,6 +50,8 @@ defmodule Dockup.Project do
         ^response = http.get_status(url)
       end
       Logger.info "URL #{url} seem up because they respond with #{response}."
+
+      url
     end
   end
 

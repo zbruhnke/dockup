@@ -3,7 +3,7 @@ defmodule Dockup.DeployJobTest do
 
   defmodule FakeProject do
     def clone_repository("123", "fake_repo", "fake_branch"), do: :ok
-    def wait_till_up(_urls, "123"), do: :ok
+    def wait_till_up(["dummy_url"], "123"), do: ["dummy_url/path"]
   end
 
   defmodule FakeDockerComposeConfig do
@@ -34,7 +34,7 @@ defmodule Dockup.DeployJobTest do
     assert_received :docker_compose_config_prepared
     assert_received :containers_started
     assert_received {:checking_urls, "logio.127.0.0.1.xip.io/#?projectName=123"}
-    assert_received {:started, ["dummy_url"]}
+    assert_received {:started, ["dummy_url/path"]}
   end
 
   test "triggers deployment_failed callback when an exception occurs" do
