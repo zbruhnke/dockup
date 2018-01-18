@@ -17,8 +17,8 @@
       <div class="container">
         <a class="navbar-brand" href="/">Dockup</a>
         <div class="navbar-nav">
-          <%= link("Whitelisted URLs", to: whitelisted_url_path(@conn, :index), class: "nav-item nav-link")%>
           <%= link("Recent Deployments", to: deployment_path(@conn, :index), class: "nav-item nav-link") %>
+          <%= link("Configure", to: config_path(@conn, :index), class: "nav-item nav-link")%>
         </div>
       </div>
     </nav>

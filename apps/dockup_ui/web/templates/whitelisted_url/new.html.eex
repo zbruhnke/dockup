@@ -3,4 +3,4 @@
 <%= render "form.html", changeset: @changeset,
                         action: whitelisted_url_path(@conn, :create) %>
 
-<span><%= link "Back", to: whitelisted_url_path(@conn, :index) %></span>
+<span><%= link "Back", to: config_path(@conn, :index) %></span>

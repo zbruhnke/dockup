@@ -1,0 +1,24 @@
+<h1>Configure Dockup</h1>
+
+<h2 class="dockup-config-section">Whitelisted URLs</h2>
+
+<p>
+Dockup allows you to deploy only whitelisted Git URLs. This is to prevent
+malicious code being run inside docker containers on your servers.
+</p>
+
+<table class="table dockup-whitelisted-urls-table">
+<%= for whitelisted_url <- @whitelisted_urls do %>
+    <tr>
+      <td><%= whitelisted_url.git_url %></td>
+
+      <td class="text-right">
+        <span><%= link "Edit", to: whitelisted_url_path(@conn, :edit, whitelisted_url), class: "btn btn-primary" %></span>
+        <span><%= link "Delete", to: whitelisted_url_path(@conn, :delete, whitelisted_url), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New whitelisted url", to: whitelisted_url_path(@conn, :new), class: "btn btn-primary" %></span>

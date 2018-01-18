@@ -3,11 +3,6 @@ defmodule DockupUi.WhitelistedUrlController do
 
   alias DockupUi.WhitelistedUrl
 
-  def index(conn, _params) do
-    whitelisted_urls = Repo.all(WhitelistedUrl)
-    render(conn, "index.html", whitelisted_urls: whitelisted_urls)
-  end
-
   def new(conn, _params) do
     changeset = WhitelistedUrl.changeset(%WhitelistedUrl{})
     render(conn, "new.html", changeset: changeset)
@@ -26,11 +21,6 @@ defmodule DockupUi.WhitelistedUrlController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    whitelisted_url = Repo.get!(WhitelistedUrl, id)
-    render(conn, "show.html", whitelisted_url: whitelisted_url)
-  end
-
   def edit(conn, %{"id" => id}) do
     whitelisted_url = Repo.get!(WhitelistedUrl, id)
     changeset = WhitelistedUrl.changeset(whitelisted_url)
@@ -42,10 +32,10 @@ defmodule DockupUi.WhitelistedUrlController do
     changeset = WhitelistedUrl.changeset(whitelisted_url, whitelisted_url_params)
 
     case Repo.update(changeset) do
-      {:ok, whitelisted_url} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Whitelisted url updated successfully.")
-        |> redirect(to: whitelisted_url_path(conn, :show, whitelisted_url))
+        |> redirect(to: config_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", whitelisted_url: whitelisted_url, changeset: changeset)
     end
@@ -60,6 +50,6 @@ defmodule DockupUi.WhitelistedUrlController do
 
     conn
     |> put_flash(:info, "Whitelisted url deleted successfully.")
-    |> redirect(to: whitelisted_url_path(conn, :index))
+    |> redirect(to: config_path(conn, :index))
   end
 end
