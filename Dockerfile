@@ -31,4 +31,3 @@ RUN mix phoenix.digest
 WORKDIR /dockup
 EXPOSE 4000
 CMD ./scripts/run
-
