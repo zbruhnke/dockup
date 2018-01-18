@@ -1,4 +1,5 @@
 dockup:
+  command: scripts/wait-for-it.sh db:5432 -- ./scripts/run
   environment:
     - DOCKUP_WORKDIR=/dockup/workdir
     - DOCKUP_DOMAIN=${DOCKUP_DOMAIN}
