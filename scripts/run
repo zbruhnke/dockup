@@ -1,4 +1,4 @@
 #!/bin/bash
 
 mix do ecto.create, ecto.migrate &&
-mix phx.server
+PORT=4000 mix phx.server
