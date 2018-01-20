@@ -8,8 +8,10 @@ defmodule DockupUi.Application do
   def start(_type, _args) do
     # Overrides configurations from ENV variables
     DockupUi.Config.set_configs_from_env()
+    @backend.initialize()
 
     import Supervisor.Spec
+
 
     children = [
       # Start the endpoint when the application starts
