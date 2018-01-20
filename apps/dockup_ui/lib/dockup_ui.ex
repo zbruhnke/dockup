@@ -9,6 +9,7 @@ defmodule DockupUi do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    DockupUi.Config.set_configs_from_env()
     @backend.initialize()
 
     children = [

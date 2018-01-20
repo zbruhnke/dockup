@@ -25,4 +25,8 @@ defmodule DockupUi.DeploymentController do
     deployment = Repo.get!(Deployment, id)
     render conn, "show.html", deployment: deployment
   end
+
+  def home(conn, _params) do
+    render(conn, "home.html", layout: {DockupUi.LayoutView, "home.html"})
+  end
 end
