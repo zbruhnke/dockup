@@ -5,6 +5,11 @@ defmodule DockupUi.WhitelistedUrlControllerTest do
   @valid_attrs %{git_url: "some git_url"}
   @invalid_attrs %{}
 
+  setup do
+    conn = build_conn() |> assign(:current_user, "foo")
+    {:ok, conn: conn}
+  end
+
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, whitelisted_url_path(conn, :new)
     assert html_response(conn, 200) =~ "New whitelisted url"
