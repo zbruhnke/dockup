@@ -48,5 +48,6 @@ defmodule DockupUi.Router do
     get "/", AuthController, :new
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
+    delete "/logout", AuthController, :delete
   end
 end

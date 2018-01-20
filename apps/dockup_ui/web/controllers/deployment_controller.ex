@@ -27,6 +27,10 @@ defmodule DockupUi.DeploymentController do
   end
 
   def home(conn, _params) do
-    render(conn, "home.html", layout: {DockupUi.LayoutView, "home.html"})
+    if get_session(conn, :current_user) do
+      redirect(conn, to: deployment_path(conn, :new))
+    else
+      render(conn, "home.html", layout: {DockupUi.LayoutView, "home.html"})
+    end
   end
 end

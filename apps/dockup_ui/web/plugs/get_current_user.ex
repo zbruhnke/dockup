@@ -9,7 +9,6 @@ defmodule DockupUi.Plugs.GetCurrentUser do
       nil ->
         conn
         |> put_session(:redirect_url, conn.request_path)
-        |> Phoenix.Controller.put_flash(:error, "Please log in or register to continue.")
         |> Phoenix.Controller.redirect(to: Helpers.deployment_path(conn, :home))
         |> halt()
       _ ->
