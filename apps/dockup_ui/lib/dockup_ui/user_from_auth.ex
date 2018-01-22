@@ -16,7 +16,7 @@ defmodule DockupUi.UserFromAuth do
       nil ->
         create_user(%{email: email, name: name})
       user ->
-        {:ok, user}
+        update_name(user, name)
     end
   end
 
@@ -31,5 +31,11 @@ defmodule DockupUi.UserFromAuth do
         Logger.error(error)
         {:error, error}
     end
+  end
+
+  defp update_name(user, name) do
+    user
+    |> User.changeset(%{name: name})
+    |> Repo.update()
   end
 end

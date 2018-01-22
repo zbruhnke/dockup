@@ -1,5 +1,8 @@
 alias DockupUi.{
   Deployment,
   Repo,
-  DeploymentStatusUpdateService
+  DeploymentStatusUpdateService,
+  User,
+  Organization,
+  UserOrganization
 }
