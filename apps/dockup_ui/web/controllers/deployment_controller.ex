@@ -2,8 +2,7 @@ defmodule DockupUi.DeploymentController do
   use DockupUi.Web, :controller
 
   alias DockupUi.{
-    Deployment,
-    WhitelistedUrl
+    Deployment
   }
 
   import Ecto.Query
