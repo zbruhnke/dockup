@@ -18,7 +18,16 @@
         <a class="navbar-brand" href="/">Dockup</a>
         <div class="navbar-nav">
           <%= link("Recent Deployments", to: deployment_path(@conn, :index), class: "nav-item nav-link") %>
-          <%= link("Configure", to: config_path(@conn, :index), class: "nav-item nav-link")%>
+
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
+            <div class="dropdown-menu">
+              <%= for organization <- @conn.assigns[:current_user_orgs] do %>
+                <%= link(organization.name, to: organization_config_path(@conn, :index, organization), class: "dropdown-item")%>
+              <% end %>
+            </div>
+          </div>
+
           <%= link("Logout", to: auth_path(@conn, :delete), method: :delete, class: "nav-item nav-link") %>
         </div>
       </div>

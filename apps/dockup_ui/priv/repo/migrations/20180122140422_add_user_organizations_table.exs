@@ -3,8 +3,8 @@ defmodule DockupUi.Repo.Migrations.AddUserOrganizationsTable do
 
   def change do
     create table(:user_organizations, primary_key: false) do
-      add :user_id, references(:users)
-      add :organization_id, references(:organizations)
+      add :user_id, references(:users, on_delete: :delete_all)
+      add :organization_id, references(:organizations, on_delete: :delete_all)
 
       timestamps()
     end

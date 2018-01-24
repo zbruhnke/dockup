@@ -1,4 +1,4 @@
-<h1>Configure Dockup</h1>
+<h1><small class="text-muted">Settings for:</small> <%= @organization.name %></h1>
 
 <h2 class="dockup-config-section">Whitelisted URLs</h2>
 
@@ -8,17 +8,17 @@ malicious code being run inside docker containers on your servers.
 </p>
 
 <table class="table dockup-whitelisted-urls-table">
-<%= for whitelisted_url <- @whitelisted_urls do %>
+<%= for whitelisted_url <- @organization.whitelisted_urls do %>
     <tr>
       <td><%= whitelisted_url.git_url %></td>
 
       <td class="text-right">
-        <span><%= link "Edit", to: whitelisted_url_path(@conn, :edit, whitelisted_url), class: "btn btn-primary" %></span>
-        <span><%= link "Delete", to: whitelisted_url_path(@conn, :delete, whitelisted_url), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
+        <span><%= link "Edit", to: organization_whitelisted_url_path(@conn, :edit, @organization, whitelisted_url), class: "btn btn-primary" %></span>
+        <span><%= link "Delete", to: organization_whitelisted_url_path(@conn, :delete, @organization, whitelisted_url), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New whitelisted url", to: whitelisted_url_path(@conn, :new), class: "btn btn-primary" %></span>
+<span><%= link "New whitelisted url", to: organization_whitelisted_url_path(@conn, :new, @organization), class: "btn btn-primary" %></span>

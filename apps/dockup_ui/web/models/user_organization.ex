@@ -1,6 +1,11 @@
 defmodule DockupUi.UserOrganization do
   use Ecto.Schema
 
+  alias DockupUi.{
+    User,
+    Organization
+  }
+
   @primary_key false
   schema "user_organizations" do
     belongs_to :user, User

@@ -3,12 +3,14 @@ defmodule DockupUi.Organization do
 
   alias DockupUi.{
     User,
-    UserOrganization
+    UserOrganization,
+    WhitelistedUrl
   }
 
   schema "organizations" do
     field :name, :string
 
+    has_many :whitelisted_urls, WhitelistedUrl
     many_to_many :users, User, join_through: UserOrganization
 
     timestamps()
