@@ -9,11 +9,12 @@ defmodule DockupUi.DeploymentController do
   import Ecto.Query
 
   def new(conn, _params) do
-    query =
-      from w in WhitelistedUrl,
-      select: w.git_url
+    whitelisted_urls =
+      conn.assigns[:current_user]
+      |> Ecto.assoc([:organizations, :whitelisted_urls])
+      |> select([w], w.git_url)
+      |> Repo.all
 
-    whitelisted_urls = Repo.all(query)
     render conn, "new.html", whitelisted_urls_json: Poison.encode!(whitelisted_urls)
   end
 

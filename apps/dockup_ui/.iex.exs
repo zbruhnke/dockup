@@ -4,5 +4,6 @@ alias DockupUi.{
   DeploymentStatusUpdateService,
   User,
   Organization,
-  UserOrganization
+  UserOrganization,
+  WhitelistedUrl
 }
