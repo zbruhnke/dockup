@@ -1,18 +1,18 @@
-defmodule DockupUi.WhitelistedUrlTest do
+defmodule DockupUi.RepositoryTest do
   use DockupUi.ModelCase
 
   import DockupUi.Factory
 
-  alias DockupUi.WhitelistedUrl
+  alias DockupUi.Repository
 
   test "changeset with valid attributes" do
     org = insert(:organization)
-    changeset = WhitelistedUrl.changeset(%WhitelistedUrl{}, %{git_url: "foo", organization_id: org.id})
+    changeset = Repository.changeset(%Repository{}, %{git_url: "foo", organization_id: org.id})
     assert changeset.valid?
   end
 
   test "changeset with invalid attributes" do
-    changeset = WhitelistedUrl.changeset(%WhitelistedUrl{}, %{})
+    changeset = Repository.changeset(%Repository{}, %{})
     refute changeset.valid?
   end
 end

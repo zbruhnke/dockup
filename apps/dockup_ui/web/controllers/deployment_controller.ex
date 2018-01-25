@@ -8,13 +8,13 @@ defmodule DockupUi.DeploymentController do
   import Ecto.Query
 
   def new(conn, _params) do
-    whitelisted_urls =
+    repositories =
       conn.assigns[:current_user]
-      |> Ecto.assoc([:organizations, :whitelisted_urls])
+      |> Ecto.assoc([:organizations, :repositories])
       |> select([w], w.git_url)
       |> Repo.all
 
-    render conn, "new.html", whitelisted_urls_json: Poison.encode!(whitelisted_urls)
+    render conn, "new.html", repositories_json: Poison.encode!(repositories)
   end
 
   def index(conn, _params) do

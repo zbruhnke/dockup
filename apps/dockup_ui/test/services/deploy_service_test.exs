@@ -13,7 +13,7 @@ defmodule DeployServiceTest do
   test "run returns {:ok, deployment} if deployment is saved and the job is scheduled" do
     deps = [deploy_job: FakeDeployJob]
     org = insert(:organization)
-    insert(:whitelisted_url, git_url: "foo", organization_id: org.id)
+    insert(:repository, git_url: "foo", organization_id: org.id)
     {:ok, deployment} = DockupUi.DeployService.run(%{git_url: "foo", branch: "bar"}, nil, deps)
     %{git_url: "foo", branch: "bar"} = deployment
     assert_received :ran_deploy_job

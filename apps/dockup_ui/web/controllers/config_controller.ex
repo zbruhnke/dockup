@@ -3,7 +3,7 @@ defmodule DockupUi.ConfigController do
   plug DockupUi.Plugs.AuthorizeUser
 
   def index(conn, _params) do
-    organization = find_org(conn) |> Repo.preload(:whitelisted_urls)
+    organization = find_org(conn) |> Repo.preload(:repositories)
     render(conn, "index.html", organization: organization)
   end
 

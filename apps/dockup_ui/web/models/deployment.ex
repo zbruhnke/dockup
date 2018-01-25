@@ -2,7 +2,7 @@ defmodule DockupUi.Deployment do
   use DockupUi.Web, :model
 
   alias DockupUi.{
-    WhitelistedUrl,
+    Repository,
     Repo
   }
 
@@ -72,6 +72,6 @@ defmodule DockupUi.Deployment do
   end
 
   defp whitelisted?(url) do
-    not is_nil(Repo.get_by(WhitelistedUrl, git_url: url))
+    not is_nil(Repo.get_by(Repository, git_url: url))
   end
 end

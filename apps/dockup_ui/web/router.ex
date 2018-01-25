@@ -30,7 +30,7 @@ defmodule DockupUi.Router do
 
     resources "/organizations", OrganizationController, only: [] do
       resources "/config", ConfigController, only: [:index]
-      resources "/whitelisted_urls", WhitelistedUrlController, except: [:index, :show]
+      resources "/repositories", RepositoryController, except: [:index, :show]
     end
   end
 

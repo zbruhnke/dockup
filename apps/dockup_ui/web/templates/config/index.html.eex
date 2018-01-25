@@ -1,24 +1,23 @@
 <h1><small class="text-muted">Settings for:</small> <%= @organization.name %></h1>
 
-<h2 class="dockup-config-section">Whitelisted URLs</h2>
+<h2 class="dockup-config-section">Repositories</h2>
 
 <p>
-Dockup allows you to deploy only whitelisted Git URLs. This is to prevent
-malicious code being run inside docker containers on your servers.
+Add repositories that you would like to deploy using Dockup.
 </p>
 
-<table class="table dockup-whitelisted-urls-table">
-<%= for whitelisted_url <- @organization.whitelisted_urls do %>
+<table class="table dockup-repositories-table">
+<%= for repository <- @organization.repositories do %>
     <tr>
-      <td><%= whitelisted_url.git_url %></td>
+      <td><%= repository.git_url %></td>
 
       <td class="text-right">
-        <span><%= link "Edit", to: organization_whitelisted_url_path(@conn, :edit, @organization, whitelisted_url), class: "btn btn-primary" %></span>
-        <span><%= link "Delete", to: organization_whitelisted_url_path(@conn, :delete, @organization, whitelisted_url), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
+        <span><%= link "Edit", to: organization_repository_path(@conn, :edit, @organization, repository), class: "btn btn-primary" %></span>
+        <span><%= link "Delete", to: organization_repository_path(@conn, :delete, @organization, repository), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
-<span><%= link "New whitelisted url", to: organization_whitelisted_url_path(@conn, :new, @organization), class: "btn btn-primary" %></span>
+<span><%= link "New repository", to: organization_repository_path(@conn, :new, @organization), class: "btn btn-primary" %></span>

@@ -5,5 +5,5 @@ alias DockupUi.{
   User,
   Organization,
   UserOrganization,
-  WhitelistedUrl
+  Repository
 }
