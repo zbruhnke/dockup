@@ -1,6 +1,11 @@
 defmodule DockupUi.UserSocket do
   use Phoenix.Socket
 
+  alias DockupUi.{
+    User,
+    Repo
+  }
+
   ## Channels
    channel "deployments:*", DockupUi.DeploymentChannel
 
@@ -19,8 +24,14 @@ defmodule DockupUi.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
+  def connect(%{"token" => token}, socket) do
     {:ok, socket}
+    case Phoenix.Token.verify(socket, "user socket", token, max_age: 86400) do
+      {:ok, user_id} ->
+        {:ok, assign(socket, :current_user, Repo.get!(User, user_id))}
+      {:error, reason} ->
+        :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -33,5 +44,5 @@ defmodule DockupUi.UserSocket do
   #     DockupUi.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "users_socket:#{socket.assigns.current_user.id}"
 end

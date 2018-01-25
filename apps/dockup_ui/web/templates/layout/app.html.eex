@@ -8,6 +8,7 @@
     <meta name="author" content="">
 
     <title>Dockup</title>
+    <script>window.userToken = "<%= assigns[:user_token] %>";</script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
@@ -22,7 +23,7 @@
           <div class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
             <div class="dropdown-menu">
-              <%= for organization <- @conn.assigns[:current_user_orgs] do %>
+              <%= for organization <- assigns[:current_user_orgs] do %>
                 <%= link(organization.name, to: organization_config_path(@conn, :index, organization), class: "dropdown-item")%>
               <% end %>
             </div>

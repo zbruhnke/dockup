@@ -17,7 +17,8 @@ defmodule DockupUi.Plugs.GetCurrentUser do
       current_user ->
         conn
         |> assign(:current_user, current_user)
-        |> assign( :current_user_orgs, load_orgs(current_user))
+        |> assign(:current_user_orgs, load_orgs(current_user))
+        |> assign(:user_token, Phoenix.Token.sign(conn, "user socket", current_user.id))
     end
   end
 
