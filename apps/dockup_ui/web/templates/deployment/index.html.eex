@@ -1,5 +1,5 @@
 <div id="deployments_list_container"></div>
 
 <script type="text/javascript">
-  Deployment.mountDeploymentList("deployments_list_container");
+Deployment.mountDeploymentList("deployments_list_container", '<%= get_csrf_token() %>');
 </script>

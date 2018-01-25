@@ -59,6 +59,7 @@ class DeploymentCard extends Component {
     return $.ajax({
       url: `/api/deployments/${this.props.deployment.id}`,
       type: 'DELETE',
+      beforeSend: (xhr) => {xhr.setRequestHeader('x-csrf-token', this.props.csrfToken);},
       contentType: 'application/json'
     });
   }
