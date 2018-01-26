@@ -7,6 +7,7 @@ defmodule DockupUi.Config do
 
   def set_configs_from_env do
     for {env_var, config_key} <- configs() do
+      set_env(env_var, config_key)
       set_config(System.get_env(env_var), config_key)
     end
   end
@@ -15,8 +16,23 @@ defmodule DockupUi.Config do
   defp configs do
     [
       {"GOOGLE_CLIENT_ID", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_id}},
-      {"GOOGLE_CLIENT_SECRET", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_secret}}
+      {"GOOGLE_CLIENT_SECRET", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_secret}},
+      {"GOOGLE_DOMAIN", nil},
     ]
+  end
+
+  # This is a hardcoded special case
+  # because of the complex nature of the config value
+  defp set_env("GOOGLE_DOMAIN", nil) do
+    if domain = System.get_env("GOOGLE_DOMAIN") do
+      val = [providers: [google: {Ueberauth.Strategy.Google, [hd: domain]}]]
+      Application.put_env(:ueberauth, Ueberauth, val)
+      Application.put_env(:dockup_ui, :google_domain, domain)
+    end
+  end
+
+  defp set_env(env_var, config_key) do
+    set_config(System.get_env(env_var), config_key)
   end
 
   defp set_config(nil, _) do
@@ -31,14 +47,14 @@ defmodule DockupUi.Config do
   end
 
   defp set_config(env_val, {key1, key2}) do
-    :at_middleware
+    :dockup_ui
     |> Application.get_env(key1, %{})
     |> Keyword.put(key2, env_val)
     |> set_config(key1)
   end
 
   defp set_config(env_val, config_key) do
-    Application.put_env(:at_middleware, config_key, env_val)
+    Application.put_env(:dockup_ui, config_key, env_val)
   end
 
   defp set_config(env_val, config_key, app) do
