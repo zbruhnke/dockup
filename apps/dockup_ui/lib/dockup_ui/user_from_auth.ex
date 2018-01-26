@@ -11,7 +11,16 @@ defmodule DockupUi.UserFromAuth do
     Repo
   }
 
-  def find_or_create(%Auth{info: %{email: email, name: name}}) do
+  def find_or_create(%Auth{info: %{email: email, name: name, urls: %{website: domain}}}) do
+    google_domain = Application.get_env(:dockup_ui, :google_domain)
+    if is_nil(google_domain) || domain == google_domain do
+      login_user(email, name)
+    else
+      {:error, "User not allowed to log in."}
+    end
+  end
+
+  defp login_user(email, name) do
     case Repo.get_by(User, email: email) do
       nil ->
         create_user(%{email: email, name: name})
