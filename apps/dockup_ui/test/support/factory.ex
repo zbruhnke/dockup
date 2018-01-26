@@ -35,11 +35,9 @@ defmodule DockupUi.Factory do
 
   defp deployment_factory do
     %DockupUi.Deployment{
-      git_url: "https://github.com/code-mancers/dockup.git",
       branch: "master",
-      callback_url: "http://example.com/callback",
       status: "queued",
-      log_url: "http://example.com/log_url",
+      log_url: "http://example.com/log_url"
     }
   end
 

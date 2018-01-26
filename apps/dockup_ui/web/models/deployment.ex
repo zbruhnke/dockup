@@ -2,8 +2,7 @@ defmodule DockupUi.Deployment do
   use DockupUi.Web, :model
 
   alias DockupUi.{
-    Repository,
-    Repo
+    Repository
   }
 
   @moduledoc """
@@ -12,21 +11,21 @@ defmodule DockupUi.Deployment do
   status - Refer to DockupUi.Callback for various states for this field.
   """
 
-  @derive {Poison.Encoder, only: [:id, :git_url, :branch, :callback_url, :status, :updated_at, :inserted_at, :log_url, :urls]}
+  @derive {Poison.Encoder, only: [:id, :branch, :status, :updated_at, :inserted_at, :log_url, :urls, :repository_id]}
 
   schema "deployments" do
-    field :git_url, :string
     field :branch, :string
-    field :callback_url, :string
     field :status, :string
     field :log_url, :string
     field :urls, {:array, :string}
     field :deleted_at, :utc_datetime
 
+    belongs_to :repository, Repository
+
     timestamps type: :utc_datetime
   end
 
-  @permitted_fields ~w(id git_url branch callback_url status log_url urls inserted_at)
+  @permitted_fields ~w(id branch status log_url urls inserted_at repository_id)
 
   @doc """
   Creates a changeset based on the `model` and `params`.
@@ -43,12 +42,10 @@ defmodule DockupUi.Deployment do
   This changeset is used when creating a deployment
   """
   def create_changeset(model, params) do
-    required_fields = ~w(git_url branch)a
-    optional_fields = ~w(callback_url)a
+    required_fields = ~w(branch repository_id)a
     model
-    |> cast(params, required_fields ++ optional_fields)
+    |> cast(params, required_fields)
     |> validate_required(required_fields)
-    |> validate_whitelisted_git_url()
   end
 
   @doc """
@@ -56,22 +53,5 @@ defmodule DockupUi.Deployment do
   """
   def delete_changeset(model) do
     cast(model, %{deleted_at: DateTime.utc_now, log_url: nil, urls: nil}, [:deleted_at, :log_url, :urls])
-  end
-
-  # Check if git URL is whitelisted
-  defp validate_whitelisted_git_url(changeset) do
-    if git_url = get_field(changeset, :git_url) do
-      if whitelisted?(git_url) do
-        changeset
-      else
-        add_error(changeset, :git_url, "is not whitelisted for deployment")
-      end
-    else
-      changeset
-    end
-  end
-
-  defp whitelisted?(url) do
-    not is_nil(Repo.get_by(Repository, git_url: url))
   end
 end

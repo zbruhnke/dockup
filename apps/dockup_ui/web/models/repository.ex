@@ -2,13 +2,15 @@ defmodule DockupUi.Repository do
   use DockupUi.Web, :model
 
   alias DockupUi.{
-    Organization
+    Organization,
+    Deployment
   }
 
   schema "repositories" do
     field :git_url, :string
 
     belongs_to :organization, Organization
+    has_many :deployments, Deployment
 
     timestamps()
   end

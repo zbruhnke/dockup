@@ -7,3 +7,5 @@ alias DockupUi.{
   UserOrganization,
   Repository
 }
+
+import Ecto.Query

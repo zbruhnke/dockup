@@ -12,7 +12,8 @@ defmodule DockupUi.API.DeploymentView do
   def render("deployment.json", %{deployment: deployment}) do
     %{
       id: deployment.id,
-      git_url: deployment.git_url,
+      repository_id: deployment.repository_id,
+      repository_url: deployment.repository.git_url,
       branch: deployment.branch,
       status: deployment.status,
       log_url: deployment.log_url,

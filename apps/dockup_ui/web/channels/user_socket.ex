@@ -6,6 +6,8 @@ defmodule DockupUi.UserSocket do
     Repo
   }
 
+  import Ecto.Query
+
   ## Channels
    channel "deployments:*", DockupUi.DeploymentChannel
 
@@ -28,8 +30,20 @@ defmodule DockupUi.UserSocket do
     {:ok, socket}
     case Phoenix.Token.verify(socket, "user socket", token, max_age: 86400) do
       {:ok, user_id} ->
-        {:ok, assign(socket, :current_user, Repo.get!(User, user_id))}
-      {:error, reason} ->
+        user = Repo.get!(User, user_id)
+        repository_ids =
+          user
+          |> Ecto.assoc([:organizations, :repositories])
+          |> select([r], r.id)
+          |> Repo.all()
+
+        socket =
+          socket
+          |> assign(:current_user, user)
+          |> assign(:current_user_repo_ids, repository_ids)
+
+        {:ok, socket}
+      {:error, _reason} ->
         :error
     end
   end
