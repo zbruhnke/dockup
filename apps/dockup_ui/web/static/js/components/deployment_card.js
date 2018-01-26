@@ -11,7 +11,8 @@ class DeploymentCard extends Component {
   }
 
   getGithubRepo() {
-    let match = this.props.deployment.git_url.match(/.*[:\/](.*\/.*).git/)
+    console.log(this.props.deployment);
+    let match = this.props.deployment.repository_url.match(/.*[:\/](.*\/.*).git/)
     if(match) {
       let [_, repo] = match;
       return repo;
@@ -59,6 +60,7 @@ class DeploymentCard extends Component {
     return $.ajax({
       url: `/api/deployments/${this.props.deployment.id}`,
       type: 'DELETE',
+      beforeSend: (xhr) => {xhr.setRequestHeader('x-csrf-token', this.props.csrfToken);},
       contentType: 'application/json'
     });
   }

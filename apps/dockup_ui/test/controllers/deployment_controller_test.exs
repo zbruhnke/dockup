@@ -1,8 +1,11 @@
 defmodule DockupUi.DeploymentControllerTest do
   use DockupUi.ConnCase
 
+  import DockupUi.Factory
+
   setup do
-    conn = build_conn() |> assign(:current_user, "foo")
+    user = insert(:user)
+    conn = build_conn() |> assign(:current_user, user)
     {:ok, conn: conn}
   end
 

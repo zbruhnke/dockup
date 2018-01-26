@@ -85,7 +85,8 @@ exports.config = {
   npm: {
     globals: {
       $: 'jquery',
-      jQuery: 'jquery'
+      jQuery: 'jquery',
+      Popper: 'popper.js'
     }
   }
 };

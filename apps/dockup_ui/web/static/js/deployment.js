@@ -11,20 +11,20 @@ if (deployment_form_container) {
 }
 
 const Deployment = {
-  mountDeploymentList: (elementId) => {
+  mountDeploymentList: (elementId, csrfToken) => {
     let element = document.getElementById(elementId);
-    ReactDOM.render(<DeploymentList/>, element);
+    ReactDOM.render(<DeploymentList csrfToken={csrfToken}/>, element);
   },
 
-  mountDeploymentForm: (elementId, whitelistedUrls) => {
+  mountDeploymentForm: (elementId, repositories, csrfToken) => {
     let element = document.getElementById(elementId);
-    ReactDOM.render(<DeploymentForm urls={whitelistedUrls}/>, element);
+    ReactDOM.render(<DeploymentForm urls={repositories} csrfToken={csrfToken}/>, element);
   },
 
-  mountDeploymentItem: (elementId, deploymentJSON) => {
+  mountDeploymentItem: (elementId, deploymentJSON, csrfToken) => {
     let element = document.getElementById(elementId);
     let deployment = JSON.parse(deploymentJSON);
-    ReactDOM.render(<DeploymentItem deployment={deployment}/>, element);
+    ReactDOM.render(<DeploymentItem deployment={deployment} csrfToken={csrfToken}/>, element);
   },
 }
 

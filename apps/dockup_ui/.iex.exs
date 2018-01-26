@@ -1,5 +1,11 @@
 alias DockupUi.{
   Deployment,
   Repo,
-  DeploymentStatusUpdateService
+  DeploymentStatusUpdateService,
+  User,
+  Organization,
+  UserOrganization,
+  Repository
 }
+
+import Ecto.Query

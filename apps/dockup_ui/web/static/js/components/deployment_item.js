@@ -24,7 +24,7 @@ class DeploymentItem extends Component {
 
   renderDeploymentCard() {
     if(this.state.deployment) {
-      return(<DeploymentCard deployment={this.state.deployment}/>);
+      return(<DeploymentCard deployment={this.state.deployment} csrfToken={this.props.csrfToken}/>);
     }
   }
 

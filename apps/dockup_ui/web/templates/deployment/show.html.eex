@@ -5,6 +5,7 @@
     Deployment.mountDeploymentItem(
       'deployment_item_container',
       '<%= deployment_as_json(@deployment)%>',
+      '<%= get_csrf_token() %>'
     );
   });
 </script>

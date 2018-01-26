@@ -12,21 +12,11 @@ defmodule DockupUi.DeploymentStatusUpdateService do
     DeploymentChannel
   }
 
-  def run(status, deployment_id, payload \\ nil, channel \\ DeploymentChannel)
-
-  def run(status, deployment_id, payload, channel) when is_integer(deployment_id) do
-    deployment = Repo.get!(Deployment, deployment_id)
-    run(status, deployment, payload, channel)
-  rescue
-    e ->
-      Logger.error "Cannot update status: #{status} of deployment_id: #{deployment_id}. Error: #{inspect e}"
-      {:error, deployment_id}
-  end
-
-  def run(status, deployment, payload, channel) do
+  def run(status, deployment, payload, channel \\ DeploymentChannel) do
     with \
       changeset <- Deployment.changeset(deployment, changeset_map(status, payload)),
       {:ok, deployment} <- Repo.update(changeset),
+      deployment <- Repo.preload(deployment, :repository),
       :ok <- channel.update_deployment_status(deployment, payload)
     do
       {:ok, deployment}

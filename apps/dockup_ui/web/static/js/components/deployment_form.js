@@ -51,6 +51,7 @@ class DeploymentForm extends Component {
       url: '/api/deployments',
       type: 'POST',
       contentType: 'application/json',
+      beforeSend: (xhr) => {xhr.setRequestHeader('x-csrf-token', this.props.csrfToken);},
       data: JSON.stringify({
         git_url: this.state.gitUrl,
         branch: this.state.branch,
@@ -73,7 +74,7 @@ class DeploymentForm extends Component {
 
   renderDeploymentCard() {
     if(this.state.deployment) {
-      return(<DeploymentCard deployment={this.state.deployment}/>);
+      return(<DeploymentCard deployment={this.state.deployment} csrfToken={this.props.csrfToken}/>);
     }
   }
 

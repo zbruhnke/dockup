@@ -35,7 +35,6 @@ class DeploymentList extends Component {
     })
 
     channel.on("deployment_created", (deployment) => {
-      console.log("Deployment created");
       this.addDeployment(deployment);
     })
   }
@@ -60,7 +59,7 @@ class DeploymentList extends Component {
       <div>
         {this.state.deployments.map((deployment) => {
           return (
-            <DeploymentCard key={deployment.id} deployment={deployment}/>
+            <DeploymentCard key={deployment.id} deployment={deployment} csrfToken={this.props.csrfToken}/>
           )
          })}
       </div>

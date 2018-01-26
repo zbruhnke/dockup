@@ -1,20 +1,16 @@
 defmodule DockupUi.DeploymentController do
   use DockupUi.Web, :controller
 
-  alias DockupUi.{
-    Deployment,
-    WhitelistedUrl
-  }
-
   import Ecto.Query
 
   def new(conn, _params) do
-    query =
-      from w in WhitelistedUrl,
-      select: w.git_url
+    repositories =
+      conn.assigns[:current_user]
+      |> Ecto.assoc([:organizations, :repositories])
+      |> select([r], r.git_url)
+      |> Repo.all
 
-    whitelisted_urls = Repo.all(query)
-    render conn, "new.html", whitelisted_urls_json: Poison.encode!(whitelisted_urls)
+    render conn, "new.html", repositories_json: Poison.encode!(repositories)
   end
 
   def index(conn, _params) do
@@ -22,7 +18,7 @@ defmodule DockupUi.DeploymentController do
   end
 
   def show(conn, %{"id" => id}) do
-    deployment = Repo.get!(Deployment, id)
+    deployment = current_user_deployment(conn.assigns.current_user, id)
     render conn, "show.html", deployment: deployment
   end
 
@@ -32,5 +28,12 @@ defmodule DockupUi.DeploymentController do
     else
       render(conn, "home.html", layout: {DockupUi.LayoutView, "home.html"})
     end
+  end
+
+  defp current_user_deployment(user, id) do
+    user
+    |> Ecto.assoc([:organizations, :repositories, :deployments])
+    |> where([d], d.id == ^id)
+    |> Repo.one!()
   end
 end

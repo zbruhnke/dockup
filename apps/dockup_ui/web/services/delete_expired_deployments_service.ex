@@ -21,8 +21,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
 
     retention_days = retention_days || get_retention_days()
     query = from d in Deployment,
-      where: d.inserted_at < ago(^retention_days, "day"),
-      select: d.id
+      where: d.inserted_at < ago(^retention_days, "day")
 
     query
     |> Repo.all
