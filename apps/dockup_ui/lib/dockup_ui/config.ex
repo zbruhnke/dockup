@@ -17,6 +17,8 @@ defmodule DockupUi.Config do
     [
       {"GOOGLE_CLIENT_ID", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_id}},
       {"GOOGLE_CLIENT_SECRET", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_secret}},
+      {"POSTMARK_API_KEY", {DockupUi.Mailer, :api_key}},
+      {"DOCKUP_FROM_EMAIL", :from_email},
       {"GOOGLE_DOMAIN", nil},
     ]
   end

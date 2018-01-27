@@ -20,4 +20,10 @@ defmodule DockupUi.User do
     |> cast(params, [:email, :name])
     |> validate_required([:email])
   end
+
+  def invitation_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:email])
+    |> validate_required([:email])
+  end
 end

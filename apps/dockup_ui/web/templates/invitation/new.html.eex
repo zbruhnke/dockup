@@ -1,0 +1,6 @@
+<h2>Invite User</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: organization_invitation_path(@conn, :create, @conn.params["organization_id"]) %>
+
+<span><%= link "Back", to: organization_config_path(@conn, :index, @conn.params["organization_id"]) %></span>
