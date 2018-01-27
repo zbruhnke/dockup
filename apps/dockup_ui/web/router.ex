@@ -37,6 +37,7 @@ defmodule DockupUi.Router do
     resources "/organizations", OrganizationController, only: [] do
       resources "/config", ConfigController, only: [:index]
       resources "/repositories", RepositoryController, except: [:index, :show]
+      resources "/invitations", InvitationController, only: [:new, :create]
     end
   end
 

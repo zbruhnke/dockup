@@ -2,10 +2,26 @@ defmodule DockupUi.AssignUserOrganizationService do
   alias DockupUi.{
     Repo,
     User,
-    UserOrganization
+    UserOrganization,
+    InvitationEmail,
+    Mailer
   }
 
   alias Ecto.Multi
+
+  def invite_user(organization, user_email) do
+    case assign_user(organization, user_email) do
+      {:ok, _} ->
+        organization
+        |> InvitationEmail.invitation_email(user_email)
+        |> Mailer.deliver_later()
+        {:ok, user_email}
+      {:error, _} ->
+        {:error, "Cannot invite user to organization."}
+      {:error, _, _, _} ->
+        {:error, "User already part of organization"}
+    end
+  end
 
   def assign_user(organization, user_email) do
     Multi.new()

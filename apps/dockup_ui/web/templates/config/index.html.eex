@@ -21,3 +21,22 @@ Add repositories that you would like to deploy using Dockup.
 </table>
 
 <span><%= link "New repository", to: organization_repository_path(@conn, :new, @organization), class: "btn btn-primary" %></span>
+
+
+<h2 class="dockup-config-section">Users</h2>
+
+<p>
+Invite users to your organization. These users will be able to deploy all repositories
+in the organization and also invite other users.
+</p>
+
+<table class="table dockup-users-table">
+<%= for user <- @organization.users do %>
+    <tr>
+      <td><%= user.email %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "Invite user", to: organization_invitation_path(@conn, :new, @organization), class: "btn btn-primary" %></span>
