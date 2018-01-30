@@ -5,6 +5,7 @@ defmodule DockupUi.DeploymentStatusUpdateService do
   """
 
   require Logger
+  import Ecto.Query
 
   alias DockupUi.{
     Deployment,
@@ -13,10 +14,16 @@ defmodule DockupUi.DeploymentStatusUpdateService do
   }
 
   def run(status, deployment, payload, channel \\ DeploymentChannel) do
+    deployment_id = deployment.id
+    query =
+      from d in Deployment,
+      where: d.id == ^deployment_id,
+      preload: [:repository]
+
     with \
       changeset <- Deployment.changeset(deployment, changeset_map(status, payload)),
-      {:ok, deployment} <- Repo.update(changeset),
-      deployment <- Repo.preload(deployment, :repository),
+      {:ok, _} <- Repo.update(changeset),
+      deployment <- Repo.one!(query),
       :ok <- channel.update_deployment_status(deployment, payload)
     do
       {:ok, deployment}

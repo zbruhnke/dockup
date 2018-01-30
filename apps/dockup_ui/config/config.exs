@@ -46,3 +46,8 @@ config :dockup_ui, ecto_repos: [DockupUi.Repo]
 config :dockup_ui, DockupUi.Mailer,
       adapter: Bamboo.PostmarkAdapter,
       api_key: ""
+
+config :gh_webhook_plug,
+  secret: "foobar",
+  path: "/api/github_webhook",
+  action: {DockupUi.GithubWebhook, :handle}

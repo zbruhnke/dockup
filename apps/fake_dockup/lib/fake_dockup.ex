@@ -21,7 +21,7 @@ defmodule FakeDockup do
   end
 
   @impl DockupSpec
-  def destroy(_id, callback) do
+  def destroy(_deployment, callback) do
     callback.(:deleting_deployment, nil)
     Process.sleep(2000)
 

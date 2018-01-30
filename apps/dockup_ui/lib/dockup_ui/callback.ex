@@ -3,15 +3,14 @@ defmodule DockupUi.Callback do
   Calls DeploymentStatusUpdateService with the given event.
   """
 
-  require Logger
-
   alias DockupUi.{
     DeploymentStatusUpdateService
   }
 
-  def lambda(deployment, status_update_service \\ DeploymentStatusUpdateService) do
+  def lambda(callback_params, status_update_service \\ DeploymentStatusUpdateService) do
     fn
-      event, payload -> status_update_service.run(event, deployment, payload)
+      event, payload ->
+        status_update_service.run(event, callback_params.deployment, payload)
     end
   end
 end

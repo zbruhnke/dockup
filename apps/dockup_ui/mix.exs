@@ -49,6 +49,7 @@ defmodule DockupUi.Mixfile do
      {:ueberauth_google, "~> 0.7"},
      {:bamboo, "~> 0.8"},
      {:bamboo_postmark, "~> 0.4"},
+     {:gh_webhook_plug, "~> 0.0.5"},
      {:dockup, in_umbrella: true, only: [:prod]},
      {:fake_dockup, in_umbrella: true, only: [:dev, :test]}]
   end
