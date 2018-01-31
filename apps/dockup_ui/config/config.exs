@@ -48,6 +48,6 @@ config :dockup_ui, DockupUi.Mailer,
       api_key: ""
 
 config :gh_webhook_plug,
-  secret: "foobar",
+  secret: "",
   path: "/api/github_webhook",
   action: {DockupUi.GithubWebhook, :handle}

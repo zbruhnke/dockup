@@ -15,11 +15,14 @@ defmodule DockupUi.Config do
   # List of environment variables and the application configs that they will override
   defp configs do
     [
-      {"GOOGLE_CLIENT_ID", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_id}},
-      {"GOOGLE_CLIENT_SECRET", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_secret}},
-      {"POSTMARK_API_KEY", {DockupUi.Mailer, :api_key}},
+      {"POSTMARK_API_KEY", {[DockupUi.Mailer, :api_key]}},
       {"DOCKUP_FROM_EMAIL", :from_email},
       {"GITHUB_OAUTH_TOKEN", :github_oauth_token},
+
+      {"GITHUB_WEBHOOK_SECRET", {:gh_webhook_plug, [:secret]}},
+      {"GOOGLE_CLIENT_ID", {:ueberauth, [Ueberauth.Strategy.Google.OAuth, :client_id]}},
+      {"GOOGLE_CLIENT_SECRET", {:ueberauth, [Ueberauth.Strategy.Google.OAuth, :client_secret]}},
+
       {"GOOGLE_DOMAIN", nil},
     ]
   end
@@ -42,22 +45,26 @@ defmodule DockupUi.Config do
     # Do nothing if env var is not set
   end
 
-  defp set_config(env_val, {app, key1, key2}) do
-    app
-    |> Application.get_env(key1, %{})
-    |> Keyword.put(key2, env_val)
-    |> set_config(key1, app)
+  defp set_config(env_val, config_key) when is_atom(config_key) do
+    Application.put_env(:dockup_ui, config_key, env_val)
   end
 
-  defp set_config(env_val, {key1, key2}) do
+  defp set_config(env_val, {[key1, key2]}) do
     :dockup_ui
     |> Application.get_env(key1, %{})
     |> Keyword.put(key2, env_val)
     |> set_config(key1)
   end
 
-  defp set_config(env_val, config_key) do
-    Application.put_env(:dockup_ui, config_key, env_val)
+  defp set_config(env_val, {app, [config_key]}) when is_atom(config_key) do
+    Application.put_env(app, config_key, env_val)
+  end
+
+  defp set_config(env_val, {app, [key1, key2]}) do
+    app
+    |> Application.get_env(key1, %{})
+    |> Keyword.put(key2, env_val)
+    |> set_config(key1, app)
   end
 
   defp set_config(env_val, config_key, app) do
