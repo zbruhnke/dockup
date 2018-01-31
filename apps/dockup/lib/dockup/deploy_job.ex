@@ -8,11 +8,11 @@ defmodule Dockup.DeployJob do
     DockerComposeConfig
   }
 
-  def spawn_process(%{id: id, git_url: repository, branch: branch}, callback) do
-    spawn(fn -> perform(id, repository, branch, callback) end)
+  def spawn_process(%{id: id, branch: branch, repository: %{git_url: git_url}}, callback) do
+    spawn(fn -> perform(id, git_url, branch, callback) end)
   end
 
-  def perform(project_identifier, repository, branch,
+  def perform(project_identifier, git_url, branch,
               callback \\ DefaultCallback.lambda, deps \\ []) do
     callback.(:queued, nil)
     project    = deps[:project]    || Project
@@ -22,7 +22,7 @@ defmodule Dockup.DeployJob do
     project_id = to_string(project_identifier)
 
     callback.(:cloning_repo, nil)
-    project.clone_repository(project_id, repository, branch)
+    project.clone_repository(project_id, git_url, branch)
 
     callback.(:starting, nil)
     urls = docker_compose_config.rewrite_variables(project_id)
