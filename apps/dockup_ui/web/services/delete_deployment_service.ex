@@ -25,7 +25,7 @@ defmodule DockupUi.DeleteDeploymentService do
   end
 
   defp delete_deployment(delete_deployment_job, deployment, callback) do
-    delete_deployment_job.destroy(deployment.id, callback.lambda(%{deployment: deployment}))
+    delete_deployment_job.destroy(deployment, callback.lambda(%{deployment: deployment}))
     :ok
   end
 end
