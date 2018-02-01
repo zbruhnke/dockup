@@ -58,7 +58,7 @@ defmodule DockupUi.UserFromAuth do
     cond do
       is_binary(val) -> String.downcase(val) == "true"
       is_boolean(val) -> val
-      _ -> false
+      true -> true # Disabled by default
     end
   end
 end
