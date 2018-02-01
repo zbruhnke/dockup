@@ -43,13 +43,4 @@ defmodule DockupUi.RepositoryController do
         render(conn, "edit.html", repository: repository, changeset: changeset)
     end
   end
-
-  def delete(conn, %{"id" => id}) do
-    repository = Repo.get_by!(Repository, id: id, organization_id: conn.params["organization_id"])
-    Repo.delete!(repository)
-
-    conn
-    |> put_flash(:info, "Repository deleted successfully.")
-    |> redirect(to: organization_config_path(conn, :index, conn.params["organization_id"]))
-  end
 end

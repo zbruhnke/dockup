@@ -49,11 +49,4 @@ defmodule DockupUi.RepositoryControllerTest do
     conn = put conn, organization_repository_path(conn, :update, organization, repository), repository: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit Repository"
   end
-
-  test "deletes chosen resource", %{conn: conn, organization: organization} do
-    repository = Repo.insert! %Repository{organization_id: organization.id}
-    conn = delete conn, organization_repository_path(conn, :delete, organization, repository)
-    assert redirected_to(conn) == organization_config_path(conn, :index, organization)
-    refute Repo.get(Repository, repository.id)
-  end
 end

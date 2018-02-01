@@ -5,7 +5,6 @@ defmodule DockupUi.DeploymentStatusUpdateService do
   """
 
   require Logger
-  import Ecto.Query
 
   alias DockupUi.{
     Deployment,
