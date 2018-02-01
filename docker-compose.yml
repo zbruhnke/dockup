@@ -16,6 +16,7 @@ dockup:
     - GOOGLE_DOMAIN
     - POSTMARK_API_KEY
     - GITHUB_WEBHOOK_SECRET
+    - DOCKUP_SIGNUP_DISABLED
   build: .
   links:
     - db

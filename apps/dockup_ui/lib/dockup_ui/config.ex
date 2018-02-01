@@ -18,6 +18,7 @@ defmodule DockupUi.Config do
       {"POSTMARK_API_KEY", {[DockupUi.Mailer, :api_key]}},
       {"DOCKUP_FROM_EMAIL", :from_email},
       {"GITHUB_OAUTH_TOKEN", :github_oauth_token},
+      {"DOCKUP_SIGNUP_DISABLED", :signup_disabled},
 
       {"GITHUB_WEBHOOK_SECRET", {:gh_webhook_plug, [:secret]}},
       {"GOOGLE_CLIENT_ID", {:ueberauth, [Ueberauth.Strategy.Google.OAuth, :client_id]}},

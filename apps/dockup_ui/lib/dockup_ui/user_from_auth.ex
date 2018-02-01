@@ -23,7 +23,11 @@ defmodule DockupUi.UserFromAuth do
   defp login_user(email, name) do
     case Repo.get_by(User, email: email) do
       nil ->
-        create_user(%{email: email, name: name})
+        if signup_disabled?() do
+          {:error, "You need an invitation to login"}
+        else
+          create_user(%{email: email, name: name})
+        end
       user ->
         update_name(user, name)
     end
@@ -46,5 +50,15 @@ defmodule DockupUi.UserFromAuth do
     user
     |> User.changeset(%{name: name})
     |> Repo.update()
+  end
+
+  defp signup_disabled? do
+    val = Application.get_env(:dockup_ui, :signup_disabled)
+
+    cond do
+      is_binary(val) -> String.downcase(val) == "true"
+      is_boolean(val) -> val
+      _ -> false
+    end
   end
 end
