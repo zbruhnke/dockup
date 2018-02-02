@@ -11,12 +11,12 @@ defmodule Dockup.DeleteDeploymentJob do
     spawn(fn -> perform(id, callback) end)
   end
 
-  def perform(project_identifier, callback \\ DefaultCallback.lambda, deps \\ []) do
+  def perform(%{id: id}, callback \\ DefaultCallback.lambda, deps \\ []) do
     callback.(:deleting_deployment, nil)
 
     container = deps[:container] || Container
     project = deps[:project] || Project
-    project_id = to_string(project_identifier)
+    project_id = to_string(id)
 
     container.stop_containers(project_id)
     project.delete_repository(project_id)
@@ -26,12 +26,12 @@ defmodule Dockup.DeleteDeploymentJob do
     exception ->
       stacktrace = System.stacktrace
       message = Exception.message(exception)
-      handle_error_message(callback, project_identifier, message)
+      handle_error_message(callback, id, message)
       reraise(exception, stacktrace)
   end
 
-  defp handle_error_message(callback, project_identifier, message) do
-    message = "An error occured when deleting deployment #{project_identifier} : #{message}"
+  defp handle_error_message(callback, id, message) do
+    message = "An error occured when deleting deployment #{id} : #{message}"
     Logger.error message
     callback.(:delete_deployment_failed, message)
   end

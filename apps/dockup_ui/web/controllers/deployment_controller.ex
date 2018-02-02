@@ -34,6 +34,7 @@ defmodule DockupUi.DeploymentController do
     user
     |> Ecto.assoc([:organizations, :repositories, :deployments])
     |> where([d], d.id == ^id)
+    |> preload(:repository)
     |> Repo.one!()
   end
 end

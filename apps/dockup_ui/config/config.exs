@@ -8,7 +8,8 @@ use Mix.Config
 config :dockup_ui,
   backend_module: FakeDockup,
   retention_days: 1,
-  from_email: "dockup@codemancers.com"
+  from_email: "dockup@codemancers.com",
+  signup_disabled: true
 
 # Configures the endpoint
 config :dockup_ui, DockupUi.Endpoint,
@@ -46,3 +47,8 @@ config :dockup_ui, ecto_repos: [DockupUi.Repo]
 config :dockup_ui, DockupUi.Mailer,
       adapter: Bamboo.PostmarkAdapter,
       api_key: ""
+
+config :gh_webhook_plug,
+  secret: "",
+  path: "/api/github_webhook",
+  action: {DockupUi.GithubWebhook, :handle}

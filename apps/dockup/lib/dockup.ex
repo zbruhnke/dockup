@@ -14,7 +14,7 @@ defmodule Dockup do
   end
 
   @impl DockupSpec
-  def destroy(id, callback) do
-    Dockup.DeleteDeploymentJob.spawn_process(id, callback)
+  def destroy(deployment, callback) do
+    Dockup.DeleteDeploymentJob.spawn_process(deployment, callback)
   end
 end

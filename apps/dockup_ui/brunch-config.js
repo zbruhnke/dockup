@@ -22,7 +22,7 @@ exports.config = {
     },
     stylesheets: {
       joinTo: {
-        "css/app.css": /^web\/static\/css\/app\/*.scss/,
+        "css/app.css": /^web\/static\/css\/app/,
         "css/home.css": "web/static/css/home.scss"
       },
       order: {

@@ -13,7 +13,6 @@ Add repositories that you would like to deploy using Dockup.
 
       <td class="text-right">
         <span><%= link "Edit", to: organization_repository_path(@conn, :edit, @organization, repository), class: "btn btn-primary" %></span>
-        <span><%= link "Delete", to: organization_repository_path(@conn, :delete, @organization, repository), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
       </td>
     </tr>
 <% end %>

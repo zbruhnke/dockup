@@ -8,7 +8,7 @@ defmodule DockupUi.CallbackTest do
 
   test "lambda returns a function" do
     deployment = insert(:deployment)
-    assert is_function(Callback.lambda(deployment, nil))
+    assert is_function(Callback.lambda(%{deployment: deployment}, nil))
   end
 
   test "callback runs DeploymentStatusUpdateService" do
@@ -20,7 +20,7 @@ defmodule DockupUi.CallbackTest do
 
     deployment = insert(:deployment, id: 1)
 
-    lambda = Callback.lambda(deployment, FakeStatusUpdateService)
+    lambda = Callback.lambda(%{deployment: deployment}, FakeStatusUpdateService)
     lambda.(:queued, "fake_payload")
     assert_received :status_updated
   end

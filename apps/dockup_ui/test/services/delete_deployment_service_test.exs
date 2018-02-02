@@ -7,7 +7,7 @@ defmodule DockupUi.DeleteDeploymentServiceTest do
   }
 
   defmodule FakeDeleteDeploymentJob do
-    def destroy(1, _callback) do
+    def destroy(%{id: 1}, _callback) do
       send self(), :ran_delete_deployment_job
       :ok
     end
