@@ -11,6 +11,7 @@ dockup:
     - VIRTUAL_HOST=${DOCKUP_DOMAIN}
     - LETSENCRYPT_HOST=${DOCKUP_DOMAIN},logio.${DOCKUP_DOMAIN}
     - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    - SLACK_WEBHOOK_URL
   build: .
   links:
     - db
