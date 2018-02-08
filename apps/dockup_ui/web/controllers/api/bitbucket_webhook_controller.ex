@@ -9,11 +9,20 @@ defmodule DockupUi.API.BitbucketWebhookController do
   }
 
   def create(conn, %{"pullrequest" => pull_request, "repository" => %{"full_name" => repo}}) do
-    branch = pull_request["source"]["branch"]["name"]
-    git_url = "git@bitbucket.org:#{repo}.git"
-    Logger.info "Received Bitbucket webhook for creating a new deployment for #{repo}:#{branch}"
-    send_resp(conn, :ok, "OK")
 
+    [event] = get_req_header(conn, "x-event-key")
+    git_url = "git@bitbucket.org:#{repo}.git"
+    branch = pull_request["source"]["branch"]["name"]
+
+    Logger.info "Received Bitbucket webhook for creating a new deployment for #{repo}:#{branch}"
+    do_deploy(conn, event, git_url, branch)
+  end
+
+  def create(conn, _params) do
+    send_bad_req_response(conn)
+  end
+
+  defp do_deploy(conn, event, git_url, branch) when event in ["pullrequest:created", "pullrequest:updated"] do
     deployment_params = %{
       "git_url" => git_url,
       "branch" => branch
@@ -34,7 +43,11 @@ defmodule DockupUi.API.BitbucketWebhookController do
     end
   end
 
-  def create(conn, _params) do
+  defp do_deploy(conn, _, _, _) do
+    send_bad_req_response(conn)
+  end
+
+  defp send_bad_req_response(conn) do
     Logger.info "Dockup received an unknown event from Bitbucket which will be ignored."
     send_resp(conn, :bad_request, "Unknown bitbucket webhook event")
   end
