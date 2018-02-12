@@ -11,7 +11,8 @@ defmodule DockupUi.Callback do
     CallbackProtocol,
     Deployment,
     Repo,
-    SlackWebhook
+    SlackWebhook,
+    DeploymentQueue
   }
 
   def lambda(deployment, callback_data, status_update_service \\ DeploymentStatusUpdateService) do
@@ -25,6 +26,7 @@ defmodule DockupUi.Callback do
         # Trigger callback by spawning a new thread, we don't care if fails
         spawn fn ->
           try do
+            process_deployment_queue(event)
             send_slack_message(event, deployment, payload)
             apply(CallbackProtocol, event, [callback_data, deployment, payload])
           rescue
@@ -32,6 +34,15 @@ defmodule DockupUi.Callback do
           end
         end
     end
+  end
+
+  defp process_deployment_queue(:deployment_deleted) do
+    if DeploymentQueue.alive? do
+      DeploymentQueue.process_queue()
+    end
+  end
+  defp process_deployment_queue(_) do
+    :ok
   end
 
   defp send_slack_message(:started, deployment, payload) when is_list payload do
