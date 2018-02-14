@@ -14,7 +14,6 @@ defmodule Dockup.DeployJob do
 
   def perform(project_identifier, repository, branch,
               callback \\ DefaultCallback.lambda, deps \\ []) do
-    callback.(:queued, nil)
     project    = deps[:project]    || Project
     container = deps[:container] || Container
     docker_compose_config = deps[:docker_compose_config] || DockerComposeConfig

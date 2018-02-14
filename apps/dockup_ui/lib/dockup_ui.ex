@@ -16,7 +16,8 @@ defmodule DockupUi do
       supervisor(DockupUi.Endpoint, []),
       # Start the Ecto repository
       supervisor(DockupUi.Repo, []),
-      worker(DockupUi.DeleteScheduler, [])
+      worker(DockupUi.DeleteScheduler, []),
+      worker(DockupUi.DeploymentQueue, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

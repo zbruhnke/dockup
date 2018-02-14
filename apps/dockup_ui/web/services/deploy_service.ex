@@ -1,26 +1,23 @@
 defmodule DockupUi.DeployService do
   alias DockupUi.{
     Deployment,
-    Repo
+    Repo,
+    DeploymentQueue
   }
 
-  @backend Application.fetch_env!(:dockup_ui, :backend_module)
-
   def run(deployment_params, callback_data, deps \\ []) do
-    deploy_job = deps[:deploy_job] || @backend
-    callback = deps[:callback] || DockupUi.Callback
+    deployment_queue = deps[:deployment_queue] || DeploymentQueue
 
     with \
       changeset <- Deployment.create_changeset(%Deployment{status: "queued"}, deployment_params),
       {:ok, deployment} <- Repo.insert(changeset),
-      :ok <- deploy_project(deploy_job, deployment, callback_data, callback)
+      :ok <- queue_deployment(deployment, callback_data, deployment_queue)
     do
       {:ok, deployment}
     end
   end
 
-  defp deploy_project(deploy_job, deployment, callback_data, callback) do
-    deploy_job.deploy(deployment, callback.lambda(deployment, callback_data))
-    :ok
+  defp queue_deployment(deployment, callback_data, deployment_queue) do
+    deployment_queue.enqueue({deployment, callback_data})
   end
 end
