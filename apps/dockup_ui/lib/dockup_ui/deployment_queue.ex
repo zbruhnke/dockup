@@ -15,9 +15,10 @@ defmodule DockupUi.DeploymentQueue do
   @doc """
   Starts the deployment queue
   """
-  def start_link(backend \\ @backend, name \\ __MODULE__) do
+  def start_link(name \\ __MODULE__, backend \\ @backend, callback \\ Callback) do
     state = %{
       backend: backend,
+      callback: callback,
       queue: :queue.new()
     }
     GenServer.start_link(__MODULE__, state, name: name)
@@ -56,6 +57,10 @@ defmodule DockupUi.DeploymentQueue do
   end
 
   def handle_call({:enqueue, deployment_params}, _from, state) do
+    {deployment, callback_data} = deployment_params
+    callback = state.callback.lambda(deployment, callback_data)
+    callback.(:queued, nil)
+
     process_queue(self())
     state = %{state | queue: :queue.in(deployment_params, state.queue)}
     {:reply, :ok, state}
@@ -68,7 +73,7 @@ defmodule DockupUi.DeploymentQueue do
   def handle_cast(:process, state) do
     queue =
       if current_deployment_count() < max_concurrent_deployments() do
-        deploy_from_queue(state.queue, state.backend)
+        deploy_from_queue(state.queue, state.backend, state.callback)
       else
         state.queue
       end
@@ -77,10 +82,12 @@ defmodule DockupUi.DeploymentQueue do
     {:noreply, state}
   end
 
-  defp deploy_from_queue(queue, backend) do
+  defp deploy_from_queue(queue, backend, callback_module) do
     case :queue.out(queue) do
       {{:value, {deployment, callback_data}}, queue} ->
-        backend.deploy(deployment, Callback.lambda(deployment, callback_data))
+        callback = callback_module.lambda(deployment, callback_data)
+        callback.(:processing, nil)
+        backend.deploy(deployment, callback)
         queue
       {:empty, queue} ->
         queue
@@ -90,7 +97,7 @@ defmodule DockupUi.DeploymentQueue do
   defp current_deployment_count do
     query =
       from d in Deployment,
-      where: d.status == "started"
+      where: d.status not in ["queued", "deployment_deleted"]
 
     Repo.aggregate(query, :count, :id)
   end

@@ -2,6 +2,9 @@ defprotocol DockupUi.CallbackProtocol do
   # All deployments are created with this initial status. Payload is nil
   def queued(callback_data, deployment, payload)
 
+  # Called when deployment is picked up from the queue and handed off for deployment
+  def processing(callback_data, deployment, payload)
+
   # Called before cloning git repo. Payload is nil
   def cloning_repo(callback_data, deployment, payload)
 
@@ -35,6 +38,7 @@ defmodule DockupUi.CallbackProtocol.Defaults do
   defmacro __using__(_) do
     quote do
       def queued(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def processing(data, deployment, payload), do: common_callback(data, deployment, payload)
       def cloning_repo(data, deployment, payload), do: common_callback(data, deployment, payload)
       def starting(data, deployment, payload), do: common_callback(data, deployment, payload)
       def checking_urls(data, deployment, payload), do: common_callback(data, deployment, payload)
@@ -46,7 +50,7 @@ defmodule DockupUi.CallbackProtocol.Defaults do
       def common_callback(_data, _deployment, _payload), do: :ok
 
       defoverridable [
-        queued: 3, cloning_repo: 3, starting: 3, checking_urls: 3,
+        queued: 3, processing: 3, cloning_repo: 3, starting: 3, checking_urls: 3,
         started: 3, deployment_failed: 3, deleting_deployment: 3,
         deployment_deleted: 3, delete_deployment_failed: 3,common_callback: 3
       ]

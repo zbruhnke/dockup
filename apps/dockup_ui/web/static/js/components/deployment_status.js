@@ -22,6 +22,9 @@ const DeploymentStatus = ({status}) => {
     case 'queued':
       return renderStatus('Queued', textClass, "fa-circle-o-notch fa-spin");
       break;
+    case 'processing':
+      return renderStatus('Processing', textClass, "fa-circle-o-notch fa-spin");
+      break;
     case 'cloning_repo':
       return renderStatus('Cloning', textClass, "fa-download");
       break;

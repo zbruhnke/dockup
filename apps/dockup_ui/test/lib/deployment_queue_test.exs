@@ -18,12 +18,21 @@ defmodule DockupUi.DeploymentQueueTest do
     end
   end
 
+  defmodule FakeCallback do
+    def lambda(_, _) do
+      fn _, _ -> :ok end
+    end
+  end
+
   test "does not deploy from queue when there are max no of concurrent deployments " do
-    for _ <- 1..6 do
+    for _ <- 1..4 do
       insert(:deployment, status: "started")
     end
+    for _ <- 1..2 do
+      insert(:deployment, status: "processing")
+    end
 
-    {:ok, _pid} = DeploymentQueue.start_link(FakeBackend, @name)
+    {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
     DeploymentQueue.enqueue({{self(), :new_deployment}, nil}, @name)
     assert DeploymentQueue.get_queue(@name) == [{{self(), :new_deployment}, nil}]
     refute_receive {:new_deployment, _}
@@ -33,8 +42,14 @@ defmodule DockupUi.DeploymentQueueTest do
     for _ <- 1..4 do
       insert(:deployment, status: "started")
     end
+    for _ <- 1..4 do
+      insert(:deployment, status: "deployment_deleted")
+    end
+    for _ <- 1..4 do
+      insert(:deployment, status: "queued")
+    end
 
-    {:ok, _pid} = DeploymentQueue.start_link(FakeBackend, @name)
+    {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
     DeploymentQueue.enqueue({{self(), :tail_deployment}, nil}, @name)
     DeploymentQueue.enqueue({{self(), :head_deployment}, nil}, @name)
     assert_receive {:tail_deployment, t1}
