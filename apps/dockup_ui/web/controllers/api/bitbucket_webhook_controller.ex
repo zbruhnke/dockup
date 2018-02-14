@@ -4,25 +4,27 @@ defmodule DockupUi.API.BitbucketWebhookController do
   require Logger
 
   alias DockupUi.{
+    Deployment,
     DeployService,
     Callback.Null
   }
 
-  def create(conn, %{"pullrequest" => pull_request, "repository" => %{"full_name" => repo}}) do
+  import Ecto.Query
 
+  def create(conn, %{"pullrequest" => pull_request, "repository" => %{"full_name" => repo}}) do
     [event] = get_req_header(conn, "x-event-key")
     git_url = "git@bitbucket.org:#{repo}.git"
     branch = pull_request["source"]["branch"]["name"]
 
-    Logger.info "Received Bitbucket webhook for creating a new deployment for #{repo}:#{branch}"
-    do_deploy(conn, event, git_url, branch)
+    Logger.info "Received Bitbucket webhook for #{repo}:#{branch}"
+    handle(conn, event, git_url, branch)
   end
 
   def create(conn, _params) do
     send_bad_req_response(conn)
   end
 
-  defp do_deploy(conn, event, git_url, branch) when event in ["pullrequest:created", "pullrequest:updated"] do
+  defp handle(conn, event, git_url, branch) when event in ["pullrequest:created", "pullrequest:updated"] do
     deployment_params = %{
       "git_url" => git_url,
       "branch" => branch
@@ -43,7 +45,28 @@ defmodule DockupUi.API.BitbucketWebhookController do
     end
   end
 
-  defp do_deploy(conn, _, _, _) do
+  defp handle(conn, event, git_url, branch) when event in ["pullrequest:fulfilled", "pullrequest:rejected"] do
+    delete_deployment_service = conn.assigns[:delete_deployment_service] || DeleteDeploymentService
+    query =
+      from d in Deployment,
+      where: d.git_url == ^git_url,
+      where: d.branch == ^branch,
+      select: d.id
+    deployment_ids = Repo.all(query)
+
+    case delete_deployment_service.run_all(deployment_ids) do
+      true ->
+        conn
+        |> put_status(:ok)
+        |> text("ok")
+      false ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> text("error")
+    end
+  end
+
+  defp handle(conn, _, _, _) do
     send_bad_req_response(conn)
   end
 
