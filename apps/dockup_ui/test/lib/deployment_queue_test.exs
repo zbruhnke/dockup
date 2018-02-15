@@ -13,14 +13,14 @@ defmodule DockupUi.DeploymentQueueTest do
   @name TestDeploymentQueue
 
   defmodule FakeBackend do
-    def deploy({pid, deployment}, _fn) do
-      send pid, {deployment, :os.system_time()}
+    def deploy(deployment, fun) do
+      send fun.(nil, nil), {deployment.id, :os.system_time()}
     end
   end
 
   defmodule FakeCallback do
-    def lambda(_, _) do
-      fn _, _ -> :ok end
+    def lambda(_deployment, pid) do
+      fn _, _ -> pid end
     end
   end
 
@@ -31,11 +31,12 @@ defmodule DockupUi.DeploymentQueueTest do
     for _ <- 1..2 do
       insert(:deployment, status: "processing")
     end
+    deployment = insert(:deployment, status: "queued", id: 100)
 
     {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
-    DeploymentQueue.enqueue({{self(), :new_deployment}, nil}, @name)
-    assert DeploymentQueue.get_queue(@name) == [{{self(), :new_deployment}, nil}]
-    refute_receive {:new_deployment, _}
+    DeploymentQueue.enqueue({deployment, self()}, @name)
+    assert DeploymentQueue.get_queue(@name) == [{deployment, self()}]
+    refute_receive {100, _}
   end
 
   test "deploys from tail of queue when there aren't enough concurrent deployments" do
@@ -48,12 +49,34 @@ defmodule DockupUi.DeploymentQueueTest do
     for _ <- 1..4 do
       insert(:deployment, status: "queued")
     end
+    tail_deployment = insert(:deployment, status: "queued", id: 100)
+    head_deployment = insert(:deployment, status: "queued", id: 200)
 
     {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
-    DeploymentQueue.enqueue({{self(), :tail_deployment}, nil}, @name)
-    DeploymentQueue.enqueue({{self(), :head_deployment}, nil}, @name)
-    assert_receive {:tail_deployment, t1}
-    assert_receive {:head_deployment, t2}
+    DeploymentQueue.enqueue({tail_deployment, self()}, @name)
+    DeploymentQueue.enqueue({head_deployment, self()}, @name)
+    assert_receive {100, t1}
+    assert_receive {200, t2}
     assert t2 > t1
+  end
+
+  test "ignores deleted deployments when processing queue" do
+    for _ <- 1..4 do
+      insert(:deployment, status: "started")
+    end
+    for _ <- 1..4 do
+      insert(:deployment, status: "deployment_deleted")
+    end
+    for _ <- 1..4 do
+      insert(:deployment, status: "queued")
+    end
+    tail_deployment = insert(:deployment, status: "deployment_deleted", id: 100)
+    head_deployment = insert(:deployment, status: "queued", id: 200)
+
+    {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
+    DeploymentQueue.enqueue({tail_deployment, self()}, @name)
+    DeploymentQueue.enqueue({head_deployment, self()}, @name)
+    refute_receive {100, _}
+    assert_receive {200, _}
   end
 end

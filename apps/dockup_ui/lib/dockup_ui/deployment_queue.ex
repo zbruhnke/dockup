@@ -85,10 +85,16 @@ defmodule DockupUi.DeploymentQueue do
   defp deploy_from_queue(queue, backend, callback_module) do
     case :queue.out(queue) do
       {{:value, {deployment, callback_data}}, queue} ->
-        callback = callback_module.lambda(deployment, callback_data)
-        callback.(:processing, nil)
-        backend.deploy(deployment, callback)
-        queue
+        # There is a chance that the deployment may have been
+        # deleted. In that case, we should skip to the next item in the queue.
+        if deployable?(deployment) do
+          callback = callback_module.lambda(deployment, callback_data)
+          callback.(:processing, nil)
+          backend.deploy(deployment, callback)
+          queue
+        else
+          deploy_from_queue(queue, backend, callback_module)
+        end
       {:empty, queue} ->
         queue
     end
@@ -108,5 +114,9 @@ defmodule DockupUi.DeploymentQueue do
     else
       @default_max_concurrent_deployments
     end
+  end
+
+  defp deployable?(%{id: id}) do
+    Repo.get_by(Deployment, id: id, status: "queued")
   end
 end
