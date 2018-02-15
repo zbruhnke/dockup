@@ -3,7 +3,8 @@ defmodule DockupUi.DeleteDeploymentService do
 
   alias DockupUi.{
     Deployment,
-    Repo
+    Repo,
+    Callback.Null
   }
 
   @backend Application.fetch_env!(:dockup_ui, :backend_module)
@@ -21,6 +22,13 @@ defmodule DockupUi.DeleteDeploymentService do
       :ok <- delete_deployment(delete_deployment_job, deployment, callback_data, callback)
     do
       {:ok, deployment}
+    end
+  end
+
+  def run_all(deployment_ids) when is_list deployment_ids do
+    Enum.all? deployment_ids, fn deployment_id ->
+      {result, _} = run(deployment_id, %Null{})
+      result == :ok
     end
   end
 
