@@ -3,3 +3,5 @@ alias DockupUi.{
   Repo,
   DeploymentStatusUpdateService
 }
+
+import Ecto.Query
