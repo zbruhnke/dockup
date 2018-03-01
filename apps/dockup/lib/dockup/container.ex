@@ -12,6 +12,15 @@ defmodule Dockup.Container do
       "docker-compose",
       [
         "-f", "#{docker_compose_file(project_id)}",
+        "pull"
+      ],
+      Project.project_dir(project_id)
+    )
+
+    command.run(
+      "docker-compose",
+      [
+        "-f", "#{docker_compose_file(project_id)}",
         "-p", "#{project_id}",
         "up",
         "-d"
