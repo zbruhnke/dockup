@@ -3,6 +3,11 @@ defmodule Dockup.ContainerTest do
 
   test "start_containers runs docker-compose up" do
     defmodule StartContainersCommand do
+      def run("docker-compose", ["-f", "my-docker-compose.yml", "pull"], dir) do
+        # Ensure command is run inside project directory
+        ^dir = Dockup.Project.project_dir("foo")
+      end
+
       def run("docker-compose", ["-f", "my-docker-compose.yml", "-p", "foo", "up", "-d"], dir) do
         # Ensure command is run inside project directory
         ^dir = Dockup.Project.project_dir("foo")
