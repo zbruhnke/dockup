@@ -23,6 +23,7 @@ defmodule Dockup.Container do
         "-f", "#{docker_compose_file(project_id)}",
         "-p", "#{project_id}",
         "up",
+        "--build",
         "-d"
       ],
       Project.project_dir(project_id)
