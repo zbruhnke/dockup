@@ -10,6 +10,7 @@ defmodule DockupUi.DeploymentQueue do
   import Ecto.Query
 
   @default_max_concurrent_deployments 5
+  @default_max_concurrent_builds 2
   @backend Application.fetch_env!(:dockup_ui, :backend_module)
 
   @doc """
@@ -72,7 +73,7 @@ defmodule DockupUi.DeploymentQueue do
 
   def handle_cast(:process, state) do
     queue =
-      if current_deployment_count() < max_concurrent_deployments() do
+      if has_capacity_to_deploy?() do
         deploy_from_queue(state.queue, state.backend, state.callback)
       else
         state.queue
@@ -80,6 +81,11 @@ defmodule DockupUi.DeploymentQueue do
 
     state = %{state | queue: queue}
     {:noreply, state}
+  end
+
+  defp has_capacity_to_deploy? do
+    current_deployment_count() < max_concurrent_deployments() &&
+      current_build_count() < max_concurrent_builds()
   end
 
   defp deploy_from_queue(queue, backend, callback_module) do
@@ -108,11 +114,27 @@ defmodule DockupUi.DeploymentQueue do
     Repo.aggregate(query, :count, :id)
   end
 
+  defp current_build_count do
+    query =
+      from d in Deployment,
+      where: d.status == "starting"
+
+    Repo.aggregate(query, :count, :id)
+  end
+
   defp max_concurrent_deployments do
     if val = System.get_env("DOCKUP_MAX_CONCURRENT_DEPLOYMENTS") do
       String.to_integer(val)
     else
       @default_max_concurrent_deployments
+    end
+  end
+
+  defp max_concurrent_builds do
+    if val = System.get_env("DOCKUP_MAX_CONCURRENT_BUILDS") do
+      String.to_integer(val)
+    else
+      @default_max_concurrent_builds
     end
   end
 

@@ -24,13 +24,29 @@ defmodule DockupUi.DeploymentQueueTest do
     end
   end
 
-  test "does not deploy from queue when there are max no of concurrent deployments " do
+  test "does not deploy from queue when there are max no of concurrent deployments" do
     for _ <- 1..4 do
       insert(:deployment, status: "started")
     end
     for _ <- 1..2 do
       insert(:deployment, status: "processing")
     end
+    deployment = insert(:deployment, status: "queued", id: 100)
+
+    {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
+    DeploymentQueue.enqueue({deployment, self()}, @name)
+    assert DeploymentQueue.get_queue(@name) == [{deployment, self()}]
+    refute_receive {100, _}
+  end
+
+  test "does not deploy from queue when there are max no of concurrent builds" do
+    insert(:deployment, status: "starting")
+    insert(:deployment, status: "starting")
+
+    # Even if there is only one started deployment, there are two builds in
+    # "starting" state above
+    insert(:deployment, status: "started")
+
     deployment = insert(:deployment, status: "queued", id: 100)
 
     {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, FakeCallback)
