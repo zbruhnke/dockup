@@ -36,7 +36,7 @@ defmodule DockupUi.Callback do
     end
   end
 
-  defp process_deployment_queue(:deployment_deleted) do
+  defp process_deployment_queue(status) when status in [:deployment_deleted, :checking_urls] do
     if DeploymentQueue.alive? do
       DeploymentQueue.process_queue()
     end
