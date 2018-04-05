@@ -117,7 +117,7 @@ defmodule DockupUi.DeploymentQueue do
   defp current_build_count do
     query =
       from d in Deployment,
-      where: d.status == "starting"
+      where: d.status in ["processing", "cloning_repo", "starting"]
 
     Repo.aggregate(query, :count, :id)
   end
