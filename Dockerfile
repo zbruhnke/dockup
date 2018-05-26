@@ -4,6 +4,12 @@ RUN apt-get update
 RUN wget -qO- https://deb.nodesource.com/setup_6.x | bash
 RUN apt-get update && apt-get install -y nodejs build-essential
 
+# https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl
+RUN apt-get update && apt-get install -y apt-transport-https
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update && apt-get install -y kubectl
+
 # Install docker and docker-compose
 #RUN curl -sSL https://get.docker.com/ | sh
 #RUN sh -c "curl -L https://github.com/docker/compose/releases/download/1.7.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose"
