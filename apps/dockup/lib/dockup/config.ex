@@ -23,8 +23,7 @@ defmodule Dockup.Config do
   end
 
   defp set_config(env_val, config_key, :directory) do
-    dir = ensure_dir_exists(env_val)
-    Application.put_env(:dockup, config_key, dir)
+    Application.put_env(:dockup, config_key, env_val)
   end
 
   defp set_config(env_val, config_key, :string) do
