@@ -23,10 +23,13 @@ defmodule Dockup.Helm.InstallJob do
     callback.(:starting, nil)
     # name = ?a..?z |> Enum.take_random(len) |> to_string
     name = "dockup#{project_id}"
+    domain = Application.fetch_env!(:dockup, :domain)
+    url = name <> "." <> domain
     dir = Project.project_dir(project_id)
     tag = "tag"
     command = ["install",
                "--set", "image.tag=#{tag}",
+               "--set", "ingress.hosts[0]=#{url}",
                "--name=#{name}",
                "helm"]
 
@@ -35,10 +38,8 @@ defmodule Dockup.Helm.InstallJob do
       {out, _} -> raise out
     end
 
-    domain = Application.fetch_env!(:dockup, :domain)
-    urls = [name <> "." <> domain]
     callback.(:checking_urls, log_url(project_id))
-    urls = project.wait_till_up(urls, project_id)
+    urls = project.wait_till_up([url], project_id)
 
     callback.(:started, urls)
   rescue
