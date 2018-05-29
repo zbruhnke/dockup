@@ -26,7 +26,8 @@ defmodule Dockup.Helm.InstallJob do
     domain = Application.fetch_env!(:dockup, :domain)
     url = name <> "." <> domain
     dir = Project.project_dir(project_id)
-    tag = "tag"
+    {git_sha1, 0} = Command.run("git", ["rev-parse", "HEAD"], dir)
+    tag = String.trim(git_sha1)
     command = ["install",
                "--set", "image.tag=#{tag}",
                "--set", "ingress.hosts[0]=#{url}",
