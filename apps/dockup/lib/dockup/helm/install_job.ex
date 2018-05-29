@@ -22,13 +22,18 @@ defmodule Dockup.Helm.InstallJob do
 
     callback.(:starting, nil)
     # name = ?a..?z |> Enum.take_random(len) |> to_string
-    name = project_id
+    name = "dockup#{project_id}"
     dir = Project.project_dir(project_id)
     tag = "tag"
-    {_, 0} = helm_run(dir, ["install",
-                            "--set", "image.tag=#{tag}",
-                            "--name=#{name}",
-                            "."])
+    command = ["install",
+               "--set", "image.tag=#{tag}",
+               "--name=#{name}",
+               "helm"]
+
+    case helm_run(dir, command) do
+      {_, 0} -> "Success!"
+      {out, _} -> raise out
+    end
 
     domain = Application.fetch_env!(:dockup, :domain)
     urls = [name <> "." <> domain]

@@ -17,8 +17,9 @@ defmodule Dockup.Helm.DeleteJob do
 
     project = deps[:project] || Project
     project_id = to_string(project_identifier)
+    name = "dockup#{project_id}"
 
-    {_, 0} = Command.run("helm", ["delete", project_id], ".")
+    {_, 0} = Command.run("helm", ["delete", name], ".")
     project.delete_repository(project_id)
 
     callback.(:deployment_deleted, nil)
