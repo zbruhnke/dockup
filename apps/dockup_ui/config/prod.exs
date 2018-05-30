@@ -19,9 +19,6 @@ config :dockup_ui, DockupUi.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
-config :dockup_ui,
-  backend_module: Dockup.Backends.Compose
-
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

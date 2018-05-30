@@ -11,12 +11,13 @@ defmodule DockupUi.DeploymentQueue do
 
   @default_max_concurrent_deployments 5
   @default_max_concurrent_builds 2
-  @backend Application.fetch_env!(:dockup_ui, :backend_module)
 
   @doc """
   Starts the deployment queue
   """
-  def start_link(name \\ __MODULE__, backend \\ @backend, callback \\ Callback) do
+  def start_link(name \\ __MODULE__,
+                 backend \\ Application.fetch_env!(:dockup_ui, :backend_module),
+                 callback \\ Callback) do
     state = %{
       backend: backend,
       callback: callback,
