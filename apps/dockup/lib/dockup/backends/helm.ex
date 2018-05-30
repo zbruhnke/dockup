@@ -3,6 +3,7 @@ defmodule Dockup.Backends.Helm do
 
   @impl DockupSpec
   def initialize do
+    Dockup.Config.set_configs_from_env()
   end
 
   @impl DockupSpec
