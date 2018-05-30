@@ -1,9 +1,9 @@
-defmodule Dockup.Container do
+defmodule Dockup.Backends.Compose.Container do
   require Logger
 
   alias Dockup.{
     Project,
-    DockerComposeConfig
+    Backends.Compose.DockerComposeConfig
   }
 
   def start_containers(project_id, command \\ Dockup.Command) do

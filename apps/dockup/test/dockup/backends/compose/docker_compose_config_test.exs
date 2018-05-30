@@ -1,8 +1,8 @@
-defmodule Dockup.DockerComposeConfigTest do
+defmodule Dockup.Backends.Compose.DockerComposeConfigTest do
   use ExUnit.Case, async: true
 
   alias Dockup.{
-    DockerComposeConfig
+    Backends.Compose.DockerComposeConfig
   }
 
   defp file_content do

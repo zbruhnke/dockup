@@ -20,7 +20,7 @@ config :dockup_ui, DockupUi.Endpoint,
 config :logger, level: :info
 
 config :dockup_ui,
-  backend_module: Dockup
+  backend_module: Dockup.Backends.Compose
 
 # ## SSL Support
 #

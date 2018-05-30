@@ -1,4 +1,4 @@
-defmodule Dockup.DeleteDeploymentJobTest do
+defmodule Dockup.Backends.Compose.DeleteDeploymentJobTest do
   use ExUnit.Case, async: true
 
   defmodule FakeProject do
@@ -18,7 +18,7 @@ defmodule Dockup.DeleteDeploymentJobTest do
   end
 
   test "performing the delete deployment job stops the project and deletes project dir" do
-    Dockup.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FakeContainer)
+    Dockup.Backends.Compose.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FakeContainer)
     assert_received {:deleting_deployment, nil}
     assert_received {:deployment_deleted, nil}
   end
@@ -31,7 +31,7 @@ defmodule Dockup.DeleteDeploymentJobTest do
     end
 
     assert_raise RuntimeError, "cannot stop containers", fn ->
-      Dockup.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FailingContainer)
+      Dockup.Backends.Compose.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FailingContainer)
     end
 
     assert_received {:deleting_deployment, nil}

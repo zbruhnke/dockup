@@ -1,10 +1,10 @@
-defmodule Dockup.DeleteDeploymentJob do
+defmodule Dockup.Backends.Helm.DeleteJob do
   require Logger
 
   alias Dockup.{
     DefaultCallback,
-    Container,
-    Project
+    Project,
+    Command
   }
 
   def spawn_process(id, callback) do
@@ -12,13 +12,14 @@ defmodule Dockup.DeleteDeploymentJob do
   end
 
   def perform(project_identifier, callback \\ DefaultCallback.lambda, deps \\ []) do
+    IO.inspect project_identifier
     callback.(:deleting_deployment, nil)
 
-    container = deps[:container] || Container
     project = deps[:project] || Project
     project_id = to_string(project_identifier)
+    name = "dockup#{project_id}"
 
-    container.stop_containers(project_id)
+    {_, 0} = Command.run("helm", ["delete", name], ".")
     project.delete_repository(project_id)
 
     callback.(:deployment_deleted, nil)
@@ -36,4 +37,3 @@ defmodule Dockup.DeleteDeploymentJob do
     callback.(:delete_deployment_failed, message)
   end
 end
-

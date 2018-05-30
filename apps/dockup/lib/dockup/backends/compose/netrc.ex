@@ -1,4 +1,4 @@
-defmodule Dockup.Netrc do
+defmodule Dockup.Backends.Compose.Netrc do
   require Logger
 
   def write do

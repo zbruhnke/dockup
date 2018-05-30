@@ -26,8 +26,8 @@ defmodule Dockup.DeployJobTest do
   end
 
   test "performing a deployment triggers deployment using the project type" do
-    Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
-                             project: FakeProject, container: FakeContainer, docker_compose_config: FakeDockerComposeConfig)
+    Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
+                                              project: FakeProject, container: FakeContainer, docker_compose_config: FakeDockerComposeConfig)
     assert_received {:cloning_repo, nil}
     assert_received {:starting, nil}
     assert_received :docker_compose_config_prepared
@@ -44,8 +44,8 @@ defmodule Dockup.DeployJobTest do
     end
 
     assert_raise RuntimeError, "ifuckedup", fn ->
-      Dockup.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
-                              project: FakeProject, container: FakeFailingContainer, docker_compose_config: FakeDockerComposeConfig)
+      Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
+                                                project: FakeProject, container: FakeFailingContainer, docker_compose_config: FakeDockerComposeConfig)
     end
 
     assert_received {:deployment_failed, "An error occured when deploying 123 : ifuckedup"}

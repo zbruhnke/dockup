@@ -1,11 +1,10 @@
-defmodule Dockup.DeployJob do
+defmodule Dockup.Backends.Helm.InstallJob do
   require Logger
 
   alias Dockup.{
     DefaultCallback,
     Project,
-    Container,
-    DockerComposeConfig
+    Command
   }
 
   def spawn_process(%{id: id, git_url: repository, branch: branch}, callback) do
@@ -15,8 +14,6 @@ defmodule Dockup.DeployJob do
   def perform(project_identifier, repository, branch,
               callback \\ DefaultCallback.lambda, deps \\ []) do
     project    = deps[:project]    || Project
-    container = deps[:container] || Container
-    docker_compose_config = deps[:docker_compose_config] || DockerComposeConfig
 
     project_id = to_string(project_identifier)
 
@@ -24,11 +21,26 @@ defmodule Dockup.DeployJob do
     project.clone_repository(project_id, repository, branch)
 
     callback.(:starting, nil)
-    urls = docker_compose_config.rewrite_variables(project_id)
-    container.start_containers(project_id)
+    # name = ?a..?z |> Enum.take_random(len) |> to_string
+    name = "dockup#{project_id}"
+    domain = Application.fetch_env!(:dockup, :domain)
+    url = name <> "." <> domain
+    dir = Project.project_dir(project_id)
+    {git_sha1, 0} = Command.run("git", ["rev-parse", "HEAD"], dir)
+    tag = String.trim(git_sha1)
+    command = ["install",
+               "--set", "image.tag=#{tag}",
+               "--set", "ingress.hosts[0]=#{url}",
+               "--name=#{name}",
+               "helm"]
+
+    case helm_run(dir, command) do
+      {_, 0} -> "Success!"
+      {out, _} -> raise out
+    end
 
     callback.(:checking_urls, log_url(project_id))
-    urls = project.wait_till_up(urls, project_id)
+    urls = project.wait_till_up([url], project_id)
 
     callback.(:started, urls)
   rescue
@@ -39,6 +51,13 @@ defmodule Dockup.DeployJob do
       reraise(exception, stacktrace)
   end
 
+  defp helm_run(dir, command) do
+    Command.run("helm", command, dir)
+  end
+
+  # This should be something else! Maybe logging should be separate framework
+  # We can use ELK and get logging out. K8s has out of box fluentd, not sure
+  # what that is, it can be used for logging
   defp log_url(project_id) do
     domain = Application.fetch_env!(:dockup, :domain)
     "logio.#{domain}/#?projectName=#{project_id}"
