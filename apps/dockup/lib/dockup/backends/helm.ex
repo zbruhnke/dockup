@@ -1,4 +1,4 @@
-defmodule Dockup.Helm.Spec do
+defmodule Dockup.Backends.Helm do
   @behaviour DockupSpec
 
   @impl DockupSpec
@@ -7,11 +7,11 @@ defmodule Dockup.Helm.Spec do
 
   @impl DockupSpec
   def deploy(deployment, callback) do
-    Dockup.Helm.InstallJob.spawn_process(deployment, callback)
+    Dockup.Backends.Helm.InstallJob.spawn_process(deployment, callback)
   end
 
   @impl DockupSpec
   def destroy(id, callback) do
-    Dockup.Helm.DeleteJob.spawn_process(id, callback)
+    Dockup.Backends.Helm.DeleteJob.spawn_process(id, callback)
   end
 end

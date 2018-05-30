@@ -1,4 +1,4 @@
-defmodule Dockup.Helm.DeleteJob do
+defmodule Dockup.Backends.Helm.DeleteJob do
   require Logger
 
   alias Dockup.{

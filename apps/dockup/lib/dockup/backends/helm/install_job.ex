@@ -1,4 +1,4 @@
-defmodule Dockup.Helm.InstallJob do
+defmodule Dockup.Backends.Helm.InstallJob do
   require Logger
 
   alias Dockup.{
