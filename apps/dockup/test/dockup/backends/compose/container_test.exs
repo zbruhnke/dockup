@@ -1,4 +1,4 @@
-defmodule Dockup.ContainerTest do
+defmodule Dockup.Backends.Compose.ContainerTest do
   use ExUnit.Case, async: true
 
   test "start_containers runs docker-compose up" do
@@ -24,7 +24,7 @@ defmodule Dockup.ContainerTest do
     """
     File.write!(config_file, file_content)
 
-    Dockup.Container.start_containers("foo", StartContainersCommand)
+    Dockup.Backends.Compose.Container.start_containers("foo", StartContainersCommand)
   end
 
   test "stop_containers runs docker-compose down" do
@@ -36,6 +36,6 @@ defmodule Dockup.ContainerTest do
     end
 
     File.rm_rf Dockup.Project.project_dir("foo")
-    Dockup.Container.stop_containers("foo", StopContainersCommand)
+    Dockup.Backends.Compose.Container.stop_containers("foo", StopContainersCommand)
   end
 end

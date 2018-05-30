@@ -1,4 +1,4 @@
-defmodule Dockup.Htpasswd do
+defmodule Dockup.Backends.Compose.Htpasswd do
   require Logger
 
   def write do

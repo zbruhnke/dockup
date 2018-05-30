@@ -1,4 +1,4 @@
-defmodule Dockup.DockerComposeConfig do
+defmodule Dockup.Backends.Compose.DockerComposeConfig do
   require Logger
 
   alias Dockup.{

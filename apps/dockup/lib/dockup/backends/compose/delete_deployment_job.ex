@@ -1,9 +1,9 @@
-defmodule Dockup.DeleteDeploymentJob do
+defmodule Dockup.Backends.Compose.DeleteDeploymentJob do
   require Logger
 
   alias Dockup.{
     DefaultCallback,
-    Container,
+    Backends.Compose.Container,
     Project
   }
 

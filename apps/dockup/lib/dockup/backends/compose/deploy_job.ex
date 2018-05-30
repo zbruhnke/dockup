@@ -1,11 +1,11 @@
-defmodule Dockup.DeployJob do
+defmodule Dockup.Backends.Compose.DeployJob do
   require Logger
 
   alias Dockup.{
     DefaultCallback,
     Project,
-    Container,
-    DockerComposeConfig
+    Backends.Compose.Container,
+    Backends.Compose.DockerComposeConfig
   }
 
   def spawn_process(%{id: id, git_url: repository, branch: branch}, callback) do
