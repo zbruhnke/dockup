@@ -4,7 +4,8 @@ elixir:
 addons:
   postgresql: '9.4'
 env:
-  - MIX_ENV=test
+  MIX_ENV: test
+  DOCKUP_BACKEND: fake
 services:
   - postgresql
 before_script:
