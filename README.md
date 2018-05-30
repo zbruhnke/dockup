@@ -24,6 +24,17 @@ Or whenever you feel like, using Slack etc:
 2. Inside the project directory, copy `.env.example` to `.env` and replace dummy values with actual ones
 3. Run `docker-compose up`
 
+## Supported Backends
+Dockup now supports multiple backends for deploying apps. They include:
+
+- `compose` : Uses `docker-compose.yaml` file in project root directory
+- `helm` : Uses helm package under `helm` folder in project root directory
+- `fake` : Stubs out deployments, useful for UI development.
+
+Backend can be specified using `DOCKUP_BACKEND` environment variable. If no value
+is specified, backend will be defaulted to `fake`
+
+
 ## Development
 
     # Install latest elixir
