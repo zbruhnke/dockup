@@ -74,7 +74,7 @@ defmodule Dockup.Project do
   end
 
   def get_status(url) do
-    HTTPotion.get(url).status_code
+    HTTPotion.get(url, follow_redirects: true).status_code
   end
 
   def root_path(project_id) do
