@@ -53,8 +53,8 @@ RUN wget https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.
     rm helm-v2.9.1-linux-amd64.tar.gz
 
 ENV MIX_ENV prod
-ENV PORT 80
+ENV PORT 4000
 
-EXPOSE 80
+EXPOSE 4000
 CMD /dockup/_build/prod/rel/dockup/bin/dockup foreground
 
