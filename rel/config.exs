@@ -53,5 +53,7 @@ release :dockup do
     dockup_ui: :permanent,
     fake_dockup: :permanent
   ]
+  set commands: [
+    "migrate": "rel/commands/migrate.sh"
+  ]
 end
-

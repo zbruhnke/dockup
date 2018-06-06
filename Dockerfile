@@ -57,4 +57,3 @@ ENV PORT 4000
 
 EXPOSE 4000
 CMD /dockup/_build/prod/rel/dockup/bin/dockup foreground
-
