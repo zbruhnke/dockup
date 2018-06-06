@@ -8,7 +8,7 @@ defmodule Dockup.Backends.Compose.HtpasswdTest do
     Dockup.Backends.Compose.Htpasswd.write()
 
     htpasswd_dir = Application.fetch_env!(:dockup, :htpasswd_dir)
-    dockup_host = Path.join(htpasswd_dir, "127.0.0.1.xip.io")
+    dockup_host = Path.join(htpasswd_dir, "ui.127.0.0.1.xip.io")
     logio_host = Path.join(htpasswd_dir, "logio.127.0.0.1.xip.io")
     assert File.read!(dockup_host), "foo:bar"
     assert File.read!(logio_host), "foo:bar"

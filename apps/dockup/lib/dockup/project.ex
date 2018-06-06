@@ -65,12 +65,12 @@ defmodule Dockup.Project do
   end
 
   def create_url(len \\ 10) do
-    domain = Application.fetch_env!(:dockup, :domain)
+    base_domain = Application.fetch_env!(:dockup, :base_domain)
     random_string =
       @subdomain_character_range
       |> Enum.take_random(len)
       |> to_string
-    "#{random_string}.#{domain}"
+    "#{random_string}.#{base_domain}"
   end
 
   def get_status(url) do

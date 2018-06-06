@@ -4,11 +4,11 @@ defmodule Dockup.Backends.Compose.Htpasswd do
   def write do
     case Application.fetch_env(:dockup, :htpasswd) do
       {:ok, htpasswd} ->
-        domain = Application.fetch_env!(:dockup, :domain)
-        logio_domain = "logio." <> domain
+        base_domain = Application.fetch_env!(:dockup, :base_domain)
+        logio_domain = "logio." <> base_domain
         htpasswd_dir = Application.fetch_env!(:dockup, :htpasswd_dir)
 
-        for host <- [domain, logio_domain] do
+        for host <- ["ui." <> base_domain, logio_domain] do
           file = Path.join(htpasswd_dir, host)
           File.write!(file, htpasswd)
         end

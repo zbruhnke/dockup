@@ -23,8 +23,8 @@ defmodule Dockup.Backends.Helm.InstallJob do
     callback.(:starting, nil)
     # name = ?a..?z |> Enum.take_random(len) |> to_string
     name = "dockup#{project_id}"
-    domain = Application.fetch_env!(:dockup, :domain)
-    url = name <> "." <> domain
+    base_domain = Application.fetch_env!(:dockup, :base_domain)
+    url = name <> "." <> base_domain
     dir = Project.project_dir(project_id)
     {git_sha1, 0} = Command.run("git", ["rev-parse", "HEAD"], dir)
     tag = String.trim(git_sha1)
@@ -59,8 +59,8 @@ defmodule Dockup.Backends.Helm.InstallJob do
   # We can use ELK and get logging out. K8s has out of box fluentd, not sure
   # what that is, it can be used for logging
   defp log_url(project_id) do
-    domain = Application.fetch_env!(:dockup, :domain)
-    "logio.#{domain}/#?projectName=#{project_id}"
+    base_domain = Application.fetch_env!(:dockup, :base_domain)
+    "logio.#{base_domain}/#?projectName=#{project_id}"
   end
 
   defp handle_error_message(callback, project_identifier, message) do
