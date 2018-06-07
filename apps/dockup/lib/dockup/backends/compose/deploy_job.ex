@@ -40,8 +40,8 @@ defmodule Dockup.Backends.Compose.DeployJob do
   end
 
   defp log_url(project_id) do
-    domain = Application.fetch_env!(:dockup, :domain)
-    "logio.#{domain}/#?projectName=#{project_id}"
+    base_domain = Application.fetch_env!(:dockup, :base_domain)
+    "logio.#{base_domain}/#?projectName=#{project_id}"
   end
 
   defp handle_error_message(callback, project_identifier, message) do

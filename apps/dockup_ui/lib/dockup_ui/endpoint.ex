@@ -36,4 +36,37 @@ defmodule DockupUi.Endpoint do
     signing_salt: "vhxBVc+D"
 
   plug DockupUi.Router
+
+  @doc """
+  Callback invoked for dynamically configuring the endpoint.
+  It receives the endpoint configuration and checks if
+  configuration should be loaded from the system environment.
+  """
+  def init(_key, config) do
+    if config[:load_from_system_env] do
+      config_from_env_vars =
+        config
+        |> load_port_from_system_env
+        |> load_host_from_system_env
+
+      {:ok, config_from_env_vars}
+    else
+      {:ok, config}
+    end
+  end
+
+  defp load_port_from_system_env(config) do
+    port = System.get_env("PORT") ||
+      raise "expected the PORT environment variable to be set"
+
+    Keyword.put(config, :http, [:inet6, port: port])
+  end
+
+  defp load_host_from_system_env(config) do
+    base_domain = System.get_env("DOCKUP_BASE_DOMAIN") ||
+      raise "expected DOCKUP_BASE_DOMAIN env var to be set"
+
+    dockup_url = "ui." <> base_domain
+    put_in(config, [:url, :host], dockup_url)
+  end
 end

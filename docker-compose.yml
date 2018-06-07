@@ -2,12 +2,12 @@ dockup:
   command: scripts/wait-for-it.sh db:5432 -- ./scripts/run
   environment:
     - DOCKUP_WORKDIR=/dockup/workdir
-    - DOCKUP_DOMAIN=${DOCKUP_DOMAIN}
+    - DOCKUP_BASE_DOMAIN=${DOCKUP_BASE_DOMAIN}
     - DOCKUP_HTPASSWD=${DOCKUP_HTPASSWD}
     - DOCKUP_GITHUB_OAUTH_TOKEN=${DOCKUP_GITHUB_OAUTH_TOKEN}
-    - POSTGRES_HOST=db
-    - POSTGRES_PASSWORD=secret
-    - POSTGRES_USER=user
+    - PGHOST=db
+    - PGPASSWORD=secret
+    - PGUSER=user
     - VIRTUAL_HOST=${DOCKUP_DOMAIN}
     - LETSENCRYPT_HOST=${DOCKUP_DOMAIN},logio.${DOCKUP_DOMAIN}
     - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}

@@ -47,6 +47,13 @@ is specified, backend will be defaulted to `fake`
 
 You can access Dockup UI at http://localhost:4000.
 
+## Production
+Its advised to set dockup base domain using environment variable. Say if the
+environment variable `DOCKUP_BASE_DOMAIN` is set to `dockup.yourdomain.com`,
+then interface for dockup will be accessible at `ui.dockup.yourdomain.com`
+This allows users to obtain wildcard certificate for base domain, and then
+dockup will use the same wildcard.
+
 ## Configuration and Environment variables
 
 All required environment variables are present in `.env.example`. Modify them
