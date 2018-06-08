@@ -38,7 +38,7 @@ RUN mix deps.get --only prod && \
 FROM alpine
 MAINTAINER Codemancers <team@codemancers.com>
 
-RUN apk add --no-cache bash libssl1.0
+RUN apk add --no-cache bash libssl1.0 git openssh
 COPY --from=application /dockup/_build /dockup/_build
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-binary-via-curl
