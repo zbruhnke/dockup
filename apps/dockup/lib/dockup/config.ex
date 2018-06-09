@@ -15,6 +15,7 @@ defmodule Dockup.Config do
       {"DOCKUP_HTPASSWD_DIR", :htpasswd_dir, :directory},
       {"DOCKUP_HTPASSWD", :htpasswd, :string},
       {"DOCKUP_GITHUB_OAUTH_TOKEN", :github_oauth_token, :string},
+      {"DOCKUP_STACKDRIVER_URL", :stackdriver_url, :string}
     ]
   end
 

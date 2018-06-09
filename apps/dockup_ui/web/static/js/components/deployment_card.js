@@ -37,7 +37,7 @@ class DeploymentCard extends Component {
   renderLogButton() {
     let url = this.props.deployment.log_url;
     if(url) {
-      let absoluteUrl = `//${url}`;
+      let absoluteUrl = (url.indexOf("http") === 0 ? url : `//${url}`);
       return(
         <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Logs</a>
       )

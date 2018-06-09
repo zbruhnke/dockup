@@ -39,7 +39,7 @@ defmodule Dockup.Backends.Helm.InstallJob do
       {out, _} -> raise out
     end
 
-    callback.(:checking_urls, log_url(project_id))
+    callback.(:checking_urls, log_url(name))
     urls = project.wait_till_up([url], project_id)
 
     callback.(:started, urls)
@@ -58,9 +58,10 @@ defmodule Dockup.Backends.Helm.InstallJob do
   # This should be something else! Maybe logging should be separate framework
   # We can use ELK and get logging out. K8s has out of box fluentd, not sure
   # what that is, it can be used for logging
-  defp log_url(project_id) do
-    base_domain = Application.fetch_env!(:dockup, :base_domain)
-    "logio.#{base_domain}/#?projectName=#{project_id}"
+  defp log_url(name) do
+    base_url = Application.fetch_env!(:dockup, :stackdriver_url)
+    filter = "advancedFilter=&filters=text:#{name}"
+    base_url <> "&" <> filter
   end
 
   defp handle_error_message(callback, project_identifier, message) do
