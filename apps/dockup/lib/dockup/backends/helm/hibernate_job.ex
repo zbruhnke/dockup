@@ -38,6 +38,8 @@ defmodule Dockup.Backends.Helm.HibernateJob do
   end
 
   defp hibernate_deploy(deploy) do
-    {_, 0} = Dockup.Command.run("kubectl", ["scale", deploy, "--replicas=0"], ".")
+    Dockup.Command.run("kubectl",
+      ["patch", deploy, "-p", "{\"spec\":{\"replicas\":0}}"],
+      ".")
   end
 end

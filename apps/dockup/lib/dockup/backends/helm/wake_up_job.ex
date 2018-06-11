@@ -53,6 +53,8 @@ defmodule Dockup.Backends.Helm.WakeUpJob do
   end
 
   defp wake_up_deploy(deploy) do
-    {_, 0} = Dockup.Command.run("kubectl", ["scale", deploy, "--replicas=1"], ".")
+    Dockup.Command.run("kubectl",
+      ["patch", deploy, "-p", "{\"spec\":{\"replicas\":1}}"],
+      ".")
   end
 end
