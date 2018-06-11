@@ -27,4 +27,12 @@ defmodule FakeDockup do
 
     callback.(:deployment_deleted, nil)
   end
+
+  @impl DockupSpec
+  def hibernate(_id, callback) do
+    callback.(:hibernating_deployment, nil)
+    Process.sleep(2000)
+
+    callback.(:deployment_hibernated, nil)
+  end
 end

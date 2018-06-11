@@ -22,4 +22,11 @@ defmodule DockupSpec do
   Second argument is a callback function which takes an atom as the first argument and a payload as the second argument
   """
   @callback destroy(number(), (:atom, any() -> any())) :: any()
+
+  @doc """
+  This function is used to hibernate deployments. Used to save money :D
+  First argument is a project identifier which is a number.
+  Second argument is a callback function which takes an atom as the first argument and a payload as the second argument
+  """
+  @callback hibernate(number(), (:atom, any() -> any())) :: any()
 end

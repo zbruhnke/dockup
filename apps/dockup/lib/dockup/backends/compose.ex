@@ -17,4 +17,9 @@ defmodule Dockup.Backends.Compose do
   def destroy(id, callback) do
     Dockup.Backends.Compose.DeleteDeploymentJob.spawn_process(id, callback)
   end
+
+  @impl DockupSpec
+  def hibernate(_id, callback) do
+    callback.(:errored, "Hibernate not supported")
+  end
 end

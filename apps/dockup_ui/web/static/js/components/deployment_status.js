@@ -37,6 +37,12 @@ const DeploymentStatus = ({status}) => {
     case 'started':
       return renderStatus('Deployed', textClass, "fa-check-circle");
       break;
+    case 'hibernating_deployment':
+      return renderStatus('Hibernating', textClass, "fa-cog fa-spin");
+      break;
+    case 'deployment_hibernated':
+      return renderStatus('Hibernated', textClass, "fa-check-circle");
+      break;
     case 'deployment_deleted':
       return renderStatus('Deleted', textClass, "fa-trash");
       break;
