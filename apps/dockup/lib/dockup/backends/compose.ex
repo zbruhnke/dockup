@@ -22,4 +22,9 @@ defmodule Dockup.Backends.Compose do
   def hibernate(_id, callback) do
     callback.(:errored, "Hibernate not supported")
   end
+
+  @impl DockupSpec
+  def wake_up(_id, callback) do
+    callback.(:errored, "Wake up not supported")
+  end
 end

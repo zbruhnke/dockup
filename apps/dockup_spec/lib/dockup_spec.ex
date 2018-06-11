@@ -29,4 +29,11 @@ defmodule DockupSpec do
   Second argument is a callback function which takes an atom as the first argument and a payload as the second argument
   """
   @callback hibernate(number(), (:atom, any() -> any())) :: any()
+
+  @doc """
+  This function is used to wake up hibernated deployments.
+  First argument is a project identifier which is a number.
+  Second argument is a callback function which takes an atom as the first argument and a payload as the second argument
+  """
+  @callback wake_up(number(), (:atom, any() -> any())) :: any()
 end

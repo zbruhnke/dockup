@@ -27,6 +27,7 @@ defmodule DockupUi.Router do
 
     resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete] do
       put "/hibernate", DeploymentController, :hibernate
+      put "/wake_up", DeploymentController, :wake_up
     end
     resources "/github_webhook", GithubWebhookController, only: [:create]
     resources "/bitbucket_webhook", BitbucketWebhookController, only: [:create]

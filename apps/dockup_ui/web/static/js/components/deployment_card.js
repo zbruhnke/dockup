@@ -8,6 +8,7 @@ class DeploymentCard extends Component {
   constructor(props) {
     super(props);
     this.handleHibernate = this.handleHibernate.bind(this);
+    this.handleWakeUp = this.handleWakeUp.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
   }
 
@@ -24,7 +25,8 @@ class DeploymentCard extends Component {
   renderOpenButton() {
     if(!this.props.deployment.urls ||
        this.props.deployment.status == "hibernating_deployment" ||
-       this.props.deployment.status == "deployment_hibernated") {
+       this.props.deployment.status == "deployment_hibernated" ||
+       this.props.deployment.status == "waking_up_deployment") {
       return null;
     }
 
@@ -70,6 +72,33 @@ class DeploymentCard extends Component {
     if (this.props.deployment.status == "started") {
       return(
         <button type="button" onClick={this.handleHibernate} className="btn btn-outline-primary mr-2">Hibernate</button>
+      );
+    }
+  }
+
+  handleWakeUp(e) {
+    e.preventDefault();
+    let xhr = this.wakeUpRequest();
+    xhr.done((response) => {
+      this.setState({deployment: Object.assign({}, response.data)});
+    });
+    xhr.fail(() => {
+      FlashMessage.showMessage("danger", "Deployment cannot be started.");
+    });
+  }
+
+  wakeUpRequest(id) {
+    return $.ajax({
+      url: `/api/deployments/${this.props.deployment.id}/wake_up`,
+      type: 'PUT',
+      contentType: 'application/json'
+    });
+  }
+
+  renderWakeUpButton() {
+    if (this.props.deployment.status == "deployment_hibernated") {
+      return(
+        <button type="button" onClick={this.handleWakeUp} className="btn btn-outline-primary mr-2">Wake Up</button>
       );
     }
   }
@@ -129,6 +158,7 @@ class DeploymentCard extends Component {
                 {this.renderOpenButton()}
                 {this.renderLogButton()}
                 {this.renderHibernateButton()}
+                {this.renderWakeUpButton()}
                 {this.renderDeleteButton()}
               </div>
 

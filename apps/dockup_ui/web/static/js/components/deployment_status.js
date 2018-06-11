@@ -43,6 +43,9 @@ const DeploymentStatus = ({status}) => {
     case 'deployment_hibernated':
       return renderStatus('Hibernated', textClass, "fa-check-circle");
       break;
+    case 'waking_up_deployment':
+      return renderStatus('Waking', textClass, "fa-cog fa-spin");
+      break;
     case 'deployment_deleted':
       return renderStatus('Deleted', textClass, "fa-trash");
       break;

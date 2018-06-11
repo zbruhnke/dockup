@@ -20,4 +20,9 @@ defmodule Dockup.Backends.Helm do
   def hibernate(id, callback) do
     Dockup.Backends.Helm.HibernateJob.spawn_process(id, callback)
   end
+
+  @impl DockupSpec
+  def wake_up(id, callback) do
+    Dockup.Backends.Helm.WakeUpJob.spawn_process(id, callback)
+  end
 end
