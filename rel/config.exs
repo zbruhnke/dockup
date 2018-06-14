@@ -53,6 +53,7 @@ release :dockup do
   ]
   set commands: [
     "hibernate": "rel/commands/hibernate.sh",
-    "migrate": "rel/commands/migrate.sh"
+    "migrate": "rel/commands/migrate.sh",
+    "wake_up": "rel/commands/wake_up.sh"
   ]
 end
