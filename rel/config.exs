@@ -52,6 +52,7 @@ release :dockup do
     fake_dockup: :permanent
   ]
   set commands: [
+    "hibernate": "rel/commands/hibernate.sh",
     "migrate": "rel/commands/migrate.sh"
   ]
 end
