@@ -19,7 +19,7 @@
         <div class="navbar-nav">
           <%= link("Recent Deployments", to: deployment_path(@conn, :index), class: "nav-item nav-link") %>
           <%= link("Configure", to: config_path(@conn, :index), class: "nav-item nav-link")%>
-          <%= link("Logs", to: dockup_log_url(), class: "nav-item nav-link")%>
+          <%= link("Logs", to: dockup_log_url(), class: "nav-item nav-link", target: "_blank")%>
         </div>
       </div>
     </nav>

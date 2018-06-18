@@ -12,14 +12,23 @@ defmodule Dockup.Backends.Helm.DeleteJob do
   end
 
   def perform(project_identifier, callback \\ DefaultCallback.lambda, deps \\ []) do
-    IO.inspect project_identifier
     callback.(:deleting_deployment, nil)
 
     project = deps[:project] || Project
     project_id = to_string(project_identifier)
     name = "dockup#{project_id}"
 
-    {_, 0} = Command.run("helm", ["delete", name], ".")
+    case Command.run("helm", ["delete", name], ".") do
+      {_, 0} ->
+        Logger.info("deleted #{name} successfully")
+      {error_msg, 1} ->
+        msg = "Error: release: \"#{name}\" not found"
+        if error_msg == msg do
+          Logger.info("helm: #{name} not found, its okay")
+        else
+          Logger.info(error_msg)
+        end
+    end
     project.delete_repository(project_id)
 
     callback.(:deployment_deleted, nil)
