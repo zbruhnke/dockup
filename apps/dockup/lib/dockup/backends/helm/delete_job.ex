@@ -20,13 +20,13 @@ defmodule Dockup.Backends.Helm.DeleteJob do
 
     case Command.run("helm", ["delete", name], ".") do
       {_, 0} ->
-        IO.puts("deleted #{name} successfully")
+        Logger.info("deleted #{name} successfully")
       {error_msg, 1} ->
         msg = "Error: release: \"#{name}\" not found"
         if error_msg == msg do
-          IO.puts("helm: #{name} not found, its okay")
+          Logger.info("helm: #{name} not found, its okay")
         else
-          IO.puts error_msg
+          Logger.info(error_msg)
         end
     end
     project.delete_repository(project_id)
