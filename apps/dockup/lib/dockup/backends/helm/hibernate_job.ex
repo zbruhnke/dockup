@@ -21,7 +21,10 @@ defmodule Dockup.Backends.Helm.HibernateJob do
         ["get", "deploy", "-l", "release=#{name}", "-o", "name"],
         ".")
 
-    Enum.map(String.split(deploys, "\n"), &hibernate_deploy/1)
+    deploys
+    |> String.split("\n")
+    |> Enum.map(&hibernate_deploy/1)
+
     callback.(:deployment_hibernated, nil)
   rescue
     exception ->

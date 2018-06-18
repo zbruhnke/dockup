@@ -3,8 +3,7 @@ defmodule DockupUi.HibernateDeploymentService do
 
   alias DockupUi.{
     Deployment,
-    Repo,
-    Callback.Null
+    Repo
   }
 
   def run(deployment_id, callback_data) do
@@ -17,13 +16,6 @@ defmodule DockupUi.HibernateDeploymentService do
       :ok <- hibernate(deployment, callback_data)
     do
       {:ok, deployment}
-    end
-  end
-
-  def run_all(deployment_ids) when is_list deployment_ids do
-    Enum.all? deployment_ids, fn deployment_id ->
-      {result, _} = run(deployment_id, %Null{})
-      result == :ok
     end
   end
 

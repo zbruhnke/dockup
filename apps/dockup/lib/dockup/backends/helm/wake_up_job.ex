@@ -24,7 +24,9 @@ defmodule Dockup.Backends.Helm.WakeUpJob do
         ["get", "deploy", "-l", "release=#{name}", "-o", "name"],
         ".")
 
-    Enum.map(String.split(deploys, "\n"), &wake_up_deploy/1)
+    deploys
+    |> String.split("\n")
+    |> Enum.map(&wake_up_deploy/1)
 
     callback.(:checking_urls, log_url(project_id))
     urls = Project.wait_till_up([url], project_id)
