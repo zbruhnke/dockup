@@ -53,8 +53,8 @@ defmodule Dockup.Project do
       url = url <> root_path(project_id)
       response = http_status(project_id)
 
-      # Retry 100 times in an interval of 5 seconds ~ 8 mins
-      retry 100 in interval do
+      # Retry 300 times in an interval of 5 seconds ~ 25 mins
+      retry 300 in interval do
         Logger.info "Checking if #{url} returns http satus #{response}"
         ^response = http.get_status(url)
       end
