@@ -25,6 +25,11 @@ defprotocol DockupUi.CallbackProtocol do
   # the reason for failure
   def deployment_failed(callback_data, deployment, payload)
 
+  # Hibernating and waking up deployments
+  def hibernating_deployment(callback_data, deployment, payload)
+  def deployment_hibernated(callback_data, deployment, payload)
+  def waking_up_deployment(callback_data, deployment, payload)
+
   def deleting_deployment(callback_data, deployment, payload)
   def deployment_deleted(callback_data, deployment, payload)
   def delete_deployment_failed(callback_data, deployment, payload)
@@ -44,6 +49,9 @@ defmodule DockupUi.CallbackProtocol.Defaults do
       def checking_urls(data, deployment, payload), do: common_callback(data, deployment, payload)
       def started(data, deployment, payload), do: common_callback(data, deployment, payload)
       def deployment_failed(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def hibernating_deployment(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def deployment_hibernated(data, deployment, payload), do: common_callback(data, deployment, payload)
+      def waking_up_deployment(data, deployment, payload), do: common_callback(data, deployment, payload)
       def deleting_deployment(data, deployment, payload), do: common_callback(data, deployment, payload)
       def deployment_deleted(data, deployment, payload), do: common_callback(data, deployment, payload)
       def delete_deployment_failed(data, deployment, payload), do: common_callback(data, deployment, payload)
@@ -51,7 +59,8 @@ defmodule DockupUi.CallbackProtocol.Defaults do
 
       defoverridable [
         queued: 3, processing: 3, cloning_repo: 3, starting: 3, checking_urls: 3,
-        started: 3, deployment_failed: 3, deleting_deployment: 3,
+        started: 3, deployment_failed: 3, hibernating_deployment: 3,
+        deployment_hibernated: 3, waking_up_deployment: 3, deleting_deployment: 3,
         deployment_deleted: 3, delete_deployment_failed: 3,common_callback: 3
       ]
     end

@@ -5,6 +5,8 @@ defmodule DockupUi.API.DeploymentController do
   alias DockupUi.{
     Deployment,
     DeployService,
+    HibernateDeploymentService,
+    WakeUpDeploymentService,
     DeleteDeploymentService,
     Repo,
     Callback.Web
@@ -47,6 +49,34 @@ defmodule DockupUi.API.DeploymentController do
     deployment_id = destroy_params["id"]
 
     case delete_deployment_service.run(deployment_id, callback_data) do
+      {:ok, deployment} ->
+        conn
+        |> put_status(:ok)
+        |> put_resp_header("location", api_deployment_path(conn, :show, deployment))
+        |> render("show.json", deployment: deployment)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def hibernate(conn, %{"deployment_id" => id}) do
+    case HibernateDeploymentService.run(id, %Web{}) do
+      {:ok, deployment} ->
+        conn
+        |> put_status(:ok)
+        |> put_resp_header("location", api_deployment_path(conn, :show, deployment))
+        |> render("show.json", deployment: deployment)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def wake_up(conn, %{"deployment_id" => id}) do
+    case WakeUpDeploymentService.run(id, %Web{}) do
       {:ok, deployment} ->
         conn
         |> put_status(:ok)

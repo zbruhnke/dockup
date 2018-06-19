@@ -25,7 +25,10 @@ defmodule DockupUi.Router do
   scope "/api", as: :api, alias: DockupUi.API do
     pipe_through :api
 
-    resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete]
+    resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete] do
+      put "/hibernate", DeploymentController, :hibernate
+      put "/wake_up", DeploymentController, :wake_up
+    end
     resources "/github_webhook", GithubWebhookController, only: [:create]
     resources "/bitbucket_webhook", BitbucketWebhookController, only: [:create]
   end

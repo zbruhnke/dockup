@@ -27,4 +27,23 @@ defmodule FakeDockup do
 
     callback.(:deployment_deleted, nil)
   end
+
+  @impl DockupSpec
+  def hibernate(_id, callback) do
+    callback.(:hibernating_deployment, nil)
+    Process.sleep(2000)
+
+    callback.(:deployment_hibernated, nil)
+  end
+
+  @impl DockupSpec
+  def wake_up(_id, callback) do
+    callback.(:waking_up_deployment, nil)
+    Process.sleep(2000)
+
+    callback.(:checking_urls, "logio.example.com/#?projectName=project_id")
+    Process.sleep(2000)
+
+    callback.(:started, ["codemancers.com", "crypt.codemancers.com"])
+  end
 end
