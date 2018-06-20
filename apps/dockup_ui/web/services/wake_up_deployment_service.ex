@@ -1,9 +1,11 @@
 defmodule DockupUi.WakeUpDeploymentService do
+  require Ecto.Query
   require Logger
 
   alias DockupUi.{
     Deployment,
-    Repo
+    Repo,
+    Callback.Null
   }
 
   def run(deployment_id, callback_data) do
@@ -15,6 +17,13 @@ defmodule DockupUi.WakeUpDeploymentService do
     do
       {:ok, deployment}
     end
+  end
+
+  def wake_up_all_hibernated do
+    DockupUi.Deployment
+    |> Ecto.Query.where(status: "deployment_hibernated")
+    |> DockupUi.Repo.all
+    |> Enum.map( fn (d) -> run(d.id, %Null{}) end)
   end
 
   defp wake_up(deployment, callback) do
