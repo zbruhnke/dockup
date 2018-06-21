@@ -1,9 +1,11 @@
 defmodule DockupUi.HibernateDeploymentService do
+  require Ecto.Query
   require Logger
 
   alias DockupUi.{
     Deployment,
-    Repo
+    Repo,
+    Callback.Null
   }
 
   def run(deployment_id, callback_data) do
@@ -17,6 +19,14 @@ defmodule DockupUi.HibernateDeploymentService do
     do
       {:ok, deployment}
     end
+  end
+
+  def hibernate_all do
+    statuses = ["started", "hibernating_deployment"]
+    DockupUi.Deployment
+    |> Ecto.Query.where([d], d.status in ^statuses)
+    |> DockupUi.Repo.all
+    |> Enum.map( fn (d) -> run(d.id, %Null{}) end)
   end
 
   defp hibernate(deployment, callback) do

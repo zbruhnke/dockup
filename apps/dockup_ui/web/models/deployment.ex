@@ -62,6 +62,10 @@ defmodule DockupUi.Deployment do
     cast(model, %{status: "deployment_hibernated"}, [:status])
   end
 
+  def status_changeset(model, status) do
+    cast(model, %{status: status}, [:status])
+  end
+
   # Check if git URL is whitelisted
   defp validate_whitelisted_git_url(changeset) do
     if git_url = get_field(changeset, :git_url) do

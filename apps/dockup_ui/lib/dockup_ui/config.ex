@@ -9,7 +9,9 @@ defmodule DockupUi.Config do
 
   defp configs do
     [
-      {"DOCKUP_BACKEND", :backend_module, :module}
+      {"DOCKUP_BACKEND", :backend_module, :module},
+      {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
+      {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string}
     ]
   end
 
@@ -17,9 +19,17 @@ defmodule DockupUi.Config do
     # Do nothing if env var is not set
   end
 
+  defp set_config("", _, _) do
+    # Do nothing if env var is blank
+  end
+
   defp set_config(env_val, config_key, :module) do
     module = module_for_backend(env_val)
     Application.put_env(:dockup_ui, config_key, module)
+  end
+
+  defp set_config(env_val, config_key, :string) do
+    Application.put_env(:dockup_ui, config_key, env_val)
   end
 
   defp module_for_backend(env_val) do
