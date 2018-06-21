@@ -10,8 +10,7 @@ defmodule DockupUi.WakeUpScheduler do
   end
 
   def init(_) do
-    case System.get_env("DOCKUP_WAKEUP_ALL_AT") do
-      "-1" -> Logger.info("Won't be waking up any deployments")
+    case Application.get_env(:dockup_ui, :wakeup_all_at) do
       nil -> Logger.info("Won't be waking up any deployments")
       _ -> set_timer()
     end
@@ -20,15 +19,16 @@ defmodule DockupUi.WakeUpScheduler do
   end
 
   def handle_info(:trigger, state) do
-    DockupUi.WakeUpDeploymentService.wake_up_all_hibernated()
+    DockupUi.WakeUpDeploymentService.wake_up_all()
     set_timer()
 
     {:noreply, state}
   end
 
   defp set_timer do
-    {:ok, wake_up_at} = System.get_env("DOCKUP_WAKEUP_ALL_AT")
-                          |> Time.from_iso8601
+    {:ok, wake_up_at} =
+      Application.get_env(:dockup_ui, :wakeup_all_at)
+      |> Time.from_iso8601
 
     time_difference = Time.diff(wake_up_at, Time.utc_now, :millisecond)
     time_interval =

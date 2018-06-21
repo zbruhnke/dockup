@@ -19,7 +19,7 @@ defmodule DockupUi.WakeUpDeploymentService do
     end
   end
 
-  def wake_up_all_hibernated do
+  def wake_up_all do
     DockupUi.Deployment
     |> Ecto.Query.where(status: "deployment_hibernated")
     |> DockupUi.Repo.all

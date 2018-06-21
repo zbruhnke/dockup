@@ -10,8 +10,7 @@ defmodule DockupUi.HibernateScheduler do
   end
 
   def init(_) do
-    case System.get_env("DOCKUP_HIBERNATE_ALL_AT") do
-      "-1" -> Logger.info("Won't be hibernating any deployments")
+    case Application.get_env(:dockup_ui, :hibrenate_all_at) do
       nil -> Logger.info("Won't be hibernating any deployments")
       _ -> set_timer()
     end
@@ -20,15 +19,16 @@ defmodule DockupUi.HibernateScheduler do
   end
 
   def handle_info(:trigger, state) do
-    DockupUi.HibernateDeploymentService.hibernate_all_deployed()
+    DockupUi.HibernateDeploymentService.hibernate_all()
     set_timer()
 
     {:noreply, state}
   end
 
   defp set_timer do
-    {:ok, hibernate_at} = System.get_env("DOCKUP_HIBERNATE_ALL_AT")
-                          |> Time.from_iso8601
+    {:ok, hibernate_at} =
+      Application.get_env(:dockup_ui, :hibrenate_all_at)
+      |> Time.from_iso8601
 
     time_difference = Time.diff(hibernate_at, Time.utc_now, :millisecond)
     time_interval =

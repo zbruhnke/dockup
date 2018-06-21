@@ -21,7 +21,7 @@ defmodule DockupUi.HibernateDeploymentService do
     end
   end
 
-  def hibernate_all_deployed do
+  def hibernate_all do
     statuses = ["started", "hibernating_deployment"]
     DockupUi.Deployment
     |> Ecto.Query.where([d], d.status in ^statuses)
