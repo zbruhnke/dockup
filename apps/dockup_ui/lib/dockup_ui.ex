@@ -16,9 +16,7 @@ defmodule DockupUi do
       supervisor(DockupUi.Endpoint, []),
       # Start the Ecto repository
       supervisor(DockupUi.Repo, []),
-      worker(DockupUi.DeleteScheduler, []),
-      worker(DockupUi.HibernateScheduler, []),
-      worker(DockupUi.WakeUpScheduler, []),
+      worker(DockupUi.Scheduler, []),
       worker(DockupUi.DeploymentQueue, [])
     ]
 

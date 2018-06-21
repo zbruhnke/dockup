@@ -28,6 +28,10 @@ defmodule DockupUi.Config do
     Application.put_env(:dockup_ui, config_key, module)
   end
 
+  defp set_config(env_val, config_key, :string) do
+    Application.put_env(:dockup_ui, config_key, env_val)
+  end
+
   defp module_for_backend(env_val) do
     case env_val do
       "compose" -> Dockup.Backends.Compose
