@@ -64,7 +64,7 @@ class DeploymentForm extends Component {
   }
 
   handleBranchChange(branch) {
-    this.setState({branch: branch});
+    this.setState({branch: branch.trim()});
   }
 
   validInputs() {
