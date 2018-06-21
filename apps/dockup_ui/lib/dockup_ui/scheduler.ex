@@ -3,6 +3,7 @@ defmodule DockupUi.Scheduler do
   use GenServer
   require Logger
 
+  @interval_one_day_msec 24 * 60 * 60 * 1000
   @interval_delete_msec 60 * 60 * 1000
 
   @doc """
@@ -75,7 +76,7 @@ defmodule DockupUi.Scheduler do
       time_difference
     else
       # Subtract from a day
-      (24 * 60 * 60 * 1000)  + time_difference
+      @interval_one_day_msec  + time_difference
     end
   end
 end
