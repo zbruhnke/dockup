@@ -22,37 +22,31 @@ const DeploymentStatus = ({status}) => {
     case 'queued':
       return renderStatus('Queued', textClass, "fa-circle-o-notch fa-spin");
       break;
-    case 'processing':
-      return renderStatus('Processing', textClass, "fa-circle-o-notch fa-spin");
-      break;
-    case 'cloning_repo':
-      return renderStatus('Cloning', textClass, "fa-download");
-      break;
     case 'starting':
       return renderStatus('Starting', textClass, "fa-cog fa-spin");
       break;
-    case 'checking_urls':
+    case 'waiting_for_urls':
       return renderStatus('Pinging', textClass, "fa-exchange");
       break;
     case 'started':
       return renderStatus('Deployed', textClass, "fa-check-circle");
       break;
-    case 'hibernating_deployment':
+    case 'hibernating':
       return renderStatus('Hibernating', textClass, "fa-cog fa-spin");
       break;
-    case 'deployment_hibernated':
+    case 'hibernated':
       return renderStatus('Hibernated', textClass, "fa-check-circle");
       break;
-    case 'waking_up_deployment':
+    case 'waking_up':
       return renderStatus('Waking', textClass, "fa-cog fa-spin");
       break;
-    case 'deployment_deleted':
+    case 'deleted':
       return renderStatus('Deleted', textClass, "fa-trash");
       break;
-    case 'deleting_deployment':
+    case 'deleting':
       return renderStatus('Deleting', textClass, "fa-cog fa-spin");
       break;
-    case 'deployment_failed':
+    case 'failed':
       return renderStatus('Error', textClass, "fa-times-circle");
       break;
     default:

@@ -29,12 +29,12 @@ defmodule DockupUi.DeploymentQueue do
   @doc """
   Queues a deployment
   """
-  def enqueue(deployment_params, name \\ __MODULE__) do
-    GenServer.call(name, {:enqueue, deployment_params})
+  def enqueue(deployment_id, name \\ __MODULE__) do
+    GenServer.call(name, {:enqueue, deployment_id})
   end
 
   @doc """
-  Returns the queued deployment params
+  Returns the queued deployments
   """
   def get_queue(name \\ __MODULE__) do
     GenServer.call(name, :get_queue)
@@ -58,13 +58,9 @@ defmodule DockupUi.DeploymentQueue do
     {:ok, state}
   end
 
-  def handle_call({:enqueue, deployment_params}, _from, state) do
-    {deployment, callback_data} = deployment_params
-    callback = state.callback.lambda(deployment, callback_data)
-    callback.(:queued, nil)
-
+  def handle_call({:enqueue, deployment_id}, _from, state) do
     process_queue(self())
-    state = %{state | queue: :queue.in(deployment_params, state.queue)}
+    state = %{state | queue: :queue.in(deployment_id, state.queue)}
     {:reply, :ok, state}
   end
 
@@ -91,13 +87,13 @@ defmodule DockupUi.DeploymentQueue do
 
   defp deploy_from_queue(queue, backend, callback_module) do
     case :queue.out(queue) do
-      {{:value, {deployment, callback_data}}, queue} ->
+      {{:value, deployment_id}, queue} ->
+        deployment = Repo.get!(Deployment, deployment_id)
+
         # There is a chance that the deployment may have been
         # deleted. In that case, we should skip to the next item in the queue.
         if deployable?(deployment) do
-          callback = callback_module.lambda(deployment, callback_data)
-          callback.(:processing, nil)
-          backend.deploy(deployment, callback)
+          backend.deploy(deployment, callback_module)
           queue
         else
           deploy_from_queue(queue, backend, callback_module)

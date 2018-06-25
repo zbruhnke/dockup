@@ -9,7 +9,8 @@ defmodule DockupUi.Config do
 
   defp configs do
     [
-      {"DOCKUP_BACKEND", :backend_module, :module}
+      {"DOCKUP_BACKEND", :backend_module, :module},
+      {"SLACK_WEBHOOK_URL", :slack_webhook_url, :string}
     ]
   end
 
@@ -20,6 +21,10 @@ defmodule DockupUi.Config do
   defp set_config(env_val, config_key, :module) do
     module = module_for_backend(env_val)
     Application.put_env(:dockup_ui, config_key, module)
+  end
+
+  defp set_config(env_val, config_key, :string) do
+    Application.put_env(:dockup_ui, config_key, env_val)
   end
 
   defp module_for_backend(env_val) do

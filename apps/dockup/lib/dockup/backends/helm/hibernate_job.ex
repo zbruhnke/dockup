@@ -10,10 +10,8 @@ defmodule Dockup.Backends.Helm.HibernateJob do
     spawn(fn -> perform(id, callback) end)
   end
 
-  def perform(project_identifier, callback \\ DefaultCallback.lambda) do
-    callback.(:hibernating_deployment, nil)
-
-    project_id = to_string(project_identifier)
+  def perform(deployment_id, callback \\ DefaultCallback) do
+    project_id = to_string(deployment_id)
     name = "dockup#{project_id}"
 
     {deploys, 0} =
@@ -25,19 +23,7 @@ defmodule Dockup.Backends.Helm.HibernateJob do
     |> String.split("\n")
     |> Enum.map(&hibernate_deploy/1)
 
-    callback.(:deployment_hibernated, nil)
-  rescue
-    exception ->
-      stacktrace = System.stacktrace
-      message = Exception.message(exception)
-      handle_error_message(callback, project_identifier, message)
-      reraise(exception, stacktrace)
-  end
-
-  defp handle_error_message(callback, project_identifier, message) do
-    message = "An error occured while hibernating deployment #{project_identifier} : #{message}"
-    Logger.error message
-    callback.(:hibernate_deployment_failed, message)
+    callback.update_status(deployment_id, "hibernated")
   end
 
   defp hibernate_deploy(deploy) do

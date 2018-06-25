@@ -8,55 +8,66 @@ defmodule DockupUi.Callback do
 
   alias DockupUi.{
     DeploymentStatusUpdateService,
-    CallbackProtocol,
+    SlackWebhook,
     Deployment,
     Repo,
-    SlackWebhook,
     DeploymentQueue
   }
 
-  def lambda(deployment, callback_data, status_update_service \\ DeploymentStatusUpdateService) do
-    fn
-      event, payload ->
-        # Reload deployment
-        deployment = Repo.get!(Deployment, deployment.id)
+  @valid_states ~w(queued starting waiting_for_urls started hibernating
+    hibernated waking_up deleting deleted failed)
 
-        status_update_service.run(event, deployment.id, payload)
+  def update_status(deployment_id, event, deps \\ %{})
+      when event in @valid_states do
+    status_update_service = deps[:status_update_service] || DeploymentStatusUpdateService
+    slack_webhook = deps[:slack_webhook] || SlackWebhook
+    deployment_queue = deps[:deployment_queue] || DeploymentQueue
 
-        # Trigger callback by spawning a new thread, we don't care if fails
-        spawn fn ->
-          try do
-            process_deployment_queue(event)
-            send_slack_message(event, deployment, payload)
-            apply(CallbackProtocol, event, [callback_data, deployment, payload])
-          rescue
-            UndefinedFunctionError -> Logger.error "Unknown callback event triggered: #{inspect event}"
-          end
-        end
+    {:ok, deployment} = status_update_service.run(event, deployment_id)
+
+    case deployment.status do
+      "started" ->
+        send_slack_message(deployment, slack_webhook)
+
+      "waiting_for_urls" ->
+        process_deployment_queue(deployment_queue)
+
+      "deleted" ->
+        process_deployment_queue(deployment_queue)
+
+      _ ->
+        :ok
     end
   end
 
-  defp process_deployment_queue(status) when status in [:deployment_deleted, :checking_urls] do
-    if DeploymentQueue.alive? do
-      DeploymentQueue.process_queue()
-    end
-  end
-  defp process_deployment_queue(_) do
-    :ok
+  def set_urls(deployment_id, urls) do
+    deployment_id
+    |> Repo.get!(Deployment)
+    |> Deployment.changeset(%{urls: urls})
+    |> Repo.update!()
   end
 
-  defp send_slack_message(:started, deployment, payload) when is_list payload do
-    service_urls =
-      payload
-      |> Enum.map(& "<http://#{&1}>")
-      |> Enum.join(", ")
-    if url = System.get_env("SLACK_WEBHOOK_URL") do
-      message = "Branch `#{deployment.branch}` deployed at #{service_urls}"
-      SlackWebhook.send_message(url, message)
+  def set_log_url(deployment_id, log_url) do
+    deployment_id
+    |> Repo.get!(Deployment)
+    |> Deployment.changeset(%{log_url: log_url})
+    |> Repo.update!()
+  end
+
+  defp process_deployment_queue(deployment_queue) do
+    if deployment_queue.alive?() do
+      deployment_queue.process_queue()
     end
   end
 
-  defp send_slack_message(_, _, _) do
-    :ok
+  defp send_slack_message(deployment, slack_webhook) do
+    deployment_url =
+      DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, deployment.id)
+
+    if url = Application.fetch_env!(:dockup_ui, :slack_webhook_url) do
+      # TODO: change this message to "Deployed <name> of <project> : <dockup deployment url>"
+      message = "Dockup has a new deployment at <#{deployment_url}>"
+      slack_webhook.send_message(url, message)
+    end
   end
 end

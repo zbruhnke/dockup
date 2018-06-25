@@ -23,10 +23,11 @@ class DeploymentCard extends Component {
   }
 
   renderOpenButton() {
+    // TODO: these status checks can be removed if the urls are cleared on hibernation
     if(!this.props.deployment.urls ||
-       this.props.deployment.status == "hibernating_deployment" ||
-       this.props.deployment.status == "deployment_hibernated" ||
-       this.props.deployment.status == "waking_up_deployment") {
+       this.props.deployment.status == "hibernating" ||
+       this.props.deployment.status == "hibernated" ||
+       this.props.deployment.status == "waking_up") {
       return null;
     }
 

@@ -58,10 +58,6 @@ defmodule DockupUi.Deployment do
     cast(model, %{deleted_at: DateTime.utc_now, log_url: nil, urls: nil}, [:deleted_at, :log_url, :urls])
   end
 
-  def hibernate_changeset(model) do
-    cast(model, %{status: "deployment_hibernated"}, [:status])
-  end
-
   # Check if git URL is whitelisted
   defp validate_whitelisted_git_url(changeset) do
     if git_url = get_field(changeset, :git_url) do

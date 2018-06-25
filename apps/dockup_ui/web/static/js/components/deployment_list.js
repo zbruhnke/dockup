@@ -30,12 +30,11 @@ class DeploymentList extends Component {
   connectToDeploymentsChannel() {
     let channel = DockupUiSocket.getDeploymentsChannel();
 
-    channel.on("status_updated", ({deployment, _payload}) => {
+    channel.on("status_updated", (deployment) => {
       this.updateDeployment(deployment);
     })
 
     channel.on("deployment_created", (deployment) => {
-      console.log("Deployment created");
       this.addDeployment(deployment);
     })
   }

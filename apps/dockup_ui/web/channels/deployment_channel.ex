@@ -3,11 +3,11 @@ defmodule DockupUi.DeploymentChannel do
 
   alias DockupUi.Endpoint
 
-  def update_deployment_status(deployment, payload) do
+  def update_deployment_status(deployment) do
     if deployment.status == "queued" do
       deployment_event("deployment_created", deployment)
     else
-      deployment_event("status_updated", %{deployment: deployment, payload: payload})
+      deployment_event("status_updated", deployment)
     end
   end
 

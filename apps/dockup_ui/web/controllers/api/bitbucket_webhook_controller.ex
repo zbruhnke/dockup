@@ -5,8 +5,7 @@ defmodule DockupUi.API.BitbucketWebhookController do
 
   alias DockupUi.{
     Deployment,
-    DeployService,
-    Callback.Null
+    DeployService
   }
 
   import Ecto.Query
@@ -31,7 +30,7 @@ defmodule DockupUi.API.BitbucketWebhookController do
     }
 
     deploy_service = conn.assigns[:deploy_service] || DeployService
-    case deploy_service.run(deployment_params, %Null{}) do
+    case deploy_service.run(deployment_params) do
       {:ok, deployment} ->
         conn
         |> put_status(:created)

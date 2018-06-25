@@ -11,17 +11,14 @@ defmodule Dockup.Backends.Helm.InstallJob do
     spawn(fn -> perform(id, repository, branch, callback) end)
   end
 
-  def perform(project_identifier, repository, branch,
-              callback \\ DefaultCallback.lambda, deps \\ []) do
+  def perform(deployment_id, repository, branch,
+              callback \\ DefaultCallback, deps \\ []) do
     project    = deps[:project]    || Project
 
-    project_id = to_string(project_identifier)
+    project_id = to_string(deployment_id)
 
-    callback.(:cloning_repo, nil)
     project.clone_repository(project_id, repository, branch)
 
-    callback.(:starting, nil)
-    # name = ?a..?z |> Enum.take_random(len) |> to_string
     name = "dockup#{project_id}"
     base_domain = Application.fetch_env!(:dockup, :base_domain)
     url = name <> "." <> base_domain
@@ -39,15 +36,17 @@ defmodule Dockup.Backends.Helm.InstallJob do
       {out, _} -> raise out
     end
 
-    callback.(:checking_urls, log_url(name))
+    callback.update_status(deployment_id, "waiting_for_urls")
+    callback.set_log_url(deployment_id, log_url(name))
     urls = project.wait_till_up([url], project_id)
 
-    callback.(:started, urls)
+    callback.update_status(deployment_id, "started")
+    callback.set_urls(deployment_id, urls)
   rescue
     exception ->
       stacktrace = System.stacktrace
       message = Exception.message(exception)
-      handle_error_message(callback, project_identifier, message)
+      handle_error_message(callback, deployment_id, message)
       reraise(exception, stacktrace)
   end
 
@@ -64,9 +63,9 @@ defmodule Dockup.Backends.Helm.InstallJob do
     base_url <> "&" <> filter
   end
 
-  defp handle_error_message(callback, project_identifier, message) do
-    message = "An error occured when deploying #{project_identifier} : #{message}"
+  defp handle_error_message(callback, deployment_id, message) do
+    message = "An error occured when deploying #{deployment_id} : #{message}"
     Logger.error message
-    callback.(:deployment_failed, message)
+    callback.update_status(deployment_id, "failed")
   end
 end
