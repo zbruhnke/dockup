@@ -10,12 +10,19 @@ defmodule DockupUi.Config do
   defp configs do
     [
       {"DOCKUP_BACKEND", :backend_module, :module},
-      {"SLACK_WEBHOOK_URL", :slack_webhook_url, :string}
+      {"SLACK_WEBHOOK_URL", :slack_webhook_url, :string},
+      {"DOCKUP_BACKEND", :backend_module, :module},
+      {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
+      {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string}
     ]
   end
 
   defp set_config(nil, _, _) do
     # Do nothing if env var is not set
+  end
+
+  defp set_config("", _, _) do
+    # Do nothing if env var is blank
   end
 
   defp set_config(env_val, config_key, :module) do
