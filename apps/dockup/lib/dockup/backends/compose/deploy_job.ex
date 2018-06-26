@@ -25,12 +25,12 @@ defmodule Dockup.Backends.Compose.DeployJob do
     urls = docker_compose_config.rewrite_variables(project_id)
     container.start_containers(project_id)
 
-    callback.update_status(deployment_id, "waiting_for_urls")
     callback.set_log_url(deployment_id, log_url(project_id))
+    callback.update_status(deployment_id, "waiting_for_urls")
     urls = project.wait_till_up(urls, project_id)
 
-    callback.update_status(deployment_id, "started")
     callback.set_urls(deployment_id, urls)
+    callback.update_status(deployment_id, "started")
   rescue
     exception ->
       stacktrace = System.stacktrace

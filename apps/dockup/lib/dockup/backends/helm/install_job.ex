@@ -36,12 +36,12 @@ defmodule Dockup.Backends.Helm.InstallJob do
       {out, _} -> raise out
     end
 
-    callback.update_status(deployment_id, "waiting_for_urls")
     callback.set_log_url(deployment_id, log_url(name))
+    callback.update_status(deployment_id, "waiting_for_urls")
     urls = project.wait_till_up([url], project_id)
 
-    callback.update_status(deployment_id, "started")
     callback.set_urls(deployment_id, urls)
+    callback.update_status(deployment_id, "started")
   rescue
     exception ->
       stacktrace = System.stacktrace

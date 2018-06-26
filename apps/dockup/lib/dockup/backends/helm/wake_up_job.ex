@@ -28,12 +28,12 @@ defmodule Dockup.Backends.Helm.WakeUpJob do
     |> String.split("\n")
     |> Enum.map(&wake_up_deploy/1)
 
-    callback.update_status(deployment_id, "waiting_for_urls")
     callback.set_log_url(deployment_id, log_url(project_id))
+    callback.update_status(deployment_id, "waiting_for_urls")
     urls = Project.wait_till_up([url], project_id)
 
-    callback.update_status(deployment_id, "started")
     callback.set_urls(deployment_id, urls)
+    callback.update_status(deployment_id, "started")
   rescue
     exception ->
       stacktrace = System.stacktrace

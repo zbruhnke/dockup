@@ -1,6 +1,8 @@
 defmodule DockupUi.DeploymentQueue do
   use GenServer
 
+  require Logger
+
   alias DockupUi.{
     Repo,
     Deployment,
@@ -16,14 +18,17 @@ defmodule DockupUi.DeploymentQueue do
   @doc """
   Starts the deployment queue
   """
-  def start_link(name \\ __MODULE__,
-                 backend \\ Application.fetch_env!(:dockup_ui, :backend_module),
-                 callback \\ Callback) do
+  def start_link(
+        name \\ __MODULE__,
+        backend \\ Application.fetch_env!(:dockup_ui, :backend_module),
+        callback \\ Callback
+      ) do
     state = %{
       backend: backend,
       callback: callback,
       queue: :queue.new()
     }
+
     GenServer.start_link(__MODULE__, state, name: name)
   end
 
@@ -82,6 +87,15 @@ defmodule DockupUi.DeploymentQueue do
   end
 
   defp has_capacity_to_deploy? do
+    # Useful for debugging queueing issues
+    Logger.info(
+      "Processing queue -
+      current_deployment_count(#{current_deployment_count()})
+      max_concurrent_deployments(#{max_concurrent_deployments()})
+      current_build_count(#{current_build_count()})
+      max_concurrent_builds(#{max_concurrent_builds()})"
+    )
+
     current_deployment_count() < max_concurrent_deployments() &&
       current_build_count() < max_concurrent_builds()
   end
@@ -100,6 +114,7 @@ defmodule DockupUi.DeploymentQueue do
         else
           deploy_from_queue(queue, backend, callback_module)
         end
+
       {:empty, queue} ->
         queue
     end
@@ -107,16 +122,16 @@ defmodule DockupUi.DeploymentQueue do
 
   defp current_deployment_count do
     query =
-      from d in Deployment,
-      where: d.status not in ["queued", "deleted", "hibernated", "starting"]
+      from(
+        d in Deployment,
+        where: d.status not in ["queued", "deleted", "hibernated", "starting"]
+      )
 
     Repo.aggregate(query, :count, :id)
   end
 
   defp current_build_count do
-    query =
-      from d in Deployment,
-      where: d.status in ["starting", "waking_up"]
+    query = from(d in Deployment, where: d.status in ["starting", "waking_up"])
 
     Repo.aggregate(query, :count, :id)
   end

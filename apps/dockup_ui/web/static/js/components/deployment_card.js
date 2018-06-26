@@ -97,7 +97,7 @@ class DeploymentCard extends Component {
   }
 
   renderWakeUpButton() {
-    if (this.props.deployment.status == "deployment_hibernated") {
+    if (this.props.deployment.status == "hibernated") {
       return(
         <button type="button" onClick={this.handleWakeUp} className="btn btn-outline-primary mr-2">Wake Up</button>
       );
@@ -124,7 +124,7 @@ class DeploymentCard extends Component {
   }
 
   renderDeleteButton() {
-    if(this.props.deployment.status != "deployment_deleted" && this.props.deployment.status != "deleting_deployment") {
+    if(this.props.deployment.status != "deleted" && this.props.deployment.status != "deleting") {
       return(
         <button type="button" onClick={this.handleDelete} className="btn btn-outline-danger">Delete</button>
       );
