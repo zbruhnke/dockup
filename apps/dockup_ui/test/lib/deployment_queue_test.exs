@@ -54,7 +54,7 @@ defmodule DockupUi.DeploymentQueueTest do
       insert(:deployment, status: "started")
     end
     for _ <- 1..4 do
-      insert(:deployment, status: "deployment_deleted")
+      insert(:deployment, status: "deleted")
     end
     for _ <- 1..4 do
       insert(:deployment, status: "queued")
@@ -75,12 +75,12 @@ defmodule DockupUi.DeploymentQueueTest do
       insert(:deployment, status: "started")
     end
     for _ <- 1..4 do
-      insert(:deployment, status: "deployment_deleted")
+      insert(:deployment, status: "deleted")
     end
     for _ <- 1..4 do
       insert(:deployment, status: "queued")
     end
-    tail_deployment = insert(:deployment, status: "deployment_deleted", id: 100)
+    tail_deployment = insert(:deployment, status: "deleted", id: 100)
     head_deployment = insert(:deployment, status: "queued", id: 200)
 
     {:ok, _pid} = DeploymentQueue.start_link(@name, FakeBackend, self())

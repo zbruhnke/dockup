@@ -34,7 +34,6 @@ defmodule Dockup.DeployJobTest do
   test "performing a deployment triggers deployment using the project type" do
     Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback,
                                               project: FakeProject, container: FakeContainer, docker_compose_config: FakeDockerComposeConfig)
-    assert_received {123, "starting"}
     assert_received :docker_compose_config_prepared
     assert_received :containers_started
 

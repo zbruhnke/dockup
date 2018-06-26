@@ -20,7 +20,6 @@ defmodule Dockup.Backends.Compose.DeployJob do
 
     project_id = to_string(deployment_id)
 
-    callback.update_status(deployment_id, "starting")
     project.clone_repository(project_id, repository, branch)
 
     urls = docker_compose_config.rewrite_variables(project_id)

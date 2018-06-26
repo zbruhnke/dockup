@@ -4,7 +4,8 @@ defmodule DockupUi.DeploymentQueue do
   alias DockupUi.{
     Repo,
     Deployment,
-    Callback
+    Callback,
+    DeploymentStatusUpdateService
   }
 
   import Ecto.Query
@@ -93,6 +94,7 @@ defmodule DockupUi.DeploymentQueue do
         # There is a chance that the deployment may have been
         # deleted. In that case, we should skip to the next item in the queue.
         if deployable?(deployment) do
+          DeploymentStatusUpdateService.run("starting", deployment_id)
           backend.deploy(deployment, callback_module)
           queue
         else
@@ -106,7 +108,7 @@ defmodule DockupUi.DeploymentQueue do
   defp current_deployment_count do
     query =
       from d in Deployment,
-      where: d.status not in ["queued", "deployment_deleted"]
+      where: d.status not in ["queued", "deleted", "hibernated", "starting"]
 
     Repo.aggregate(query, :count, :id)
   end
@@ -114,7 +116,7 @@ defmodule DockupUi.DeploymentQueue do
   defp current_build_count do
     query =
       from d in Deployment,
-      where: d.status in ["processing", "cloning_repo", "starting"]
+      where: d.status in ["starting", "waking_up"]
 
     Repo.aggregate(query, :count, :id)
   end
