@@ -12,8 +12,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
   alias DockupUi.{
     DeleteDeploymentService,
     Deployment,
-    Repo,
-    Callback.Null
+    Repo
   }
 
   def run(service \\ DeleteDeploymentService, retention_days \\ nil) do
@@ -27,7 +26,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
     query
     |> Repo.all
     |> Flow.from_enumerable()
-    |> Flow.map(fn id -> service.run(id, %Null{}) end)
+    |> Flow.map(fn id -> service.run(id) end)
     |> Flow.run()
   end
 
