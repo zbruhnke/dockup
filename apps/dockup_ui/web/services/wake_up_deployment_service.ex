@@ -5,31 +5,28 @@ defmodule DockupUi.WakeUpDeploymentService do
   alias DockupUi.{
     Deployment,
     Repo,
-    Callback.Null
+    Callback
   }
 
-  def run(deployment_id, callback_data) do
-    Logger.info "waking up deployment with id: #{deployment_id}"
+  def wake_up_all do
+    Deployment
+    |> Ecto.Query.where(status: "hibernated")
+    |> Repo.all()
+    |> Enum.map(fn d -> run(d.id) end)
+  end
 
-    with \
-      deployment <- Repo.get!(Deployment, deployment_id),
-      :ok <- wake_up(deployment, callback_data)
-    do
+  def run(deployment_id) do
+    Logger.info("Waking up deployment with id: #{deployment_id}")
+
+    with deployment <- Repo.get!(Deployment, deployment_id),
+         :ok <- wake_up(deployment) do
       {:ok, deployment}
     end
   end
 
-  def wake_up_all do
-    DockupUi.Deployment
-    |> Ecto.Query.where(status: "deployment_hibernated")
-    |> DockupUi.Repo.all
-    |> Enum.map( fn (d) -> run(d.id, %Null{}) end)
-  end
-
-  defp wake_up(deployment, callback) do
+  defp wake_up(deployment) do
     backend = Application.fetch_env!(:dockup_ui, :backend_module)
-    callback = DockupUi.Callback.lambda(deployment, callback)
-    backend.wake_up(deployment.id, callback)
+    backend.wake_up(deployment.id, Callback)
     :ok
   end
 end

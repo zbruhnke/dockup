@@ -5,19 +5,19 @@ defmodule DockupUi.DeployService do
     DeploymentQueue
   }
 
-  def run(deployment_params, callback_data, deps \\ []) do
+  def run(deployment_params, deps \\ []) do
     deployment_queue = deps[:deployment_queue] || DeploymentQueue
 
     with \
       changeset <- Deployment.create_changeset(%Deployment{status: "queued"}, deployment_params),
       {:ok, deployment} <- Repo.insert(changeset),
-      :ok <- queue_deployment(deployment, callback_data, deployment_queue)
+      :ok <- queue_deployment(deployment.id, deployment_queue)
     do
       {:ok, deployment}
     end
   end
 
-  defp queue_deployment(deployment, callback_data, deployment_queue) do
-    deployment_queue.enqueue({deployment, callback_data})
+  defp queue_deployment(deployment_id, deployment_queue) do
+    deployment_queue.enqueue(deployment_id)
   end
 end

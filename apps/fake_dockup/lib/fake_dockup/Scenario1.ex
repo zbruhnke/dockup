@@ -5,16 +5,14 @@ defmodule FakeDockup.Scenario1 do
   from the deployment params, this scenario is chosen as a fallback.
   """
 
-  def run(callback) do
-    callback.(:cloning_repo, nil)
+  def run(id, callback) do
     Process.sleep(2000)
 
-    callback.(:starting, nil)
+    callback.set_log_url(id, "logio.example.com/#?projectName=project_id")
+    callback.update_status(id, "waiting_for_urls")
     Process.sleep(2000)
 
-    callback.(:checking_urls, "logio.example.com/#?projectName=project_id")
-    Process.sleep(2000)
-
-    callback.(:started, ["codemancers.com", "crypt.codemancers.com"])
+    callback.set_urls(id, ["codemancers.com", "crypt.codemancers.com"])
+    callback.update_status(id, "started")
   end
 end

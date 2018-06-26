@@ -4,7 +4,6 @@ defmodule DockupUi.DeleteDeploymentServiceTest do
 
   alias DockupUi.{
     DeleteDeploymentService,
-    Callback.Null
   }
 
   defmodule FakeDeleteDeploymentJob do
@@ -17,7 +16,7 @@ defmodule DockupUi.DeleteDeploymentServiceTest do
   test "run returns {:ok, deployment} if delete deployment job is scheduled" do
     insert(:deployment, id: 1)
     deps = [delete_deployment_job: FakeDeleteDeploymentJob]
-    {:ok, deployment} = DeleteDeploymentService.run(1, %Null{}, deps)
+    {:ok, deployment} = DeleteDeploymentService.run(1, deps)
     %{id: 1} = deployment
     assert_received :ran_delete_deployment_job
   end

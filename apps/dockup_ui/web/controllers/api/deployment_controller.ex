@@ -8,8 +8,7 @@ defmodule DockupUi.API.DeploymentController do
     HibernateDeploymentService,
     WakeUpDeploymentService,
     DeleteDeploymentService,
-    Repo,
-    Callback.Web
+    Repo
   }
 
   def index(conn, _params) do
@@ -23,9 +22,8 @@ defmodule DockupUi.API.DeploymentController do
 
   def create(conn, deployment_params) do
     deploy_service = conn.assigns[:deploy_service] || DeployService
-    callback_data = %Web{callback_url: deployment_params["callback_url"]}
 
-    case deploy_service.run(deployment_params, callback_data) do
+    case deploy_service.run(deployment_params) do
       {:ok, deployment} ->
         conn
         |> put_status(:created)
@@ -45,10 +43,9 @@ defmodule DockupUi.API.DeploymentController do
 
   def delete(conn, destroy_params) do
     delete_deployment_service = conn.assigns[:delete_deployment_service] || DeleteDeploymentService
-    callback_data = %Web{callback_url: destroy_params["callback_url"]}
     deployment_id = destroy_params["id"]
 
-    case delete_deployment_service.run(deployment_id, callback_data) do
+    case delete_deployment_service.run(deployment_id) do
       {:ok, deployment} ->
         conn
         |> put_status(:ok)
@@ -62,7 +59,7 @@ defmodule DockupUi.API.DeploymentController do
   end
 
   def hibernate(conn, %{"deployment_id" => id}) do
-    case HibernateDeploymentService.run(id, %Web{}) do
+    case HibernateDeploymentService.run(id) do
       {:ok, deployment} ->
         conn
         |> put_status(:ok)
@@ -76,7 +73,7 @@ defmodule DockupUi.API.DeploymentController do
   end
 
   def wake_up(conn, %{"deployment_id" => id}) do
-    case WakeUpDeploymentService.run(id, %Web{}) do
+    case WakeUpDeploymentService.run(id) do
       {:ok, deployment} ->
         conn
         |> put_status(:ok)

@@ -1,24 +1,9 @@
 defmodule DockupUi.Callback.Github do
-  alias DockupUi.{
-    CallbackProtocol,
-    CallbackProtocol.Defaults
-  }
+  # This module is unusable at the moment, this can be used once
+  # we have a schema for project and it is linked to a github repo.
 
   require Logger
 
-  defstruct [:repo_full_name, :deployment_id]
-
-  defimpl CallbackProtocol, for: __MODULE__ do
-    use Defaults
-
-    def started(callback_data, deployment, _payload) do
-      DockupUi.Callback.Github.update_deployment_status("success", deployment.id, callback_data.repo_full_name, callback_data.deployment_id)
-    end
-
-    def deployment_failed(callback_data, deployment, _payload) do
-      DockupUi.Callback.Github.update_deployment_status("failure", deployment.id, callback_data.repo_full_name, callback_data.deployment_id)
-    end
-  end
 
   def create_github_deployment(pull_request) do
     repo_full_name = pull_request["head"]["repo"]["full_name"]

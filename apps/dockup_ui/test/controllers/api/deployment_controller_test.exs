@@ -48,7 +48,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
     deployment = insert(:deployment, %{id: 1})
 
     defmodule FakeDeployService do
-      def run(%{"foo" => "bar"}, %DockupUi.Callback.Web{callback_url: "callback_url"}) do
+      def run(%{"foo" => "bar"}) do
         {:ok, Repo.get(DockupUi.Deployment, 1)}
       end
     end
@@ -60,7 +60,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
 
   test "create renders errors on model when DeployService fails", %{conn: conn} do
     defmodule FakeFailingDeployService do
-      def run(%{}, _callback_data) do
+      def run(%{}) do
         {:error, DockupUi.Deployment.create_changeset(%DockupUi.Deployment{}, %{})}
       end
     end

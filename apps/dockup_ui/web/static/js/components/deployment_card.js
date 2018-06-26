@@ -23,10 +23,11 @@ class DeploymentCard extends Component {
   }
 
   renderOpenButton() {
+    // TODO: these status checks can be removed if the urls are cleared on hibernation
     if(!this.props.deployment.urls ||
-       this.props.deployment.status == "hibernating_deployment" ||
-       this.props.deployment.status == "deployment_hibernated" ||
-       this.props.deployment.status == "waking_up_deployment") {
+       this.props.deployment.status == "hibernating" ||
+       this.props.deployment.status == "hibernated" ||
+       this.props.deployment.status == "waking_up") {
       return null;
     }
 
@@ -96,7 +97,7 @@ class DeploymentCard extends Component {
   }
 
   renderWakeUpButton() {
-    if (this.props.deployment.status == "deployment_hibernated") {
+    if (this.props.deployment.status == "hibernated") {
       return(
         <button type="button" onClick={this.handleWakeUp} className="btn btn-outline-primary mr-2">Wake Up</button>
       );
@@ -123,7 +124,7 @@ class DeploymentCard extends Component {
   }
 
   renderDeleteButton() {
-    if(this.props.deployment.status != "deployment_deleted" && this.props.deployment.status != "deleting_deployment") {
+    if(this.props.deployment.status != "deleted" && this.props.deployment.status != "deleting") {
       return(
         <button type="button" onClick={this.handleDelete} className="btn btn-outline-danger">Delete</button>
       );

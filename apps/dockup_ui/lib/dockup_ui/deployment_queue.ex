@@ -1,10 +1,13 @@
 defmodule DockupUi.DeploymentQueue do
   use GenServer
 
+  require Logger
+
   alias DockupUi.{
     Repo,
     Deployment,
-    Callback
+    Callback,
+    DeploymentStatusUpdateService
   }
 
   import Ecto.Query
@@ -15,26 +18,29 @@ defmodule DockupUi.DeploymentQueue do
   @doc """
   Starts the deployment queue
   """
-  def start_link(name \\ __MODULE__,
-                 backend \\ Application.fetch_env!(:dockup_ui, :backend_module),
-                 callback \\ Callback) do
+  def start_link(
+        name \\ __MODULE__,
+        backend \\ Application.fetch_env!(:dockup_ui, :backend_module),
+        callback \\ Callback
+      ) do
     state = %{
       backend: backend,
       callback: callback,
       queue: :queue.new()
     }
+
     GenServer.start_link(__MODULE__, state, name: name)
   end
 
   @doc """
   Queues a deployment
   """
-  def enqueue(deployment_params, name \\ __MODULE__) do
-    GenServer.call(name, {:enqueue, deployment_params})
+  def enqueue(deployment_id, name \\ __MODULE__) do
+    GenServer.call(name, {:enqueue, deployment_id})
   end
 
   @doc """
-  Returns the queued deployment params
+  Returns the queued deployments
   """
   def get_queue(name \\ __MODULE__) do
     GenServer.call(name, :get_queue)
@@ -58,13 +64,9 @@ defmodule DockupUi.DeploymentQueue do
     {:ok, state}
   end
 
-  def handle_call({:enqueue, deployment_params}, _from, state) do
-    {deployment, callback_data} = deployment_params
-    callback = state.callback.lambda(deployment, callback_data)
-    callback.(:queued, nil)
-
+  def handle_call({:enqueue, deployment_id}, _from, state) do
     process_queue(self())
-    state = %{state | queue: :queue.in(deployment_params, state.queue)}
+    state = %{state | queue: :queue.in(deployment_id, state.queue)}
     {:reply, :ok, state}
   end
 
@@ -85,23 +87,34 @@ defmodule DockupUi.DeploymentQueue do
   end
 
   defp has_capacity_to_deploy? do
+    # Useful for debugging queueing issues
+    Logger.info(
+      "Processing queue -
+      current_deployment_count(#{current_deployment_count()})
+      max_concurrent_deployments(#{max_concurrent_deployments()})
+      current_build_count(#{current_build_count()})
+      max_concurrent_builds(#{max_concurrent_builds()})"
+    )
+
     current_deployment_count() < max_concurrent_deployments() &&
       current_build_count() < max_concurrent_builds()
   end
 
   defp deploy_from_queue(queue, backend, callback_module) do
     case :queue.out(queue) do
-      {{:value, {deployment, callback_data}}, queue} ->
+      {{:value, deployment_id}, queue} ->
+        deployment = Repo.get!(Deployment, deployment_id)
+
         # There is a chance that the deployment may have been
         # deleted. In that case, we should skip to the next item in the queue.
         if deployable?(deployment) do
-          callback = callback_module.lambda(deployment, callback_data)
-          callback.(:processing, nil)
-          backend.deploy(deployment, callback)
+          DeploymentStatusUpdateService.run("starting", deployment_id)
+          backend.deploy(deployment, callback_module)
           queue
         else
           deploy_from_queue(queue, backend, callback_module)
         end
+
       {:empty, queue} ->
         queue
     end
@@ -109,16 +122,16 @@ defmodule DockupUi.DeploymentQueue do
 
   defp current_deployment_count do
     query =
-      from d in Deployment,
-      where: d.status not in ["queued", "deployment_deleted"]
+      from(
+        d in Deployment,
+        where: d.status not in ["queued", "deleted", "hibernated", "starting"]
+      )
 
     Repo.aggregate(query, :count, :id)
   end
 
   defp current_build_count do
-    query =
-      from d in Deployment,
-      where: d.status in ["processing", "cloning_repo", "starting"]
+    query = from(d in Deployment, where: d.status in ["starting", "waking_up"])
 
     Repo.aggregate(query, :count, :id)
   end

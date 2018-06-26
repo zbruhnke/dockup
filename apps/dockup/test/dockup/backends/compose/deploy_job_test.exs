@@ -18,22 +18,29 @@ defmodule Dockup.DeployJobTest do
   end
 
   defmodule FakeCallback do
-    def lambda do
-      fn(event, payload) ->
-        send self(), {event, payload}
-      end
+    def update_status(deployment_id, event) do
+      send self(), {deployment_id, event}
+    end
+
+    def set_urls(deployment_id, urls) do
+      send self(), {:set_urls, deployment_id, urls}
+    end
+
+    def set_log_url(deployment_id, log_url) do
+      send self(), {:set_log_url, deployment_id, log_url}
     end
   end
 
   test "performing a deployment triggers deployment using the project type" do
-    Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
+    Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback,
                                               project: FakeProject, container: FakeContainer, docker_compose_config: FakeDockerComposeConfig)
-    assert_received {:cloning_repo, nil}
-    assert_received {:starting, nil}
     assert_received :docker_compose_config_prepared
     assert_received :containers_started
-    assert_received {:checking_urls, "logio.127.0.0.1.xip.io/#?projectName=123"}
-    assert_received {:started, ["dummy_url/path"]}
+
+    assert_received {123, "waiting_for_urls"}
+    assert_received {:set_log_url, 123, "logio.127.0.0.1.xip.io/#?projectName=123"}
+    assert_received {123, "started"}
+    assert_received {:set_urls, 123, ["dummy_url/path"]}
   end
 
   test "triggers deployment_failed callback when an exception occurs" do
@@ -44,10 +51,10 @@ defmodule Dockup.DeployJobTest do
     end
 
     assert_raise RuntimeError, "ifuckedup", fn ->
-      Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback.lambda,
+      Dockup.Backends.Compose.DeployJob.perform(123, "fake_repo", "fake_branch", FakeCallback,
                                                 project: FakeProject, container: FakeFailingContainer, docker_compose_config: FakeDockerComposeConfig)
     end
 
-    assert_received {:deployment_failed, "An error occured when deploying 123 : ifuckedup"}
+    assert_received {123, "failed"}
   end
 end

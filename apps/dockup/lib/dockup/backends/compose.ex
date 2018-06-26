@@ -1,6 +1,8 @@
 defmodule Dockup.Backends.Compose do
   @behaviour DockupSpec
 
+  require Logger
+
   @impl DockupSpec
   def initialize do
     Dockup.Config.set_configs_from_env()
@@ -19,12 +21,14 @@ defmodule Dockup.Backends.Compose do
   end
 
   @impl DockupSpec
-  def hibernate(_id, callback) do
-    callback.(:errored, "Hibernate not supported")
+  def hibernate(id, callback) do
+    Logger.warn "Hibernate not supported in docker-compose backend"
+    callback.update_status(id, "failed")
   end
 
   @impl DockupSpec
-  def wake_up(_id, callback) do
-    callback.(:errored, "Wake up not supported")
+  def wake_up(id, callback) do
+    Logger.warn "Wake up not supported in docker-compose backend"
+    callback.update_status(id, "failed")
   end
 end

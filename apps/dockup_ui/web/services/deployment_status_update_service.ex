@@ -12,28 +12,14 @@ defmodule DockupUi.DeploymentStatusUpdateService do
     DeploymentChannel
   }
 
-  def run(status, deployment_id, payload \\ nil, channel \\ DeploymentChannel)
-
-  def run(status, deployment_id, payload, channel) when is_integer(deployment_id) do
-    deployment = Repo.get!(Deployment, deployment_id)
-    run(status, deployment, payload, channel)
-  rescue
-    e ->
-      Logger.error "Cannot update status: #{status} of deployment_id: #{deployment_id}. Error: #{inspect e}"
-      {:error, deployment_id}
-  end
-
-  def run(status, deployment, payload, channel) do
+  def run(status, deployment_id, channel \\ DeploymentChannel) do
     with \
-      changeset <- Deployment.changeset(deployment, changeset_map(status, payload)),
+      deployment <- Repo.get!(Deployment, deployment_id),
+      changeset <- Deployment.changeset(deployment, %{status: status}),
       {:ok, deployment} <- Repo.update(changeset),
-      :ok <- channel.update_deployment_status(deployment, payload)
+      :ok <- channel.update_deployment_status(deployment)
     do
       {:ok, deployment}
     end
   end
-
-  defp changeset_map(:checking_urls, log_url), do: %{status: "checking_urls", log_url: log_url}
-  defp changeset_map(:started, urls), do: %{status: "started", urls: urls}
-  defp changeset_map(status, _payload), do: %{status: Atom.to_string(status)}
 end

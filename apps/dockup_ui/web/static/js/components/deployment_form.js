@@ -23,7 +23,7 @@ class DeploymentForm extends Component {
   connectToDeploymentsChannel() {
     let channel = DockupUiSocket.getDeploymentsChannel();
 
-    channel.on("status_updated", ({deployment, _payload}) => {
+    channel.on("status_updated", (deployment) => {
       this.updateDeployment(deployment);
     })
   }

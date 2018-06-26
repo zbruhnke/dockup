@@ -7,7 +7,7 @@ defmodule FakeDockup do
   end
 
   @impl DockupSpec
-  def deploy(%{branch: branch}, callback) do
+  def deploy(%{branch: branch, id: id}, callback) do
     module = Module.concat(FakeDockup, branch)
 
     module =
@@ -17,33 +17,34 @@ defmodule FakeDockup do
         FakeDockup.Scenario1
       end
 
-    spawn(fn -> module.run(callback) end)
+    spawn(fn -> module.run(id, callback) end)
   end
 
   @impl DockupSpec
-  def destroy(_id, callback) do
-    callback.(:deleting_deployment, nil)
+  def destroy(id, callback) do
+    callback.update_status(id, "deleting")
     Process.sleep(2000)
 
-    callback.(:deployment_deleted, nil)
+    callback.update_status(id, "deleted")
   end
 
   @impl DockupSpec
-  def hibernate(_id, callback) do
-    callback.(:hibernating_deployment, nil)
+  def hibernate(id, callback) do
+    callback.update_status(id, "hibernating")
     Process.sleep(2000)
 
-    callback.(:deployment_hibernated, nil)
+    callback.update_status(id, "hibernated")
   end
 
   @impl DockupSpec
-  def wake_up(_id, callback) do
-    callback.(:waking_up_deployment, nil)
+  def wake_up(id, callback) do
     Process.sleep(2000)
 
-    callback.(:checking_urls, "logio.example.com/#?projectName=project_id")
+    callback.set_log_url(id, "logio.example.com/#?projectName=project_id")
+    callback.update_status(id, "waiting_for_urls")
     Process.sleep(2000)
 
-    callback.(:started, ["codemancers.com", "crypt.codemancers.com"])
+    callback.set_urls(id, ["codemancers.com", "crypt.codemancers.com"])
+    callback.update_status(id, "started")
   end
 end

@@ -6,35 +6,26 @@ defmodule Dockup.Backends.Compose.DeleteDeploymentJobTest do
   end
 
   defmodule FakeContainer do
-    def stop_containers("123"), do: :ok
+    def stop_containers("123"), do: send self(), :stopped_containers
   end
 
   defmodule FakeCallback do
-    def lambda do
-      fn(event, payload) ->
-        send self(), {event, payload}
-      end
+    def update_status(deployment_id, event) do
+      send self(), {deployment_id, event}
+    end
+
+    def set_urls(deployment_id, urls) do
+      send self(), {:set_urls, deployment_id, urls}
+    end
+
+    def set_log_url(deployment_id, log_url) do
+      send self(), {:set_log_url, deployment_id, log_url}
     end
   end
 
   test "performing the delete deployment job stops the project and deletes project dir" do
-    Dockup.Backends.Compose.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FakeContainer)
-    assert_received {:deleting_deployment, nil}
-    assert_received {:deployment_deleted, nil}
-  end
-
-  test "triggers delete_deployment_failed callback when an exception occurs" do
-    defmodule FailingContainer do
-      def stop_containers("123") do
-        raise "cannot stop containers"
-      end
-    end
-
-    assert_raise RuntimeError, "cannot stop containers", fn ->
-      Dockup.Backends.Compose.DeleteDeploymentJob.perform(123, FakeCallback.lambda, project: FakeProject, container: FailingContainer)
-    end
-
-    assert_received {:deleting_deployment, nil}
-    assert_received {:delete_deployment_failed, "An error occured when deleting deployment 123 : cannot stop containers"}
+    Dockup.Backends.Compose.DeleteDeploymentJob.perform(123, FakeCallback, project: FakeProject, container: FakeContainer)
+    assert_received :stopped_containers
+    assert_received {123, "deleted"}
   end
 end

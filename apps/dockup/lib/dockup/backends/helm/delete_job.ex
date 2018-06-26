@@ -11,11 +11,9 @@ defmodule Dockup.Backends.Helm.DeleteJob do
     spawn(fn -> perform(id, callback) end)
   end
 
-  def perform(project_identifier, callback \\ DefaultCallback.lambda, deps \\ []) do
-    callback.(:deleting_deployment, nil)
-
+  def perform(deployment_id, callback \\ DefaultCallback, deps \\ []) do
     project = deps[:project] || Project
-    project_id = to_string(project_identifier)
+    project_id = to_string(deployment_id)
     name = "dockup#{project_id}"
 
     case Command.run("helm", ["delete", name], ".") do
@@ -31,18 +29,6 @@ defmodule Dockup.Backends.Helm.DeleteJob do
     end
     project.delete_repository(project_id)
 
-    callback.(:deployment_deleted, nil)
-  rescue
-    exception ->
-      stacktrace = System.stacktrace
-      message = Exception.message(exception)
-      handle_error_message(callback, project_identifier, message)
-      reraise(exception, stacktrace)
-  end
-
-  defp handle_error_message(callback, project_identifier, message) do
-    message = "An error occured when deleting deployment #{project_identifier} : #{message}"
-    Logger.error message
-    callback.(:delete_deployment_failed, message)
+    callback.update_status(deployment_id, "deleted")
   end
 end

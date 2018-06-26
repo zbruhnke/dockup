@@ -1,57 +1,42 @@
 defmodule DockupUi.CallbackTest do
   use DockupUi.ModelCase, async: true
   import DockupUi.Factory
-  import ExUnit.CaptureLog
 
   alias DockupUi.{
-    Callback,
-    CallbackProtocol
+    Deployment,
+    Callback
   }
 
-  {:ok, binary} = Protocol.consolidate(CallbackProtocol, [FakeCallbackData])
-  :code.load_binary(CallbackProtocol, 'callback_test.exs', binary)
+  defmodule FakeStatusUpdateService do
+    def run(status, 1) do
+      send self(), :status_updated
 
-  test "lambda returns a function" do
-    deployment = insert(:deployment)
-    assert is_function(Callback.lambda(deployment, nil))
+      Deployment
+      |> Repo.get!(1)
+      |> Deployment.changeset(%{status: status})
+      |> Repo.update
+    end
   end
 
-  test "callback runs DeploymentStatusUpdateService" do
-    defmodule FakeStatusUpdateService do
-      def run(_status, 1, "fake_payload") do
-        send self(), :status_updated
-      end
+  defmodule FakeSlackWebhook do
+    def send_message(url, message) do
+      send self(), {url, message}
     end
+  end
 
-    deployment = insert(:deployment, id: 1)
+  test "update_status runs DeploymentStatusUpdateService" do
+    insert(:deployment, id: 1)
 
-    lambda = Callback.lambda(deployment, %FakeCallbackData{noop: true}, FakeStatusUpdateService)
-    lambda.(:queued, "fake_payload")
+    Callback.update_status(1, "queued", %{status_update_service: FakeStatusUpdateService})
     assert_received :status_updated
   end
 
-  test "callback triggers callback implementation based on callback data" do
-    defmodule NoopStatusUpdateService do
-      def run(_status, _id, _payload), do: :ok
-    end
+  test "update_status sends a slack message when deployment is started" do
+    Application.put_env(:dockup_ui, :slack_webhook_url, "https://slackurl")
+    insert(:deployment, id: 1)
 
-    deployment = insert(:deployment, id: 1)
-
-    lambda = Callback.lambda(deployment, %FakeCallbackData{}, NoopStatusUpdateService)
-
-    # When event is not implemented, falls back to common_callback
-    lambda.(:queued, {self(), "fake_payload"})
-    assert_receive {:common_callback, ^deployment, "fake_payload"}
-
-    # When event is implemented, uses the overridden implementation
-    lambda.(:started, {self(), "fake_payload"})
-    assert_receive {:started, ^deployment, "fake_payload"}
-
-    # When event is invalid
-    logs = capture_log(fn ->
-      lambda.(:not_a_real_event, {self(), "fake_payload"})
-      refute_receive {:not_a_real_event, ^deployment, "fake_payload"}
-    end)
-    assert logs =~ "Unknown callback event triggered: :not_a_real_event"
+    Callback.update_status(1, "started", %{status_update_service: FakeStatusUpdateService, slack_webhook: FakeSlackWebhook})
+    message = "Dockup has a new deployment at <http://localhost:4001/deployments/1>"
+    assert_received {"https://slackurl", ^message}
   end
 end
