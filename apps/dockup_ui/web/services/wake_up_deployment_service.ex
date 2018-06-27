@@ -5,7 +5,7 @@ defmodule DockupUi.WakeUpDeploymentService do
   alias DockupUi.{
     Deployment,
     Repo,
-    Callback
+    DeploymentQueue
   }
 
   def wake_up_all do
@@ -19,14 +19,12 @@ defmodule DockupUi.WakeUpDeploymentService do
     Logger.info("Waking up deployment with id: #{deployment_id}")
 
     with deployment <- Repo.get!(Deployment, deployment_id),
-         :ok <- wake_up(deployment) do
+         :ok <- queue_deployment(deployment_id) do
       {:ok, deployment}
     end
   end
 
-  defp wake_up(deployment) do
-    backend = Application.fetch_env!(:dockup_ui, :backend_module)
-    backend.wake_up(deployment.id, Callback)
-    :ok
+  defp queue_deployment(deployment_id) do
+    DeploymentQueue.enqueue(deployment_id)
   end
 end
