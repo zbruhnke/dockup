@@ -1,6 +1,6 @@
 # ================================================================================
 # Compile node assets as a separate stage
-FROM node:latest AS staticassets
+FROM node:9 AS staticassets
 
 RUN apt-get update && apt-get install -y build-essential
 RUN mkdir -p /dockup/apps/dockup_ui
