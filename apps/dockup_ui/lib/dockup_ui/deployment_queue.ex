@@ -88,13 +88,11 @@ defmodule DockupUi.DeploymentQueue do
 
   defp has_capacity_to_deploy? do
     # Useful for debugging queueing issues
-    Logger.info(
-      "Processing queue -
+    Logger.info("Processing queue -
       current_deployment_count(#{current_deployment_count()})
       max_concurrent_deployments(#{max_concurrent_deployments()})
       current_build_count(#{current_build_count()})
-      max_concurrent_builds(#{max_concurrent_builds()})"
-    )
+      max_concurrent_builds(#{max_concurrent_builds()})")
 
     current_deployment_count() < max_concurrent_deployments() &&
       current_build_count() < max_concurrent_builds()

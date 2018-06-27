@@ -12,12 +12,13 @@ defmodule DockupUi do
     backend.initialize()
 
     children = [
-      # Start the endpoint when the application starts
-      supervisor(DockupUi.Endpoint, []),
       # Start the Ecto repository
       supervisor(DockupUi.Repo, []),
       worker(DockupUi.Scheduler, []),
-      worker(DockupUi.DeploymentQueue, [])
+      worker(DockupUi.DeploymentQueue, []),
+      worker(DockupUi.RetryWorker, []),
+      # Start the endpoint when the application starts
+      supervisor(DockupUi.Endpoint, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

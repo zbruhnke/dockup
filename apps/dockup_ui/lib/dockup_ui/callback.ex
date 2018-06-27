@@ -23,6 +23,8 @@ defmodule DockupUi.Callback do
     slack_webhook = deps[:slack_webhook] || SlackWebhook
     deployment_queue = deps[:deployment_queue] || DeploymentQueue
 
+    event = use_restarting_event(deployment_id, event)
+
     {:ok, deployment} = status_update_service.run(event, deployment_id)
 
     case deployment.status do
@@ -34,6 +36,9 @@ defmodule DockupUi.Callback do
 
       "deleted" ->
         process_deployment_queue(deployment_queue)
+
+      "restarting" ->
+        requeue_deployment(deployment, deployment_queue)
 
       _ ->
         :ok
@@ -69,5 +74,24 @@ defmodule DockupUi.Callback do
       message = "Dockup has a new deployment at <#{deployment_url}>"
       slack_webhook.send_message(url, message)
     end
+  end
+
+  defp use_restarting_event(deployment_id, "deleted") do
+    deployment = Repo.get!(Deployment, deployment_id)
+
+    if deployment.status == "restarting" do
+      "restarting"
+    else
+      "deleted"
+    end
+  end
+  defp use_restarting_event(_, event), do: event
+
+  defp requeue_deployment(deployment, deployment_queue) do
+    deployment
+    |> Deployment.changeset(%{status: "queued"})
+    |> Repo.update!()
+
+    deployment_queue.enqueue(deployment.id)
   end
 end
