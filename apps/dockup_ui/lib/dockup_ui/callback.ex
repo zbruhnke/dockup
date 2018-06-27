@@ -35,6 +35,9 @@ defmodule DockupUi.Callback do
       "deleted" ->
         process_deployment_queue(deployment_queue)
 
+      "hibernated" ->
+        process_deployment_queue(deployment_queue)
+
       _ ->
         :ok
     end
