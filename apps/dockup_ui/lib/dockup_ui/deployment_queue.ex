@@ -111,7 +111,7 @@ defmodule DockupUi.DeploymentQueue do
             backend.deploy(deployment, callback_module)
             queue
 
-          "hibernated" ->
+          "waking_up" ->
             backend.wake_up(deployment.id, callback_module)
             queue
 

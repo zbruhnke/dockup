@@ -76,7 +76,7 @@ defmodule DockupUi.Callback do
     end
   end
 
-  defp use_restarting_event(deployment_id, "deleted") do
+  defp use_restarting_event(deployment_id, event) when event in ["deleted", "deleting"] do
     deployment = Repo.get!(Deployment, deployment_id)
 
     if deployment.status == "restarting" do

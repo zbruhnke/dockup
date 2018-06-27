@@ -19,6 +19,9 @@ defmodule DockupUi.WakeUpDeploymentService do
     Logger.info("Waking up deployment with id: #{deployment_id}")
 
     with deployment <- Repo.get!(Deployment, deployment_id),
+         changeset <- Deployment.changeset(deployment, %{status: "waking_up"}),
+         {:ok, deployment} <- Repo.update(changeset),
+         :ok <- DeploymentStatusUpdateService.run(deployment),
          :ok <- queue_deployment(deployment_id) do
       {:ok, deployment}
     end
