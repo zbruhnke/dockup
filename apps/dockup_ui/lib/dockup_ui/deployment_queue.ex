@@ -87,17 +87,22 @@ defmodule DockupUi.DeploymentQueue do
   end
 
   defp has_capacity_to_deploy? do
+    current_deployment_count = current_deployment_count()
+    max_concurrent_deployments = max_concurrent_deployments()
+    current_build_count = current_build_count()
+    max_concurrent_builds = max_concurrent_builds()
+
     # Useful for debugging queueing issues
     Logger.info(
       "Processing queue -
-      current_deployment_count(#{current_deployment_count()})
-      max_concurrent_deployments(#{max_concurrent_deployments()})
-      current_build_count(#{current_build_count()})
-      max_concurrent_builds(#{max_concurrent_builds()})"
+      current_deployment_count(#{current_deployment_count})
+      max_concurrent_deployments(#{max_concurrent_deployments})
+      current_build_count(#{current_build_count})
+      max_concurrent_builds(#{max_concurrent_builds})"
     )
 
-    current_deployment_count() < max_concurrent_deployments() &&
-      current_build_count() < max_concurrent_builds()
+    current_deployment_count < max_concurrent_deployments &&
+      current_build_count < max_concurrent_builds
   end
 
   defp deploy_from_queue(queue, backend, callback_module) do
@@ -124,7 +129,7 @@ defmodule DockupUi.DeploymentQueue do
     query =
       from(
         d in Deployment,
-        where: d.status not in ["queued", "deleted", "hibernated", "starting"]
+        where: d.status not in ["queued", "deleted", "hibernated"]
       )
 
     Repo.aggregate(query, :count, :id)
