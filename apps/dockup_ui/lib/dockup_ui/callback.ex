@@ -40,6 +40,9 @@ defmodule DockupUi.Callback do
       "restarting" ->
         requeue_deployment(deployment, deployment_queue)
 
+      "hibernated" ->
+        process_deployment_queue(deployment_queue)
+
       _ ->
         :ok
     end
