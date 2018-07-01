@@ -15,7 +15,8 @@ class GitUrlInput extends Component {
 
   render() {
     return(
-      <div>
+      <div className="c-form-control" placeholder="Git URL">
+        <img className="c-form-icon" src="/icons/icon-git.svg" />
         <Typeahead
           onChange={this.handleChange}
           options={this.props.urls}
