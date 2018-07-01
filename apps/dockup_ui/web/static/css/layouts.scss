@@ -1,0 +1,455 @@
+// Core sleekr style
+@import "bases/variables.scss";
+@import "bases/mixins.scss";
+@import "components/typography.scss";
+
+// This is style for layouts, don't bring it to frontend engineer
+.l-header {
+  background-color: $v-white;
+  border-bottom: 1px solid $v-ui-border;
+  padding: 10px 30px;
+  position: relative;
+  display: flex;
+  position: sticky;
+  position: -webkit-sticky;
+  vertical-align: middle;
+  top: 0;
+  z-index: 99;
+
+  &__logo {
+    @include mobile { margin: auto; }
+    @include tabletPotrait { margin: auto; }
+  }
+
+  // menu for mobile
+  &__menu-xs {
+    width: 25px;
+    align-self: center;
+    display: none;
+    position: absolute;
+    cursor: pointer;
+    @include max-query-media(sm) { display: block; }
+    span {
+      width: 100%;
+      height: 2px;
+      background-color: $v-slate;
+      display: block;
+      margin: 4px 0;
+      @include transition(all .5s);
+    }
+
+    &.is-active {
+      span {
+        margin: 1px 0;
+        background-color: $v-purple;
+        &:first-child {
+          @include transform(rotate(-45deg));
+          width: 9px;
+          margin: 0 0 0 -1px;
+        }
+        &:last-child {
+          @include transform(rotate(45deg));
+          width: 9px;
+          margin: 0 0 0 -1px;
+        }
+      }
+    }
+  }
+}
+
+// layout template
+.l-container {
+  overflow: auto;
+  height: calc(100vh - 60px);
+  @include scrollbar($v-white, 8px, transparent, 20px, $v-slate);
+}
+
+.l-sidebar {
+  background-color: $v-white;
+  width: 300px;
+  position: fixed;
+  height: calc(100% - 58px);
+  left: 0;
+  border-right: 1px solid $v-ui-border;
+  overflow: auto;
+  @include transition(all .3s);
+  z-index: 99;
+  @include scrollbar($v-white, 8px, transparent, 20px, $v-slate);
+
+  @include max-query-media(sm) {
+      @include transform(translateX(-100%));
+      border-right: 1px solid $v-ui-border;
+
+      &.is-show {
+        @include transform(translateX(0));
+        visibility: visible;
+      }
+    }
+
+  &__menu {
+    ul {
+      list-style: none;
+      li {
+        cursor: pointer;
+        a {
+          color: $v-black;
+          padding: 20px 30px;
+          display: block;
+          border-bottom: 1px solid $v-ui-border;
+          &.is-active {
+            color: $v-blue;
+          }
+          &:hover,
+          &:focus {
+            text-decoration:  none;
+          }
+        }
+        span {
+          float: right;
+          @include transition(all .3s);
+        }
+      }
+    }
+
+    &--child {
+      overflow: hidden;
+      max-height: 0;
+      ul li a {
+        padding-left: 40px;
+      }
+    }
+
+    .jl-menu-sidebar {
+      &.is-open {
+        background-color: lighten($v-ui-background, 3%);
+        span {
+          transform: rotate(180deg);
+        }
+        .l-sidebar__menu--child {
+          overflow: visible;
+          padding-top: 2px;
+          max-height: none;
+        }
+      }
+    }
+  }
+}
+
+.l-content {
+  width: calc(100% - 300px);
+  padding: 60px 140px;
+  margin-left: 300px;
+
+  @include max-query-media(sm) {
+    width: 100%;
+    padding: 50px 30px;
+    margin: 0;
+  }
+
+  &--utilities {
+    ul, ol {
+      padding-left: 30px;
+      li { margin: 5px 0; }
+    }
+  }
+
+  // Default code style
+  .c-code {
+    padding: .2rem .4rem;
+    font-size: 14px;
+    color: #bd4147;
+    background-color: $v-ui-background;
+    @include border-radius(.25rem);
+    margin: 0 5px;
+  }
+}
+
+// layout for color page
+.l-color {
+  &__box {
+    padding: 20px;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: $v-white;
+    cursor: pointer;
+    &:first-child { @include border-radius(3px 3px 0 0); }
+    &:last-child {
+      margin-bottom: 30px;
+      @include border-radius( 0 0 3px 3px);
+    }
+    h2 { text-transform: uppercase; }
+    @media screen and (max-width: $v-xl) {
+      h2, p { font-size: 90%; }
+    }
+  }
+}
+
+// layout table on utilities page
+.l-table {
+  &__utilities {
+    text-align: left;
+    width: 100%;
+    margin: 30px 0;
+    border-collapse: collapse;
+
+    thead th,
+    tbody td {
+      @extend .u-p-15;
+      border: 1px solid $v-ui-border;
+      vertical-align: top;
+    }
+
+    small {
+      color: $v-slate;
+      font-weight: 400;
+    }
+
+    tbody td {
+      position: relative;
+
+      &.is-visible,
+      &.is-hidden {
+        &:before {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 90%;
+        }
+      }
+
+      &.is-visible {
+        background-color: $v-blue-light;
+        &:before {
+          content: "Visible";
+          color: $v-white;
+        }
+      }
+
+      &.is-hidden {
+        background-color: $v-snow;
+        &:before {
+          content: "Hidden";
+          color: $v-smoke;
+        }
+      }
+    }
+  }
+}
+
+// layout box for component and code
+.l-box {
+  &__left { display: inline-flex; }
+
+  &__right {
+    display: inline-flex;
+    float: right;
+    a {
+      text-transform: uppercase;
+      color: $v-black;
+      font-weight: 600;
+      font-size: 14px;
+      &.is-active { color: $v-blue; }
+    }
+  }
+
+  &__content {
+    padding: 30px 0;
+    margin-bottom: 40px;
+  }
+
+  &__icon {
+    text-align: center;
+    padding: 30px 15px;
+    cursor: pointer;
+  }
+
+  &__component {
+    // temporary just for layout
+    .c-alert { min-width: 100%; }
+  }
+
+  &__code {
+    margin: 10px 0;
+    background-color: #282c34;
+    @include border-radius(5px);
+    border: 1px solid #21252b;
+    overflow: auto;
+    font-size: 15px;
+    pre {
+      padding: 30px;
+      white-space: pre;
+      overflow: auto;
+      &::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+  		&::-webkit-scrollbar-track:horizontal { background-color: transparent; }
+      &::-webkit-scrollbar-thumb:horizontal { background-color: $v-green; }
+    }
+    .l-nt { color: #da5e66; }
+    .l-na { color: #40b4c2; }
+    .l-nv { color: #98c379; }
+    span { line-height: 1.6; }
+    code {
+      background-color: transparent;
+      color: $v-white;
+    }
+
+    &--header {
+      border-bottom: 1px solid #21252b;
+      padding: 10px 15px;
+      text-align: right;
+      background-color: #21252b;
+      a.c-btn--ghost {
+        padding: 0 5px;
+      }
+    }
+  }
+}
+
+// new !! this is stylesheets for layout prototype index with prefix .lp-
+// notes: don't bring to developer
+.lp-container {
+  min-height: 100vh;
+  overflow: auto;
+}
+
+.lp-sidebar {
+  width: 400px;
+  height: 100%;
+  background-color: $v-white;
+  position: fixed;
+  top: 0;
+
+  &__user {
+    position: absolute;
+    background-color: $v-white;
+    width: 74px;
+    height: 100%;
+    z-index: 10;
+    @include mobilexs { width: 80px; }
+  }
+
+  &__page {
+    background-color: lighten($v-ui-background, 3%);
+    border-left: 1px solid $v-ui-border;
+    border-right: 1px solid $v-ui-border;
+    width: calc(100% - 74px);
+    height: 100%;
+    position: absolute;
+    margin-left: 74px;
+    overflow: auto;
+    @include mobilexs {
+      margin-left: 80px;
+      width: calc(100% - 74px);
+    }
+
+    &--header {
+      padding: 30px;
+      position: sticky;
+      top: 0;
+      background-color: lighten($v-ui-background, 3%);
+      height: 100px;
+      border-bottom: 1px solid $v-ui-border;
+    }
+
+    &--menu {
+      padding: 15px 30px;
+      border-bottom: 1px solid $v-ui-border;
+      @include mobile {
+        padding: 15px 40px 15px 30px;
+      }
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      a {
+        color: $v-black;
+        display: block;
+        span {
+          &:last-child { float: right; }
+        }
+      }
+      &.is-active {
+        a {
+          color: $v-purple;
+        }
+      }
+    }
+  }
+
+  &__menu {
+    display: flex;
+    justify-content: center;
+    padding: 22px 0;
+    border-bottom: 1px solid $v-ui-border;
+    color: $v-slate;
+
+    &--header { background-color: $v-green; }
+
+    &.is-active { color: $v-blue; }
+  }
+}
+
+.l-panel-block {
+  padding: 10px 15px;
+  background-color: #ccc;
+  border-radius: 3px;
+  border: 1px solid #40b4c2;
+}
+
+.lp-content {
+  min-height: 100vh;
+  padding: 30px 40px 30px 440px;
+  @include transition(all .4s);
+  @include mobilexs {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  &__link {
+    ul {
+      list-style: none;
+      padding: 0;
+      li {
+        padding: 15px 0;
+
+        a {
+          color: $v-black;
+          @extend .u-cl-slate;
+        }
+      }
+    }
+  }
+
+  &.is-show-mobile {
+    position: fixed;
+    padding: 30px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: $v-white;
+    opacity: 1;
+    @include mobilexs { visibility: visible;; }
+  }
+
+  &__back {
+    @media screen and (min-width: $v-xs) { display: none; }
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-align: right;
+    a {
+      color: $v-black;
+      span {
+        &:first-child {
+          vertical-align: unset;
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}

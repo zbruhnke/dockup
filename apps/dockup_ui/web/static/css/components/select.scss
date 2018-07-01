@@ -1,0 +1,466 @@
+// Style component select
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+// select style
+.c-select {
+  position: relative;
+  text-align: left;
+
+  &--txt-abs {
+    position: absolute;
+    top: 7px;
+    right: 10px;
+  }
+
+  span {
+    &.is-message {
+      color: $v-red;
+      font-weight: 600;
+    }
+  }
+
+  &--close {
+    padding-right: 15px;
+    .c-select__close {
+      display: inline-block;
+      line-height: 32px;
+      padding-left: 3px;
+      font-size: 14px;
+      cursor: pointer;
+      color: $v-slate;
+    }
+  }
+
+  &__times{
+    width: 200px;
+    line-height: 15px;
+    display: inline-block;
+    .c-dash { margin: 8px 0px 8px 4px; }
+  }
+
+  &--time{
+    max-width: 115px !important;
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    .c-select__input {
+      line-height: 16px;
+      min-width: 78px;
+    }
+    input{
+      position: absolute;
+      left: 2px;
+      top: 1px;
+      height: calc(100% - 3px);
+      width: 52px;
+      padding: 0 3px 0 9px;
+      border: 0;
+      font-size: 1.4rem;
+      line-height: 14px;
+      &:hover,&:active,&:focus{ outline: none; }
+    }
+    .c-select__value{
+      text-align: right;
+      padding-right: 13px;
+      line-height: 16px;
+    }
+    .c-select__item{
+      label { text-align: right; }
+    }
+  }
+
+  &--multiple {
+    .c-check__checkbox {
+      display: inline-block;
+      margin: 0 10px -4px 0;
+    }
+    .c-select__item {
+      input[type=checkbox] {
+        display: inline-block ;
+      }
+    }
+  }
+
+  &--placeholderonly {
+    .c-select__ {
+      &placeholder { display: block!important }
+      &value { display: none!important }
+      &reset { display: none!important }
+    }
+  }
+
+  &--switch {
+    .c-select__item {
+      span {
+        width: 100% !important;
+        padding-left: 0 !important;
+      }
+    }
+
+    .with-icon--reset {
+      position: absolute;
+      top: 4px;
+      right: 15px;
+      font-size: 2rem;
+      cursor: pointer;
+      font-weight: 600!important;
+    }
+
+    .c-select__multiple {
+      @include min-query-media(sm) {
+        min-width: 600px;
+      }
+    }
+  }
+
+  &--text {
+    .c-select {
+      &__arrow { display: none; }
+      &__input {
+        padding: 0;
+        background-color: transparent;
+        border: none;
+        min-height: 0;
+
+        &:hover { border: none; }
+      }
+      &__placeholder { color: $v-blue; }
+      &__multiple {
+        &-item {
+          display: block;
+          padding: 0;
+          background-color: transparent;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  &--date { width: 55px; }
+
+  &--months { width: 70px; }
+
+  &--year { width: 73px; }
+
+  &--months, &--date, &--year {
+    display: inline-block;
+    .c-select {
+      &__input {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      &__arrow { right: 10px; }
+      &__value { padding-right: 15px; }
+      &__reset { display: none; }
+      &__search--switch {
+        input {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+        .with-icon--reset { display: none; }
+      }
+      &__item {
+        label {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+      }
+    }
+  }
+
+  &__input {
+    border: 1px solid $v-ui-border;
+    padding: 7px 15px;
+    font-size: 1.4rem;
+    min-height: 32px;
+    span {
+      font-weight: 400;
+      line-height: 15px;
+    }
+    @include max-query-media(md){ padding: 7px; }
+    display: block;
+    cursor: pointer;
+    @include border-radius(2px);
+    background-color: $v-white;
+    &:hover, &:focus, &:active { border: 1px solid $v-blue; }
+    &.is-disabled {
+      cursor: not-allowed;
+      background-color: $v-snow;
+      color: lighten($v-slate, 25%);
+      &:hover, &:active, &:focus { border-color: $v-ui-border; }
+    }
+    &.is-error {
+      border-color: $v-red;
+      margin-bottom: 5px;
+      font-size: 1.4rem;
+      &:hover, &:active, &:focus { border-color: $v-blue; }
+    }
+  }
+
+  &__placeholder {
+    color: $v-slate;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 85%;
+  }
+
+  &__arrow {
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    font-size: 1.4rem;
+    @include max-query-media(md){ right: 10px; }
+    @include transition(all .5s);
+    transform: rotate(0deg);
+    font-weight: 600!important;
+
+    &.is-up { transform: rotate(180deg); }
+  }
+
+  &__reset {
+    position: absolute;
+    font-size: 2rem;
+    top: 10px;
+    right: 37px;
+    font-weight: 600!important;
+    @include max-query-media(md){ right: 27px; }
+  }
+
+  &__value {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-right: 35px;
+  }
+
+  &__menu {
+    display: none;
+    position: absolute;
+    min-width: 100%;
+    border: 1px solid $v-ui-border;
+    @include border-radius(2px);
+    background-color: $v-white;
+    top: calc(100% + 3px);
+    z-index: 8;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.14);
+    max-height: 220px;
+    overflow: auto;
+    @include scrollbar($v-white, 8px, transparent, 20px, $v-slate);
+
+    &--search {
+      overflow: visible;
+      max-height: none;
+    }
+
+    &--top {
+      overflow: visible;
+      max-height: none;
+    }
+
+    &.is-open { display: block; }
+  }
+
+  &__search {
+    padding: 10px;
+    border-bottom: 1px solid $v-ui-border;
+    position: relative;
+    .with-icon--reset {
+      position: absolute;
+      right: 25px;
+      top: 14px;
+      font-size: 2rem;
+      cursor: pointer;
+      font-weight: 600!important;
+    }
+    &--switch {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      visibility: hidden;
+      display: none;
+      @include transition(all .3s);
+      &.is-open {
+        visibility: visible;
+        display: block;
+      }
+    }
+  }
+
+  &__add {
+    padding: 10px;
+    border-bottom: 1px solid $v-ui-border;
+    cursor: pointer;
+  }
+
+  &__itemsearch {
+    max-height: 216px;
+    overflow: auto;
+    @include scrollbar($v-white, 8px, transparent, 20px, $v-slate);
+  }
+
+  &__item {
+    &.is-selected { background-color: #ECF6FD; }
+    input[type=radio], input[type=checkbox] {
+      display: none;
+    }
+    &.is-not-found {
+      line-height: 20px;
+      padding: 7px 15px;
+    }
+    &.is-disabled {
+      label {
+        cursor: not-allowed;
+        background-color: #F9F9F9;
+        color: $v-slate;
+      }
+    }
+    label {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block;
+      width: 100%;
+      cursor: pointer;
+      margin-bottom: 0;
+      font-weight: 400;
+      color: $v-black;
+      font-size: 1.4rem;
+      padding: 7px 15px;
+      line-height: 16px;
+      @include max-query-media(md){ padding: 7px; }
+      &:hover { background-color: #ECF6FD; }
+    }
+    &--pict {
+      display: inline-block;
+      vertical-align: middle;
+      &:last-child {
+        width: calc(100% - 55px);
+        padding-left: 10px;
+        h2 {
+          margin: 0;
+          color: $v-black;
+          @extend .c-smb-14;
+        }
+        p { @extend .c-reg-14; }
+      }
+    }
+    &--noresult {
+      font-size: 1.4rem;
+      padding: 7px 15px;
+      line-height: 16px;
+    }
+  }
+
+  &__multiple {
+    margin-top: 3px;
+
+    &-item {
+      font-size: 1.4rem;
+      line-height: 16px;
+      @include border-radius(2px);
+    	background-color: #CCEBF3;
+      padding: 5px;
+      margin-right: 3px;
+      margin-bottom: 3px;
+    }
+
+    &-remove {
+      margin: 0 5px 0 10px;
+      font-size: 2rem;
+      font-weight: 600;
+      line-height: 0;
+      cursor: pointer;
+    }
+  }
+}
+
+// Select as filter group
+.c-filter {
+  width: 100%;
+  float: left;
+
+  &-inline { @extend .u-mx--10; }
+
+  &__item {
+    @extend .u-px-10;
+    display: inline-block;
+    vertical-align: top;
+
+    .c-select__menu { z-index: 10; }
+
+    &--5 {
+      @extend .c-filter__item;
+      width: calc(100% / 5 - 5px);
+      @include min-query-media(md) { max-width: 213px; }
+    }
+
+    &--changelog {
+      @extend .c-filter__item;
+      width: calc(100% / 6 - 5px);
+      &:first-child {
+        padding-left: 0 !important;
+      }
+    }
+
+    &--4 {
+      @extend .c-filter__item;
+      width: calc(100% / 4 - 5px);
+    }
+
+    @include max-query-media(md) { width: calc((100% - 100px) / 3 - 3px); }
+    @include max-query-media(md) { width: calc(100% / 4 - 4px); }
+    @include max-query-media(sm) { width: calc(100% / 4 - 4px); }
+    @include max-query-media(xs) { width: calc(100% / 2 - 2px); }
+    @include max-query-media(xxs) { width: 100%; }
+  }
+
+  &__button {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 30px;
+    margin-bottom: 20px;
+    @include mobile { display: none; }
+    @include mobilexs { width: 100%; padding-right: 10px; }
+    .c-btn { line-height: 15px; width: 100%; }
+  }
+
+  &__search {
+    text-align: right;
+    @include min-query-media(md) { float: right; }
+    @include max-query-media(xs) { width: 100% }
+    &--autohide {
+      @media screen and (min-width: 1200px) and (max-width: 1600px) {
+        width: 50px;
+        .c-form-control {
+          width: 0;
+          position: absolute;
+          right: 0;
+          top: 0;
+          padding: 0;
+          border: 0 solid $v-ui-border;
+          &::placeholder{ color: $v-white; }
+        }
+        &.is-active {
+          .c-form-control {
+            border-width: 1px;
+            padding: 7px 15px;
+            &::placeholder{ color: $v-black; }
+          }
+          .c-filter__button-search { display: none; }
+        }
+      }
+      @include max-query-media(sm) { width: 50%; }
+      .c-filter__button-search {
+        position: relative;
+        z-index: 99;
+        line-height: 31px;
+        padding-right: 15px;
+        cursor: pointer;
+        display: none;
+        @media screen and (min-width: 1200px) and (max-width: 1600px) { display: block; }
+      }
+    }
+
+  }
+}

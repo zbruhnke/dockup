@@ -1,0 +1,463 @@
+@font-face {
+	font-family: "Sleekr-Iconfonts";
+	src:  url('../fonts/iconfonts/Sleekr-Iconfonts.eot');
+	src:  url('../fonts/iconfonts/Sleekr-Iconfonts.eot?#iefix') format('eot'),
+		    url('../fonts/iconfonts/Sleekr-Iconfonts.woff2') format('woff2'),
+		    url('../fonts/iconfonts/Sleekr-Iconfonts.woff') format('woff'),
+		    url('../fonts/iconfonts/Sleekr-Iconfonts.ttf') format('truetype'),
+		    url('../fonts/iconfonts/Sleekr-Iconfonts.svg#Sleekr-Iconfonts') format('svg');
+}
+
+@mixin fs-styles {
+	font-family: "Sleekr-Iconfonts";
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	speak: none;
+	text-decoration: none;
+	text-transform: none;
+	line-height: 1;
+	vertical-align: sub;
+	display: inline-block;
+}
+
+%fs {
+	@include fs-styles;
+}
+
+@function fs-char($filename) {
+	$char: "";
+
+	@if $filename == activity {
+		$char: "\E001";
+	}
+	@if $filename == add-comp {
+		$char: "\E002";
+	}
+	@if $filename == adjustment {
+		$char: "\E003";
+	}
+	@if $filename == allowance-blnc {
+		$char: "\E004";
+	}
+	@if $filename == allowance {
+		$char: "\E005";
+	}
+	@if $filename == att-number {
+		$char: "\E006";
+	}
+	@if $filename == attendance {
+		$char: "\E007";
+	}
+	@if $filename == back-modal {
+		$char: "\E008";
+	}
+	@if $filename == balance {
+		$char: "\E009";
+	}
+	@if $filename == billing {
+		$char: "\E00A";
+	}
+	@if $filename == broadcast {
+		$char: "\E00B";
+	}
+	@if $filename == calendar {
+		$char: "\E00C";
+	}
+	@if $filename == changelog {
+		$char: "\E00D";
+	}
+	@if $filename == chat {
+		$char: "\E00E";
+	}
+	@if $filename == close {
+		$char: "\E00F";
+	}
+	@if $filename == company {
+		$char: "\E010";
+	}
+	@if $filename == contract {
+		$char: "\E011";
+	}
+	@if $filename == custom-field {
+		$char: "\E012";
+	}
+	@if $filename == dashboard {
+		$char: "\E013";
+	}
+	@if $filename == del-comp {
+		$char: "\E014";
+	}
+	@if $filename == department {
+		$char: "\E015";
+	}
+	@if $filename == directory {
+		$char: "\E016";
+	}
+	@if $filename == drag {
+		$char: "\E017";
+	}
+	@if $filename == event {
+		$char: "\E018";
+	}
+	@if $filename == ex-staff {
+		$char: "\E019";
+	}
+	@if $filename == finance {
+		$char: "\E01A";
+	}
+	@if $filename == help {
+		$char: "\E01B";
+	}
+	@if $filename == home {
+		$char: "\E01C";
+	}
+	@if $filename == icon-copy {
+		$char: "\E01D";
+	}
+	@if $filename == info-fill {
+		$char: "\E01E";
+	}
+	@if $filename == info {
+		$char: "\E01F";
+	}
+	@if $filename == integration {
+		$char: "\E020";
+	}
+	@if $filename == job-title {
+		$char: "\E021";
+	}
+	@if $filename == jobdesc {
+		$char: "\E022";
+	}
+	@if $filename == mail {
+		$char: "\E023";
+	}
+	@if $filename == masterlist {
+		$char: "\E024";
+	}
+	@if $filename == more {
+		$char: "\E025";
+	}
+	@if $filename == not-activated {
+		$char: "\E026";
+	}
+	@if $filename == notification {
+		$char: "\E027";
+	}
+	@if $filename == nri {
+		$char: "\E028";
+	}
+	@if $filename == offboarding {
+		$char: "\E029";
+	}
+	@if $filename == onboarding {
+		$char: "\E02A";
+	}
+	@if $filename == online-pajak {
+		$char: "\E02B";
+	}
+	@if $filename == open {
+		$char: "\E02C";
+	}
+	@if $filename == overtime {
+		$char: "\E02D";
+	}
+	@if $filename == payroll-icon {
+		$char: "\E02E";
+	}
+	@if $filename == payroll-info {
+		$char: "\E02F";
+	}
+	@if $filename == payroll-list {
+		$char: "\E030";
+	}
+	@if $filename == payroll-master {
+		$char: "\E031";
+	}
+	@if $filename == phone {
+		$char: "\E032";
+	}
+	@if $filename == print-modal {
+		$char: "\E033";
+	}
+	@if $filename == profile {
+		$char: "\E034";
+	}
+	@if $filename == reimbursement {
+		$char: "\E035";
+	}
+	@if $filename == report-hr {
+		$char: "\E036";
+	}
+	@if $filename == report {
+		$char: "\E037";
+	}
+	@if $filename == role {
+		$char: "\E038";
+	}
+	@if $filename == rules {
+		$char: "\E039";
+	}
+	@if $filename == search {
+		$char: "\E03A";
+	}
+	@if $filename == setting {
+		$char: "\E03B";
+	}
+	@if $filename == sleekr-fill {
+		$char: "\E03C";
+	}
+	@if $filename == sleekr-outline {
+		$char: "\E03D";
+	}
+	@if $filename == staff-join {
+		$char: "\E03E";
+	}
+	@if $filename == staff {
+		$char: "\E03F";
+	}
+	@if $filename == suspend {
+		$char: "\E040";
+	}
+	@if $filename == transfer {
+		$char: "\E041";
+	}
+	@if $filename == undelete {
+		$char: "\E042";
+	}
+	@if $filename == video {
+		$char: "\E043";
+	}
+
+	@return $char;
+}
+
+@mixin fs($filename, $insert: before, $extend: true) {
+	&:#{$insert} {
+		@if $extend {
+			@extend %fs;
+		} @else {
+			@include fs-styles;
+		}
+		content: fs-char($filename);
+	}
+}
+
+.fs-activity {
+	@include fs(activity);
+}
+.fs-add-comp {
+	@include fs(add-comp);
+}
+.fs-adjustment {
+	@include fs(adjustment);
+}
+.fs-allowance-blnc {
+	@include fs(allowance-blnc);
+}
+.fs-allowance {
+	@include fs(allowance);
+}
+.fs-att-number {
+	@include fs(att-number);
+}
+.fs-attendance {
+	@include fs(attendance);
+}
+.fs-back-modal {
+	@include fs(back-modal);
+}
+.fs-balance {
+	@include fs(balance);
+}
+.fs-billing {
+	@include fs(billing);
+}
+.fs-broadcast {
+	@include fs(broadcast);
+}
+.fs-calendar {
+	@include fs(calendar);
+}
+.fs-changelog {
+	@include fs(changelog);
+}
+.fs-chat {
+	@include fs(chat);
+}
+.fs-close {
+	@include fs(close);
+}
+.fs-company {
+	@include fs(company);
+}
+.fs-contract {
+	@include fs(contract);
+}
+.fs-custom-field {
+	@include fs(custom-field);
+}
+.fs-dashboard {
+	@include fs(dashboard);
+}
+.fs-del-comp {
+	@include fs(del-comp);
+}
+.fs-department {
+	@include fs(department);
+}
+.fs-directory {
+	@include fs(directory);
+}
+.fs-drag {
+	@include fs(drag);
+}
+.fs-event {
+	@include fs(event);
+}
+.fs-ex-staff {
+	@include fs(ex-staff);
+}
+.fs-finance {
+	@include fs(finance);
+}
+.fs-help {
+	@include fs(help);
+}
+.fs-home {
+	@include fs(home);
+}
+.fs-icon-copy {
+	@include fs(icon-copy);
+}
+.fs-info-fill {
+	@include fs(info-fill);
+}
+.fs-info {
+	@include fs(info);
+}
+.fs-integration {
+	@include fs(integration);
+}
+.fs-job-title {
+	@include fs(job-title);
+}
+.fs-jobdesc {
+	@include fs(jobdesc);
+}
+.fs-mail {
+	@include fs(mail);
+}
+.fs-masterlist {
+	@include fs(masterlist);
+}
+.fs-more {
+	@include fs(more);
+}
+.fs-not-activated {
+	@include fs(not-activated);
+}
+.fs-notification {
+	@include fs(notification);
+}
+.fs-nri {
+	@include fs(nri);
+}
+.fs-offboarding {
+	@include fs(offboarding);
+}
+.fs-onboarding {
+	@include fs(onboarding);
+}
+.fs-online-pajak {
+	@include fs(online-pajak);
+}
+.fs-open {
+	@include fs(open);
+}
+.fs-overtime {
+	@include fs(overtime);
+}
+.fs-payroll-icon {
+	@include fs(payroll-icon);
+}
+.fs-payroll-info {
+	@include fs(payroll-info);
+}
+.fs-payroll-list {
+	@include fs(payroll-list);
+}
+.fs-payroll-master {
+	@include fs(payroll-master);
+}
+.fs-phone {
+	@include fs(phone);
+}
+.fs-print-modal {
+	@include fs(print-modal);
+}
+.fs-profile {
+	@include fs(profile);
+}
+.fs-reimbursement {
+	@include fs(reimbursement);
+}
+.fs-report-hr {
+	@include fs(report-hr);
+}
+.fs-report {
+	@include fs(report);
+}
+.fs-role {
+	@include fs(role);
+}
+.fs-rules {
+	@include fs(rules);
+}
+.fs-search {
+	@include fs(search);
+}
+.fs-setting {
+	@include fs(setting);
+}
+.fs-sleekr-fill {
+	@include fs(sleekr-fill);
+}
+.fs-sleekr-outline {
+	@include fs(sleekr-outline);
+}
+.fs-staff-join {
+	@include fs(staff-join);
+}
+.fs-staff {
+	@include fs(staff);
+}
+.fs-suspend {
+	@include fs(suspend);
+}
+.fs-transfer {
+	@include fs(transfer);
+}
+.fs-undelete {
+	@include fs(undelete);
+}
+.fs-video {
+	@include fs(video);
+}
+
+
+
+// Icon size
+$val: 3 4 6 7 8 10 16 18 20 24 26 28 30 32 48 72 100;
+@mixin icon-size {
+  @each $n in $val {
+    // Icon size
+    .fs-#{$n} {
+      font-size: #{$n}px;
+    }
+  }
+}
+@include icon-size;

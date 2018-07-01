@@ -1,0 +1,59 @@
+// Style component typography
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// default heading
+h1, h2, h3, h4, h5, h6 { margin-bottom: 20px; }
+
+// mixin typography
+// for font-weight & text-transform see mixins (utilities)
+$size: 12 14 15 16 18 20 21 22 24 26 32 34 36 40;
+@mixin typography {
+  @each $n in $size {
+
+    // when fontweigt light
+    .c-lig-#{$n} {
+      font-size: #{$n/10}rem;
+      line-height: #{$n + 8}px;
+      font-weight: 300;
+    }
+
+    // when fontweigt regular
+    .c-reg-#{$n} {
+      font-size: #{$n/10}rem;
+      line-height: #{$n + 8}px;
+      font-weight: 400;
+    }
+
+    // when fontweigt semibold
+    .c-smb-#{$n} {
+      font-size: #{$n/10}rem;
+      line-height: #{$n + 8}px;
+      font-weight: 600;
+    }
+
+    // when fontweigt bold
+    .c-str-#{$n} {
+      font-size: #{$n/10}rem;
+      line-height: #{$n + 8}px;
+      font-weight: 700;
+    }
+
+    // without font-weight
+    .c-ft-#{$n} {
+      font-size: #{$n/10}rem;
+      line-height: #{$n + 8}px;
+    }
+
+    .c-truncate {
+      @include transition(all .3s);
+      cursor: pointer;
+      &.is-hover {
+        position: absolute;
+        white-space: nowrap;
+        background-color: $v-white;
+        padding-right: 30px;
+      }
+    }
+  }
+}
+@include typography;

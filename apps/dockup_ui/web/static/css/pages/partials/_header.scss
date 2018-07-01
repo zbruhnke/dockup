@@ -1,0 +1,150 @@
+.c-header--dockup {
+  @extend .u-bg-snow, .u-py-15 ;
+  min-height: 320px;
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: relative;
+  z-index: 99;
+  @include transition(all .4s);
+  @include max-query-media(xs) {
+    min-height: 0;
+  }
+  &.is-default { position: fixed; }
+  .c-row {
+    align-items: center;
+  }
+  &-logo,
+  &-menu {
+    @extend .c-col ;
+  }
+  &-menu {
+    @extend .u-tar ;
+    a {
+      @extend .u-cl-black ;
+    }
+  }
+  &-form {
+    position: absolute;
+    left: calc(50% - 350px);
+    bottom: -129px;
+    width: 700px;
+    @include transition(all .4s);
+    @include max-query-media(xs) {
+      width: 100%;
+      left: 0;
+      bottom: 0;
+      position: relative;
+      margin-top: 20px;
+    };
+    .c-form {
+      &> div {
+        @include transition(all .4s);
+      }
+      &-group {
+        margin-top: -1px;
+        margin-bottom: 0;
+        position: relative;
+        &:hover,
+        &:focus,
+        &.is-active {
+          z-index: 2;
+        }
+        &:first-child {
+          .c-form-control {
+            border-radius: 2px 2px 0 0;
+          }
+        }
+        &:last-child {
+          .c-form-control {
+            border-radius: 0 0 2px 2px;
+          }
+        }
+      }
+      &-icon {
+        position: absolute;
+        left: 15px;
+        top: 20px;
+      }
+      &-control {
+        height: 54px;
+        padding-left: 40px;
+        @include transition(all .4s);
+      }
+    }
+    .c-btn {
+      height: 54px;
+      @extend .c-str-21 ;
+      &--primary {
+        background-color: #3E83FF;
+        border: 1px solid #336CD1;
+        &:hover,
+        &:focus {
+          background-color: #336CD1;
+        }
+      }
+    }
+  }
+  &-text {
+    width: 700px;
+    margin: 60px auto;
+    @include max-query-media(xs) {
+      width: calc(100% - 30px);
+      left: 15px;
+    };
+  }
+  &.is-auto {
+    min-height: 0;
+  }
+
+  &.is-scrolled {
+    min-height: 0;
+    @include max-query-media(sm) {
+      height: auto !important;
+    }
+    .c-header--dockup-form {
+      bottom: 10px;
+      @extend .clearfix ;
+      @include query-media(sm) {
+        position: relative;
+        bottom: 0;
+        left: 0;
+        margin-top: 15px;
+        width: 100%;
+      };
+      form > div {
+        float: left;
+        width: calc(100% / 3);
+        margin-top: 0 !important;
+        @include query-media(sm) {
+          width: calc(100% / 2 - 80px);
+          &:last-child {
+            width: 160px;
+          }
+        }
+        @include max-query-media(xs) {
+          &:last-child {
+            .c-btn {
+              min-width: 0;
+              padding: 7px 10px;
+            }
+          }
+        }
+        &:first-child {
+          .c-form-control {
+            border-radius: 2px 0 0 2px;
+          }
+        }
+        &:nth-child(2) {
+          margin-left: -1px;
+          .c-form-control {
+            border-radius: 0 2px 2px 0;
+          }
+        }
+        &:last-child {
+          padding-left: 15px;
+        }
+      }
+    }
+  }
+}

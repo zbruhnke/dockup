@@ -1,0 +1,33 @@
+// Core sleekr style
+@import "bases/variables.scss";
+@import "bases/mixins.scss";
+
+// Core designs sleekr style
+@import "components/general.scss";
+@import "components/typography.scss";
+@import "components/grid.scss";
+
+// Core components sleekr style
+@import "components/avatar.scss";
+@import "components/button.scss";
+@import "components/pagination.scss";
+@import "components/checkbox-radio.scss";
+@import "components/form.scss";
+@import "components/alert.scss";
+@import "components/select.scss";
+@import "components/popover.scss";
+@import "components/table.scss";
+@import "components/tabbing.scss";
+@import "components/calendar.scss";
+@import "components/accordion.scss";
+@import "components/dropdown.scss";
+@import "components/tooltip.scss";
+@import "components/modal.scss";
+@import "components/pill.scss";
+@import "components/progress.scss";
+
+// partials
+@import "pages/partials/_header.scss";
+@import "pages/partials/_lists.scss";
+@import "pages/partials/_modal.scss";
+@import "pages/partials/_animations.scss";

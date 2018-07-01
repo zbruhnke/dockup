@@ -1,0 +1,172 @@
+// Style component pagination
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+// pagination style
+.c-pagination {
+  @extend .clearfix;
+  &__limit {
+    float: left;
+    width: 80px;
+    .c-select {
+      height: 30px;
+      &__input {
+        padding: 2px 15px 0;
+        line-height: 30px;
+        min-height: 30px;
+      }
+      &__arrow { line-height: 15px; }
+      &__value {
+        padding-right: 15px;
+        line-height: 25px;
+      }
+    }
+  }
+
+  &__pages {
+    float: right;
+    width: calc(100% - 80px);
+    line-height: 30px;
+    ul {
+      @extend .u-tar ;
+      li {
+        @extend .u-dib ;
+        &.c-pagination__next,
+        &.c-pagination__prev {
+          @extend .u-dn ;
+          &.is-active { @extend .u-dib ; }
+        }
+        a {
+          display: block;
+          padding: 0 5px;
+          @extend .u-cl-slate ;
+          &:hover, &:focus, &:active, &.is-active, i.fa {
+            @extend .u-cl-black ;
+          }
+        }
+      }
+    }
+  }
+
+  &__month,
+  &__year,
+  &__period {
+    float: left;
+    @extend .u-cl-purple;
+    line-height: 32px;
+    width: 75px;
+    @extend .c-smb-15;
+  }
+  &__year { width: 150px; }
+  &__period { width: 180px; }
+  &__button {
+    float: left;
+    a { margin-right: 5px; }
+  }
+
+  > .c-pill {
+    @include mobilexs { width: 100%; margin-left: 0; text-align: center; }
+  }
+}
+
+
+.c-progress {
+  overflow: hidden;
+  counter-reset: step;
+  width: 100%;
+
+  // if progress contain > 3 step, add class here
+  &--3 { li { width: calc(100% / 3); } }
+
+  li {
+    list-style-type: none;
+    float: left;
+    position: relative;
+    text-align: center;
+    font-weight: 600;
+    color: $v-slate;
+
+    &:before {
+      content: counter(step);
+      counter-increment: step;
+      @include border-radius(50%);
+      width: 40px;
+      line-height: 36px;
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: $v-slate;
+      background-color: #f9f9f9;
+      border: 2px solid $v-smoke;
+      margin: 0 auto 10px auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    &:after {
+      content: '';
+      width: 100%;
+      height: 2px;
+      background: $v-ui-border;
+      position: absolute;
+      left: -50%;
+      top: 17px;
+      z-index: 0; /*put it behind the numbers*/
+    }
+
+    &:first-child {
+      &:after {
+        display: none;
+      }
+    }
+
+    &.active {
+      color: $v-green;
+      &:before {
+        background-color: #c0e7d7;
+        border-color: $v-green;
+        color: $v-green;
+      }
+      &:after { border: 1px solid $v-green; }
+    }
+
+    @include mobile {
+      &:before {
+        width: 30px;
+        line-height: 25px;
+      }
+      &:after { top: 13px; }
+    }
+  }
+}
+
+.c-steps {
+  overflow: hidden;
+  counter-reset: step;
+  width: 100%;
+  display: flex;
+
+  // if contain > 3 step, add class here
+  &--3 { li { width: calc((100% - 30px) / 3); } }
+
+  li {
+    list-style-type: none;
+    float: left;
+    font-weight: 600;
+    color: $v-slate;
+    border-bottom: 5px solid $v-ui-border;
+    font-size: 14px;
+    line-height: 20px;
+    opacity: 0.5;
+    padding-right: 10px;
+    margin-right: 15px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.is-active {
+      opacity: 1;
+      border-color: $v-green;
+    }
+  }
+}

@@ -1,0 +1,80 @@
+// Style component alert
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// style alert
+.c-alert {
+  display: inline-block;
+  min-width: 370px;
+  position: relative;
+  margin: auto;
+  text-align: left;
+  @include border-radius( 0 0 4px 4px);
+  padding: 10px 20px;
+
+  span {
+    font-weight: 600;
+    &:first-child {
+      margin-right: 25px;
+      width: calc(100% - 40px);
+    }
+    // last child dismiss icon
+    &:last-child {
+      position: absolute;
+      top: 4px;
+      right: 20px;
+      font-size: 2.4rem;
+      a {
+        color: inherit;
+        vertical-align: middle;
+        line-height: 0;
+        &:hover { text-decoration: none; }
+      }
+    }
+  }
+
+  &__wrapper {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    text-align: center;
+    @include transition(all .5s);
+    @include transform(translateY(-100%));
+    visibility: hidden;
+
+    // is show
+    &.is-show {
+      @include transform(translateY(-1px));
+      visibility: visible;
+    }
+  }
+
+  // is failed
+  &--failed {
+    background-color: #EEC8C3;
+    border: 1px solid #DB7167;
+    color: #DB7167;
+  }
+
+  // is success
+  &--success {
+    background-color: #DDF3D5;
+    border: 1px solid #AFCDA4;
+    color: #597151;
+  }
+}
+
+.c-ads {
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  border-radius: 4px;
+  width: calc(100% - 10px);
+  margin: 5px;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.16);
+  min-height: 65px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}

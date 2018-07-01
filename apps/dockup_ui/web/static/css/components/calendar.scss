@@ -1,0 +1,341 @@
+.c-calendar {
+	position: relative;
+	&--multiple{
+		&-value{
+			span{
+				background-color: #ccebf3;
+				padding: 5px;
+				margin-right: 3px;
+				border-radius: 3px;
+				position: relative;
+				top: -1px;
+				cursor: default;
+				margin-bottom: 3px;
+				display: inline-block !important;
+				font-size: 15px;
+			}
+		}
+		&-wrapper{
+			.c-form-group{ margin-bottom: 10px!important; }
+		}
+		.datepicker{
+			padding: 4px;
+			z-index: 1000;
+			margin: 11px 1px!important;
+			position: absolute;
+			@include border-radius(4px);
+			border-color: $v-ui-border;
+			-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+			-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+			box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+			background-color: $v-white;
+
+			thead {
+				tr {
+					th {
+						padding: 7px; font-size: 1.4rem;
+						line-height: 20px;
+						border: 1px solid $v-white;
+						vertical-align: top;
+						text-shadow: none !important;
+					}
+				}
+			}
+
+			tbody {
+				tr {
+					td {
+						text-shadow: none !important;
+						padding: 3px 7px; font-size: 1.4rem;
+						line-height: 20px;
+						@include border-radius(0px);
+						border: 1px solid $v-white!important;
+						&.active {
+							background: $v-blue!important;
+							color: $v-white;
+						}
+						&.today {
+							background: #fefbd2!important;
+							color: $v-black;
+							&::before { display: none }
+						}
+						span {
+							&.day, &.month, &.year {
+								&.active {
+									background: $v-blue!important;
+									color: $v-white;
+								}
+							}
+						}
+					}
+				}
+	    }
+		}
+	}
+
+	&--text {
+		input {
+			cursor: pointer;
+			outline: none;
+			border: none;
+			color: $v-blue;
+			background-color: transparent;
+			width: 100px;
+
+			&::placeholder { color: $v-blue; }
+		}
+	}
+
+	.bootstrap-datetimepicker-widget {
+		position: absolute;
+		z-index: 1000;
+		margin: 11px 1px!important;
+		background-color: $v-white;
+		width: 19em!important;
+		@include border-radius(4px);
+		border-color: $v-ui-border;
+		-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+		-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+		box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+
+		&.dropdown-menu.bottom {
+			&::before { left: 14px; }
+			&::after { left: 15px;}
+		}
+
+		ul {
+			list-style: none;
+
+			.table-condensed {
+				text-shadow: none;
+
+				thead {
+					tr {
+						th {
+							padding: 7px; font-size: 1.4rem;
+							border: 1px solid $v-white;
+							vertical-align: top;
+							text-shadow: none !important;
+							&.picker-switch { padding-top: 8px; }
+
+							&[title="Select Decade"] {
+								pointer-events: none;
+							}
+						}
+					}
+				}
+
+				tbody {
+					tr {
+						td {
+							text-shadow: none !important;
+							padding: 3px 7px; font-size: 1.4rem;
+							@include border-radius(0px);
+							border: 1px solid $v-white;
+							&.active {
+								background-color: $v-blue;
+								color: $v-white;
+							}
+							&.today {
+								background-color: #fefbd2;
+								color: $v-black;
+								&::before { display: none }
+							}
+							span {
+								&.day, &.month, &.year {
+									&.active {
+										background-color: $v-blue;
+										color: $v-white;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.fc-unthemed {
+	&#calendar, &#calendar-shift, &#calendar-shift-v1, &#calendar-timeoff {
+		max-width: 900px;
+		&.calendar-fluid { max-width: 100% }
+		.c-filter {
+			position: relative;
+    	z-index: 10;
+		}
+		.fc-toolbar.fc-header-toolbar {
+			@extend .u-mb-20 ;
+			.fc-button-group {
+				margin-left: 0;
+				.fc-button:first-child { margin-left: 0!important; }
+			}
+			.fc-button {
+				background-image: none;
+				box-shadow: none;
+				@extend .c-btn, .c-btn--default , .c-btn--square , .u-ml-5 ;
+				.fc-icon {
+					display: inline-block;
+			    font: normal normal normal 14px/1 FontAwesome;
+			    font-size: inherit;
+			    text-rendering: auto;
+			    -webkit-font-smoothing: antialiased;
+			    -moz-osx-font-smoothing: grayscale;
+				}
+				.fc-icon-left-single-arrow:after {
+					font-size: initial;
+					font-weight: normal;
+					top: -2px;
+					content: "\f104";
+				}
+				.fc-icon-right-single-arrow:after {
+					font-size: initial;
+					font-weight: normal;
+					top: -2px;
+					content: "\f105";
+				}
+				&.fc-next-button {
+					&.fc-state-disabled {
+						opacity: 1;
+						@extend .is-disabled ;
+					}
+				}
+				&.fc-today-button {
+					@extend .c-btn--snow ;
+					padding: 7px 15px !important;
+					&.fc-state-disabled {
+						opacity: 1;
+						@extend .is-disabled ;
+					}
+				}
+			}
+		}
+		.fc-basic-view .fc-body .fc-row {
+			@include max-query-media(xs) {
+				min-height: 0;
+			};
+		}
+		table {
+			thead ,tbody {
+				tr {
+					th, td {
+						&:last-child { padding-right: 0;
+							@include max-query-media(sm) { padding-right: 0; }
+						}
+						&.fc-day-header {
+							@extend .u-tar, .u-pr-5, .u-ft-reg ;
+							border: 0;
+					  }
+						&.fc-sun { color: $v-red; }
+						&.fc-day { border-color: $v-smoke; }
+						&.fc-head-container { border: 0; }
+						&.fc-day-top { padding-right: 5px; }
+						.fc-day-grid-event {
+							@extend .u-tac ;
+							margin: 3px;
+							padding: 1px 10px;
+							border-radius: 10px;
+							@include max-query-media(xs) {
+								text-indent: -9999px;
+								overflow: hidden;
+								height: 2px;
+							}
+							.fc-title {
+								@include ellipsis;
+								padding-right: 0;
+							}
+							&.fc-public-holiday {
+								background-color: $v-cal-red;
+								border-color: $v-cal-red-border;
+								color: $v-black;
+							}
+							&.fc-unpaid-leave {
+								background-color: $v-cal-orange;
+			          border-color: $v-cal-orange-border;
+								color: $v-black;
+							}
+							&.fc-paid-leave {
+								background-color: $v-cal-blue;
+			          border-color: $v-cal-blue-border;
+								color: $v-black;
+							}
+							&.fc-sick-leave {
+								background-color: $v-cal-green;
+			          border-color: $v-cal-green-border;
+								color: $v-black;
+							}
+							&.fc-special-leave {
+								background-color: $v-cal-purple;
+			          border-color: $v-cal-purple-border;
+								color: $v-black;
+							}
+							&.fc-shift-morning {
+								background-color: $v-cal-red;
+								border-color: $v-cal-red-border;
+								color: $v-black;
+							}
+							&.fc-shift-day {
+								background-color: $v-cal-orange;
+								border-color: $v-cal-orange-border;
+								color: $v-black;
+							}
+							&.fc-shift-afternoon {
+								background-color: $v-cal-lavender;
+								border-color: $v-cal-lavender-border;
+								color: $v-black;
+							}
+							&.fc-shift-night {
+								background-color: $v-cal-yellow;
+								border-color: $v-cal-yellow-border;
+								color: $v-black;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	&#calendar-timeoff {
+		max-width: 100%;
+		.fc-timeoff-holiday {
+			@extend .u-bx-cal-red;
+			color: $v-black;
+		}
+		.fc-timeoff-not-yet-approved {
+			@extend .u-bx-cal-grey;
+			color: $v-black;
+		}
+		.fc-timeoff-year {
+			@extend .u-bx-cal-blue;
+			color: $v-black;
+		}
+		.fc-timeoff-sick {
+			@extend .u-bx-cal-green;
+			color: $v-black;
+		}
+		.fc-timeoff-not-paid {
+			@extend .u-bx-cal-orange;
+			color: $v-black;
+		}
+		.fc-timeoff-special {
+			@extend .u-bx-cal-purple;
+			color: $v-black;
+		}
+	}
+}
+
+.c-calendar-info { @extend .u-mt-20 }
+.c-calendar--type { margin: 5px 10px 0 0; }
+.c-calendar--color {
+	width: 15px; height: 15px;
+	border-radius: 50%;
+	border: 1px solid;
+	margin-right: 5px;
+}
+.fc-more {
+	@include max-query-media(xs) {
+		top: -5px;
+		position: relative;
+	}
+}

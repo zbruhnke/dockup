@@ -1,0 +1,329 @@
+// Style component form
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// input form control
+.c-form-control {
+  width: 100%;
+  font-family: inherit;
+  min-height: 32px;
+  padding: 7px 15px;
+  font-size: 1.4rem;
+  display: block;
+  border: 1px solid $v-ui-border;
+  box-sizing: border-box;
+  outline: 0;
+  @include border-radius(2px);
+  font-weight: 400;
+  color: $v-black;
+  @include transition(all .5s);
+  &:hover, &:active, &:focus { border-color: $v-blue; }
+  &::-webkit-input-placeholder { color: $v-slate; }
+  @include max-query-media(md){ padding: 7px; }
+
+  // input disabled
+  &:disabled {
+    cursor: not-allowed;
+    background-color: $v-snow;
+    color: lighten($v-slate, 25%);
+    &:hover, &:active, &:focus {
+      border-color: $v-ui-border;
+    }
+  }
+}
+
+// textarea
+textarea.c-auto-height {
+  resize: none;
+  overflow: hidden;
+}
+
+// form grouping
+.c-form-group {
+  margin-bottom: 20px;
+
+  // when state error
+  &.is-error {
+    input, textarea, .c-form-time {
+      border-color: $v-red;
+      &:hover, &:active, &:focus { border-color: $v-blue; }
+    }
+
+    // has a message required
+    span, div {
+      &.is-message {
+        color: $v-red;
+        font-weight: 600;
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  &.has-value {
+    label { margin-bottom: 0; vertical-align: middle; }
+    span { margin-left: 10px; color: $v-slate; }
+  }
+
+  // with count max length
+  &.with-count {
+    span {
+      float: right;
+      color: $v-slate;
+    }
+  }
+
+  // with reset value
+  .with-reset-val {
+    input {
+      width: calc(100% - 25px);
+      display: inline-block;
+    }
+  }
+
+  // with icon position on left or rigth
+  .with-icon {
+    position: relative;
+
+    // special case for currency
+    &--currency {
+      @extend .with-icon;
+      span {
+        position: absolute;
+        left: 15px;
+        top: 8px;
+      }
+      input { padding: 7px 15px 7px 46px; }
+      @include max-query-media(md){
+        span { left: 7px; }
+        input { padding: 7px 7px 7px 35px; }
+      }
+    }
+
+    // on position left
+    &--left {
+      @extend .with-icon;
+      span {
+        position: absolute;
+        top: 7px;
+        left: 15px;
+        font-size: 1.2rem;
+      }
+      input { padding: 7px 15px 7px 40px; }
+      @include max-query-media(md){
+        span { left: 7px; }
+        input { padding: 7px 7px 7px 25px; }
+      }
+    }
+
+    // on position right
+    &--right {
+      @extend .with-icon;
+      span {
+        position: absolute;
+        top: 7px;
+        right: 15px;
+        font-size: 1.2rem;
+      }
+      input { padding: 7px 40px 7px 15px; }
+      @include max-query-media(md){
+        span { right: 7px; }
+        input { padding: 7px 25px 7px 7px; }
+      }
+    }
+
+    // on input calendar
+    &--calendar {
+      @extend .with-icon;
+      input { padding: 7px 48px 7px 15px; }
+      @include max-query-media(md){
+        .c-calendar__icon { right: 7px; }
+        input { padding: 7px 35px 7px 7px; }
+      }
+    }
+
+    // special case for phone
+    &--phone {
+      @extend .with-icon;
+      input { padding: 10px 95px 10px 70px; }
+      span {
+        position: absolute;
+        top: 1px;
+        line-height: 36px;
+        vertical-align: middle;
+        padding: 0 15px;
+        border-right: 1px solid #e7ebf2;
+        cursor: default;
+      }
+      a {
+        position: absolute;
+        top: 1px;
+        right: 15px;
+        line-height: 38px;
+        vertical-align: middle;
+      }
+      @include max-query-media(md){
+        input { padding: 10px 75px 10px 60px; }
+        a { right: 7px; }
+      }
+    }
+  }
+}
+
+// Input Time
+.c-form-time {
+  @extend .c-form-control ;
+  display: inline-block;
+  position: relative;
+  width: auto;
+  height: 30px;
+  padding: 4px;
+  line-height: 15px;
+  &:hover, &:active, &:focus, &.is-focus { border-color: $v-blue; }
+  &--hour,
+  &--minute,
+  &--status {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 0;
+    outline: none;
+    @extend .c-reg-14;
+    color: transparent;
+    text-shadow: 0 0 0 $v-black;
+    margin-top: -2px;
+  }
+  &--hour, &--minute {
+    width: 20px;
+    margin-left: 2px;
+    margin-right: 2px;
+    @extend .u-tac ;
+    &:focus,
+    &:active {
+      background-color: #2c87f0; text-shadow: 0 0 0 $v-white;
+    }
+  }
+  &--status {
+    width: 25px;
+    margin-left: 5px;
+    margin-top: 1px;
+    cursor: pointer;
+    span {
+      display: none;
+      &:first-child {
+        display: block;
+      }
+    }
+    &.is-active {
+      span {
+        display: block;
+        &:first-child {
+          display: none
+        }
+      }
+    }
+  }
+  &--reset {
+    position: absolute;
+    top: 0;
+    right: -20px;
+    @extend .c-reg-24 ;
+    cursor: pointer;
+  }
+  &--dropdown {
+    max-height: 200px;
+    overflow: auto;
+    border: 1px solid $v-ui-border;
+    border-radius: 2px;
+    position: absolute;
+    top: calc(100% + 3px);
+    left: 0;
+    width: 100%;
+    height: 120px;
+    z-index: 10;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.14);
+    @extend .u-bg-white ;
+    @include scrollbar($v-white, 8px, transparent, 20px, $v-slate);
+    &.top {
+      top: auto;
+      bottom: calc(100% + 3px);
+    }
+    &-item {
+      display: block;
+      padding: 5px 7px;
+      font-size: 1.5rem;
+      span {
+        margin: 0;
+        &:first-child,
+        &:last-child {
+          width: 18px;
+          margin: 0 2px;
+        }
+      }
+      &:hover {
+        cursor: pointer;
+        background-color: #ECF6FD;
+      }
+    }
+  }
+}
+
+.c-form-overtimecalc {
+  &-header {
+    margin-bottom: 10px;
+    span {
+      width: 120px;
+      margin-right: 20px;
+      text-align: center;
+    }
+  }
+
+  input { width: 120px; display: inline-block; }
+
+  .p-add {
+    display: none;
+
+    &.is-disabled {
+      .c-btn--add span {
+        background-color: $v-snow;
+        border-color: $v-ui-border;
+        color: $btn-lighten-slate !important;
+        box-shadow: none;
+        &:hover, &:active, &:focus {
+          background-color: $v-snow;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  &:last-child {
+    .p-add { display: inline-block; }
+    .p-rmv { display: none; }
+  }
+}
+
+.c-input-search {
+  position: relative;
+  input { padding-right: 30px; }
+  .with-icon--reset {
+    position: absolute;
+    top: 4px;
+    right: 15px;
+    font-size: 2rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+}
+
+.c-calendar__icon {
+  position: absolute;
+  top: 7px;
+  right: 15px;
+  color: $v-slate;
+  width: 16px;
+}
+
+.c-rest-val { 
+  font-size: 2.2rem; 
+  font-weight: 600;
+}
