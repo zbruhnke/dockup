@@ -23,9 +23,6 @@
           </div>
           <div class="c-header--dockup-menu">
             <span>
-              <%= link("Recent Deployments", to: deployment_path(@conn, :index)) %>
-            </span>
-            <span class="u-ml-30">
               <%= link("Configure", to: config_path(@conn, :index)) %>
             </span>
             <span class="u-ml-30">
@@ -35,9 +32,6 @@
         </div>
       </div>
     </header>
-
-    <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-    <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
     <%= render @view_module, @view_template, assigns %>
   </body>

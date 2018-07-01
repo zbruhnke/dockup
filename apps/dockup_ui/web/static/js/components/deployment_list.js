@@ -56,12 +56,17 @@ class DeploymentList extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.deployments.map((deployment) => {
-          return (
-            <DeploymentCard key={deployment.id} deployment={deployment}/>
-          )
-         })}
+      <div className="container">
+        <div className="c-list" style={{marginTop: 150 + 'px'}}>
+          <h2 className="u-cl-purple">Recent deployment</h2>
+          <ul className="c-list--wrapper">
+            {this.state.deployments.map((deployment) => {
+              return (
+                <DeploymentCard key={deployment.id} deployment={deployment}/>
+              )
+            })}
+          </ul>
+        </div>
       </div>
     )
   }
