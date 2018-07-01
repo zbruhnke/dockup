@@ -13,25 +13,32 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
-      <div class="container">
-        <a class="navbar-brand" href="/">Dockup</a>
-        <div class="navbar-nav">
-          <%= link("Recent Deployments", to: deployment_path(@conn, :index), class: "nav-item nav-link") %>
-          <%= link("Configure", to: config_path(@conn, :index), class: "nav-item nav-link")%>
-          <%= link("Logs", to: dockup_log_url(), class: "nav-item nav-link", target: "_blank")%>
+    <header class="c-header--dockup is-auto">
+      <div class="c-container">
+        <div class="c-row">
+          <div class="c-header--dockup-logo">
+            <%= link to: "/", style: "text-decoration: none; color: #212121;" do %>
+              <h1 class="u-mb-0"> Dockup </h1>
+            <% end %>
+          </div>
+          <div class="c-header--dockup-menu">
+            <span>
+              <%= link("Recent Deployments", to: deployment_path(@conn, :index)) %>
+            </span>
+            <span class="u-ml-30">
+              <%= link("Configure", to: config_path(@conn, :index)) %>
+            </span>
+            <span class="u-ml-30">
+              <%= link("Logs", to: dockup_log_url(), target: "_blank")%>
+            </span>
+          </div>
         </div>
       </div>
-    </nav>
+    </header>
 
-    <div class="container dockup-body">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+    <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
-
-    </div> <!-- /container -->
+    <%= render @view_module, @view_template, assigns %>
   </body>
 </html>

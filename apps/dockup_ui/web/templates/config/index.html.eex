@@ -1,24 +1,42 @@
-<h1>Configure Dockup</h1>
-
-<h2 class="dockup-config-section">Whitelisted URLs</h2>
-
-<p>
-Dockup allows you to deploy only whitelisted Git URLs. This is to prevent
-malicious code being run inside docker containers on your servers.
-</p>
-
-<table class="table dockup-whitelisted-urls-table">
-<%= for whitelisted_url <- @whitelisted_urls do %>
-    <tr>
-      <td><%= whitelisted_url.git_url %></td>
-
-      <td class="text-right">
-        <span><%= link "Edit", to: whitelisted_url_path(@conn, :edit, whitelisted_url), class: "btn btn-primary" %></span>
-        <span><%= link "Delete", to: whitelisted_url_path(@conn, :delete, whitelisted_url), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" %></span>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<span><%= link "New whitelisted url", to: whitelisted_url_path(@conn, :new), class: "btn btn-primary" %></span>
+<header class="c-header--dockup is-auto">
+  <div class="c-header--dockup-text">
+    <div class="clearfix">
+      <h2 class="c-str-21 u-pull">Configure</h2>
+      <div class="u-push">
+        <%= link "New whitelisted url", to: whitelisted_url_path(@conn, :new), class: "c-btn c-btn--primary jc-modal" %>
+      </div>
+    </div>
+    <h3 class="u-mb-5 c-reg-16">Whitelisted URLs</h3>
+    <div class="c-reg-16">Dockup allows you to deploy only whitelisted Git URLs. This is to prevent malicious code being run inside docker containers
+      on your servers.</div>
+  </div>
+</header>
+<div class="c-container-700">
+  <table class="c-table u-mt-20">
+    <thead>
+      <tr>
+        <th>Git url
+          <span class="c-sorting">
+            <i class="fa fa-sort-up"></i>
+            <i class="fa fa-sort-down"></i>
+          </span>
+        </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for whitelisted_url <- @whitelisted_urls do %>
+        <tr>
+          <td><%= whitelisted_url.git_url %></td>
+          <td class="u-tar">
+            <%= link "Edit", to: whitelisted_url_path(@conn, :edit, whitelisted_url), class: "c-btn c-btn--default c-btn--xs jc-modal" %>
+            <%= link "Delete", to: whitelisted_url_path(@conn, :delete, whitelisted_url),
+                               method: :delete,
+                               data: [confirm: "Are you sure?"],
+                               class: "c-btn c-btn--default c-btn--xs jc-modal" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
