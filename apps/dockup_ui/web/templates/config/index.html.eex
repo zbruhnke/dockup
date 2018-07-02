@@ -2,9 +2,11 @@
   <div class="c-header--dockup-text">
     <div class="clearfix">
       <h2 class="c-str-21 u-pull">Configure</h2>
-      <div class="u-push">
-        <%= link "New whitelisted url", to: whitelisted_url_path(@conn, :new), class: "c-btn c-btn--primary jc-modal" %>
-      </div>
+      <%= unless @whitelisted_urls == [] do %>
+        <div class="u-push">
+          <%= link "New whitelisted url", to: whitelisted_url_path(@conn, :new), class: "c-btn c-btn--primary jc-modal" %>
+        </div>
+      <% end %>
     </div>
     <h3 class="u-mb-5 c-reg-16">Whitelisted URLs</h3>
     <div class="c-reg-16">Dockup allows you to deploy only whitelisted Git URLs. This is to prevent malicious code being run inside docker containers
@@ -39,4 +41,13 @@
       <% end %>
     </tbody>
   </table>
+
+  <%# Blank slate %>
+  <%= if @whitelisted_urls == [] do %>
+    <div class="u-tac"><img class="u-mb-30 u-mt-40" src="/icons/icon-whitelist.svg">
+      <h2 class="u-mb-5">Belum ada whitelist url</h2>
+      <p class="u-mb-30">Daftar whitelist url yang sudah dibuat akan tampil disini.</p>
+      <%= link "Add new whitelisted url", to: whitelisted_url_path(@conn, :new), class: "c-btn c-btn--primary jc-modal" %>
+    </div>
+  <% end %>
 </div>
