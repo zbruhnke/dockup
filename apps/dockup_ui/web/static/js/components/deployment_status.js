@@ -8,11 +8,11 @@ const statusToIcon = {
   "starting": "icon-sync",
   "checking_urls": "icon-sync",
   "started": "icon-deployed",
-  "hibernating_deployment": "icon-sync",
-  "deployment_hibernated": "icon-hibernated",
-  "waking_up_deployment": "icon-sync",
-  "deleting_deployment": "icon-sync",
-  "deployment_deleted": "icon-deleted",
+  "hibernating": "icon-sync",
+  "hibernated": "icon-hibernated",
+  "waking_up": "icon-sync",
+  "deleting": "icon-sync",
+  "deleted": "icon-deleted",
   "failed": "icon-errored"
 }
 
