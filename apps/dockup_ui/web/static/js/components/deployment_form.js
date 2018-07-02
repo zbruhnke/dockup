@@ -36,7 +36,7 @@ class DeploymentForm extends Component {
 
   handleDeployClick(e) {
     this.setState({deployment: null});
-    e.preventDefault();
+    // e.preventDefault();
     let xhr = this.createRequest();
     xhr.done((response) => {
       this.setState({deployment: Object.assign({}, response.data)});
@@ -80,7 +80,7 @@ class DeploymentForm extends Component {
   render() {
     return (
     <div className="c-header--dockup">
-      <div class="c-container">
+      <div className="c-container">
         <div className="c-header--dockup-form">
             <form className="c-form">
               <div className="c-form-group">
@@ -92,12 +92,11 @@ class DeploymentForm extends Component {
                 } />
                 <img className="c-form-icon" src="/icons/icon-branch.svg" />
               </div>
-              <div class="u-mt-20">
+              <div className="u-mt-20">
                 <button type="submit" onClick={this.handleDeployClick} disabled={!this.validInputs()} className="c-btn c-btn--primary c-btn--block">Deploy</button>
               </div>
             </form>
 
-            {this.renderDeploymentCard()}
           </div>
         </div>
       </div>
