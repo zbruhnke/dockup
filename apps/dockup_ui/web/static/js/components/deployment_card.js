@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import TimeAgo from 'react-timeago';
 import DeploymentStatus from './deployment_status';
-import {getStatusColorClass} from '../status_colors';
 import FlashMessage from '../flash_message';
 
 class DeploymentCard extends Component {
@@ -25,10 +24,10 @@ class DeploymentCard extends Component {
   renderOpenButton() {
     // TODO: these status checks can be removed if the urls are cleared on hibernation
     if(!this.props.deployment.urls ||
-       this.props.deployment.status == "deployment_deleted" ||
-       this.props.deployment.status == "hibernating_deployment" ||
-       this.props.deployment.status == "deployment_hibernated" ||
-       this.props.deployment.status == "waking_up_deployment") {
+       this.props.deployment.status == "deleted" ||
+       this.props.deployment.status == "hibernating" ||
+       this.props.deployment.status == "hibernated" ||
+       this.props.deployment.status == "waking_up") {
       return null;
     }
 
@@ -98,7 +97,7 @@ class DeploymentCard extends Component {
   }
 
   renderWakeUpButton() {
-    if (this.props.deployment.status == "deployment_hibernated") {
+    if (this.props.deployment.status == "hibernated") {
       return(
         <a onClick={this.handleWakeUp} className="c-btn c-btn--ghost">Wake Up</a>
       );
@@ -133,7 +132,7 @@ class DeploymentCard extends Component {
   }
 
   render() {
-    let deleted = this.props.deployment.status == "deployment_deleted" ? "is-deleted" : "";
+    let deleted = this.props.deployment.status == "deleted" ? "is-deleted" : "";
 
     return(
       <li className={"c-list--item " + deleted}>
