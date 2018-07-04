@@ -1,9 +1,0 @@
-dependencies:
-- name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 0.13.0
-- name: traefik
-  repository: file://../../../helm-charts/stable/traefik
-  version: 1.31.1
-digest: sha256:122701becaef4b85779f616817b1430254aac2b3e088e02902c4b779d578cee1
-generated: 2018-05-28T22:51:36.496567958+05:30
