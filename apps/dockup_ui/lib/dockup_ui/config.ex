@@ -20,8 +20,8 @@ defmodule DockupUi.Config do
       {"DOCKUP_BACKEND", :backend_module, :module},
       {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
       {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string},
-      {"GOOGLE_CLIENT_ID", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_id}},
-      {"GOOGLE_CLIENT_SECRET", {:ueberauth, Ueberauth.Strategy.Google.OAuth, :client_secret}}
+      {"GOOGLE_CLIENT_ID", :google_client_id, :string},
+      {"GOOGLE_CLIENT_SECRET", :google_client_secret, :string}
     ]
   end
 
@@ -40,13 +40,6 @@ defmodule DockupUi.Config do
 
   defp set_config(env_val, config_key, :string) do
     Application.put_env(:dockup_ui, config_key, env_val)
-  end
-
-  defp set_config(env_val, {app, key1, key2}) do
-    app
-    |> Application.get_env(key1, %{})
-    |> Keyword.put(key2, env_val)
-    |> set_config(key1, app)
   end
 
   defp module_for_backend(env_val) do

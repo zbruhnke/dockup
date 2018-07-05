@@ -20,10 +20,10 @@ defmodule DockupUi.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [
-      mod: {DockupUi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
-    ]
+    [mod: {DockupUi.Application, []},
+     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
+                    :phoenix_ecto, :postgrex, :httpotion,
+                    :ueberauth_google, :runtime_tools]]
   end
 
   # Specifies which paths to compile per environment.

@@ -4,12 +4,18 @@ defmodule DockupUi.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
+    import Supervisor.Spec
+
     # Overrides configurations from ENV variables
     DockupUi.Config.set_configs_from_env()
     backend = Application.fetch_env!(:dockup_ui, :backend_module)
     backend.initialize()
 
-    import Supervisor.Spec
+    # Set id and secret for google oauth config here
+    Application.put_env :ueberauth,
+      Ueberauth.Strategy.Google.OAuth,
+      [client_secret: Application.get_env(:dockup_ui, :google_client_secret),
+       client_id: Application.get_env(:dockup_ui, :google_client_id)]
 
     children = [
       # Start the endpoint when the application starts
