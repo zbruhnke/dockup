@@ -21,7 +21,8 @@ defmodule DockupUi.Config do
       {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
       {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string},
       {"GOOGLE_CLIENT_ID", :google_client_id, :string},
-      {"GOOGLE_CLIENT_SECRET", :google_client_secret, :string}
+      {"GOOGLE_CLIENT_SECRET", :google_client_secret, :string},
+      {"GOOGLE_CLIENT_DOMAINS", :google_client_domains, :string}
     ]
   end
 
