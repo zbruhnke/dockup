@@ -8,7 +8,15 @@ defmodule DockupUi.UserFromAuth do
   alias Ueberauth.Auth
 
   def find_or_create(%Auth{} = auth) do
-    {:ok, basic_info(auth)}
+    allowed_domains =
+      Application.get_env(:dockup_ui, :google_client_domains, "")
+      |> String.split(",")
+
+    if Enum.member?(allowed_domains, auth.info.urls[:website]) do
+      {:ok, basic_info(auth)}
+    else
+      {:error, "Not authorized!"}
+    end
   end
 
   defp basic_info(auth) do
