@@ -21,8 +21,14 @@ defmodule DockupUi.HibernateDeploymentService do
   def run(deployment_id) do
     Logger.info("Hibernate deployment with id: #{deployment_id}")
 
-    with {:ok, deployment} <- DeploymentStatusUpdateService.run("hibernating", deployment_id),
-         :ok <- hibernate(deployment) do
+    with \
+       deployment <- Repo.get!(Deployment, deployment_id),
+       changeset <-
+         Deployment.changeset(deployment, %{log_url: nil, urls: nil, status: "hibernating"}),
+       {:ok, deployment} <- Repo.update(changeset),
+       :ok <- DeploymentStatusUpdateService.run(deployment),
+       :ok <- hibernate(deployment)
+     do
       {:ok, deployment}
     end
   end

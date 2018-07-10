@@ -46,6 +46,9 @@ const DeploymentStatus = ({status}) => {
     case 'deleting':
       return renderStatus('Deleting', textClass, "fa-cog fa-spin");
       break;
+    case 'restarting':
+      return renderStatus('Restarting', textClass, "fa-cog fa-spin");
+      break;
     case 'failed':
       return renderStatus('Error', textClass, "fa-times-circle");
       break;

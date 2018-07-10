@@ -23,7 +23,8 @@ defmodule DockupUi.Application do
       # Start the Ecto repository
       supervisor(DockupUi.Repo, []),
       worker(DockupUi.Scheduler, []),
-      worker(DockupUi.DeploymentQueue, [])
+      worker(DockupUi.DeploymentQueue, []),
+      worker(DockupUi.RetryWorker, [])
     ]
 
     opts = [strategy: :one_for_one, name: DockupUi.Supervisor]

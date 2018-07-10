@@ -58,6 +58,13 @@ defmodule DockupUi.Deployment do
     cast(model, %{deleted_at: DateTime.utc_now, log_url: nil, urls: nil}, [:deleted_at, :log_url, :urls])
   end
 
+  @doc """
+  This changeset is used when resetting a deployment (when retrying after deleting)
+  """
+  def restart_changeset(model) do
+    cast(model, %{deleted_at: nil, log_url: nil, urls: nil, status: "restarting"}, [:deleted_at, :log_url, :urls, :status])
+  end
+
   # Check if git URL is whitelisted
   defp validate_whitelisted_git_url(changeset) do
     if git_url = get_field(changeset, :git_url) do
