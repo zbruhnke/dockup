@@ -12,8 +12,6 @@ defmodule Dockup.Backends.Helm.WakeUpJob do
   end
 
   def perform(deployment_id, callback \\ DefaultCallback) do
-    callback.update_status(deployment_id, "waking_up")
-
     project_id = to_string(deployment_id)
     name = "dockup#{project_id}"
     base_domain = Application.fetch_env!(:dockup, :base_domain)

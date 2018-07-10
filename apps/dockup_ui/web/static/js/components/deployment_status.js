@@ -11,6 +11,7 @@ const statusToIcon = {
   "hibernating": "icon-sync",
   "hibernated": "icon-hibernated",
   "waking_up": "icon-sync",
+  "restarting": "icon-sync",
   "deleting": "icon-sync",
   "deleted": "icon-deleted",
   "failed": "icon-errored"

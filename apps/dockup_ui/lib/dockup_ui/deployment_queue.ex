@@ -112,12 +112,18 @@ defmodule DockupUi.DeploymentQueue do
 
         # There is a chance that the deployment may have been
         # deleted. In that case, we should skip to the next item in the queue.
-        if deployable?(deployment) do
-          DeploymentStatusUpdateService.run("starting", deployment_id)
-          backend.deploy(deployment, callback_module)
-          queue
-        else
-          deploy_from_queue(queue, backend, callback_module)
+        case deployment.status do
+          "queued" ->
+            DeploymentStatusUpdateService.run("starting", deployment_id)
+            backend.deploy(deployment, callback_module)
+            queue
+
+          "waking_up" ->
+            backend.wake_up(deployment.id, callback_module)
+            queue
+
+          _ ->
+            deploy_from_queue(queue, backend, callback_module)
         end
 
       {:empty, queue} ->
@@ -155,9 +161,5 @@ defmodule DockupUi.DeploymentQueue do
     else
       @default_max_concurrent_builds
     end
-  end
-
-  defp deployable?(%{id: id}) do
-    Repo.get_by(Deployment, id: id, status: "queued")
   end
 end
