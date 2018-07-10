@@ -73,8 +73,8 @@ defmodule DockupUi.Callback do
       DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, deployment.id)
 
     if url = Application.get_env(:dockup_ui, :slack_webhook_url) do
-      # TODO: change this message to "Deployed <name> of <project> : <dockup deployment url>"
-      message = "Dockup has a new deployment at <#{deployment_url}>"
+      # TODO: This will change to "Deployed <tag name> of <project> : <dockup deployment url>"
+      message = "Branch `#{deployment.branch}` deployed at <#{deployment_url}>"
       slack_webhook.send_message(url, message)
     end
   end

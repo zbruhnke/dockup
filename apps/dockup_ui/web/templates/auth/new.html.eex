@@ -1,0 +1,10 @@
+<section class="hero login">
+  <div class="text text-center">
+    Log in to Dockup
+  </div>
+
+  <div class="text-center">
+    <%= link "With Google", to: auth_path(@conn, :request, "google"), class: "home-btn" %>
+  </div>
+
+</section>

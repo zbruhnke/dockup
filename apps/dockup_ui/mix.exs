@@ -11,7 +11,6 @@ defmodule DockupUi.Mixfile do
      elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-     build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
      deps: deps()]
@@ -21,9 +20,10 @@ defmodule DockupUi.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {DockupUi, []},
+    [mod: {DockupUi.Application, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpotion]]
+                    :phoenix_ecto, :postgrex, :httpotion,
+                    :ueberauth_google, :runtime_tools]]
   end
 
   # Specifies which paths to compile per environment.
@@ -45,6 +45,8 @@ defmodule DockupUi.Mixfile do
      {:httpotion, "~> 3.0.0"},
      {:poison, "~> 3.1.0"},
      {:flow, "~> 0.12.0"},
+     {:ueberauth, "~> 0.4"},
+     {:ueberauth_google, "~> 0.7"},
      {:dockup, in_umbrella: true, only: [:prod]},
      {:fake_dockup, in_umbrella: true, only: [:dev, :test]}]
   end
