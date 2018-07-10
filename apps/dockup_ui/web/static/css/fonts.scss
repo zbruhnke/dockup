@@ -8,10 +8,9 @@ $font-weight: 400, 700;
 $font-type: regular, bold;
 
 @for $i from 1 through length($font-type) {
-  $src: #{"../fonts/lato/lato-"}#{nth($font-type, $i)};
+  $src: #{"/fonts/lato/lato-"}#{nth($font-type, $i)};
   @font-face {
     font-family : $font-family;
-    src         : local($font-family);
     src         : url('#{$src}.woff');
     src         : url('#{$src}.woff') format('woff'), url('#{$src}.woff2') format('woff2');
     font-style  : normal;
