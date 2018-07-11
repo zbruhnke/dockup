@@ -28,6 +28,9 @@
             <span class="u-ml-30">
               <%= link("Logs", to: dockup_log_url(), target: "_blank")%>
             </span>
+            <span class="u-ml-30">
+              <%= link("Logout", to: auth_path(@conn, :delete), method: :delete) %>
+            </span>
           </div>
         </div>
       </div>
