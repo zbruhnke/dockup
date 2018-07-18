@@ -1,2 +1,2 @@
-ExUnit.configure(exclude: [skip: true])
+ExUnit.configure(exclude: [:skip, :integration])
 ExUnit.start()

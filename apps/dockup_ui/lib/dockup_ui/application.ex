@@ -8,8 +8,6 @@ defmodule DockupUi.Application do
 
     # Overrides configurations from ENV variables
     DockupUi.Config.set_configs_from_env()
-    backend = Application.fetch_env!(:dockup_ui, :backend_module)
-    backend.initialize()
 
     # Set id and secret for google oauth config here
     Application.put_env :ueberauth,

@@ -6,7 +6,7 @@
 use Mix.Config
 
 config :dockup_ui,
-  backend_module: FakeDockup,
+  backend_module: Dockup.Backends.Fake,
   retention_days: 1
 
 # Configures the endpoint

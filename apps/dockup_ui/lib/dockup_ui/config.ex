@@ -45,10 +45,9 @@ defmodule DockupUi.Config do
 
   defp module_for_backend(env_val) do
     case env_val do
-      "compose" -> Dockup.Backends.Compose
-      "helm" -> Dockup.Backends.Helm
-      "fake" -> FakeDockup
-      _ -> raise "unknown backend #{env_val}"
+      "kubernetes" -> Dockup.Backends.Kubernetes
+      "fake" -> Dockup.Backends.Fake
+      _ -> raise "Unknown backend #{env_val}"
     end
   end
 end

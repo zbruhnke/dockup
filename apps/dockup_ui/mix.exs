@@ -47,8 +47,7 @@ defmodule DockupUi.Mixfile do
      {:flow, "~> 0.12.0"},
      {:ueberauth, "~> 0.4"},
      {:ueberauth_google, "~> 0.7"},
-     {:dockup, in_umbrella: true, only: [:prod]},
-     {:fake_dockup, in_umbrella: true, only: [:dev, :test]}]
+     {:dockup, in_umbrella: true}]
   end
 
   # Aliases are shortcut or tasks specific to the current project.
