@@ -12,6 +12,8 @@ defmodule Dockup.Backends.Kubernetes do
     DeleteOptions
   }
 
+  require Logger
+
   @behaviour Spec
 
   @namespace "default"
@@ -23,9 +25,9 @@ defmodule Dockup.Backends.Kubernetes do
     container
     |> prepare_deployment()
     |> AppsV1.create_namespaced_deployment!(@namespace)
-    |> Kazan.run!()
-
-    container_handle
+    |> Kazan.run()
+    |> handle_response()
+    |> format_response(container_handle)
   end
 
   @impl Spec
@@ -42,7 +44,8 @@ defmodule Dockup.Backends.Kubernetes do
   def delete(container_handle) do
     %DeleteOptions{}
     |> AppsV1.delete_namespaced_deployment!(@namespace, container_handle)
-    |> Kazan.run!()
+    |> Kazan.run()
+    |> handle_response()
   end
 
   # Very basic logging for now
@@ -79,13 +82,19 @@ defmodule Dockup.Backends.Kubernetes do
     end
   end
 
-  # Util functions used for testing
   def get_pods(container_handle) do
-    %{items: pods} =
+    response =
       @namespace
       |> CoreV1.list_namespaced_pod!(label_selector: "deployment_name=#{container_handle}")
-      |> Kazan.run!()
-    pods
+      |> Kazan.run()
+
+    case response do
+      {:ok, %{items: pods}} ->
+        pods
+      {:error, error} ->
+        Logger.error("Cannot get pods of deployment #{container_handle}: #{inspect error}")
+        []
+    end
   end
 
   def deployment_name(deployment_id, container_name) do
@@ -172,6 +181,23 @@ defmodule Dockup.Backends.Kubernetes do
 
     deployment
     |> AppsV1.patch_namespaced_deployment!(@namespace, container_handle)
-    |> Kazan.run!()
+    |> Kazan.run()
+    |> handle_response()
+  end
+
+  defp handle_response(response) do
+    case response do
+      {:ok, _} -> :ok
+      {:error, error} ->
+        Logger.error("Error response: #{inspect error}")
+        :error
+    end
+  end
+
+  defp format_response(response, container_handle) do
+    case response do
+      :ok -> {:ok, container_handle}
+      :error -> :error
+    end
   end
 end

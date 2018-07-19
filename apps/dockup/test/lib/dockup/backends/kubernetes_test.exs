@@ -40,7 +40,7 @@ defmodule Dockup.Backends.KubernetesTest do
       ]
     }
 
-    container_handle = Kubernetes.start(container)
+    {:ok, container_handle} = Kubernetes.start(container)
 
     wait_for_deployment(container_handle, :running)
 
@@ -50,10 +50,10 @@ defmodule Dockup.Backends.KubernetesTest do
     assert [%{name: "FOO", value: "helloworld"}] = container.env
     assert Kubernetes.logs(container_handle) =~ "Server is listening on :5678\n"
 
-    Kubernetes.hibernate(container_handle)
+    assert :ok = Kubernetes.hibernate(container_handle)
     wait_for_deployment(container_handle, :unknown, 120)
 
-    Kubernetes.wake_up(container_handle)
+    assert :ok = Kubernetes.wake_up(container_handle)
     wait_for_deployment(container_handle, :running)
   end
 
