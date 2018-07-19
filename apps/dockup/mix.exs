@@ -22,7 +22,7 @@ defmodule Dockup.Mixfile do
 
   defp deps do
     [
-      {:kazan, path: "/Users/emil/Reference/kazan"}
+      {:kazan, github: "emilsoman/kazan"}
     ]
   end
 end
