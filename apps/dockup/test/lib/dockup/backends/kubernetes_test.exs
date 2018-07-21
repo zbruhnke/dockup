@@ -1,3 +1,7 @@
+# To run this test, you need to include "integration" tag using "mix test --include integration"
+# You also need to set two environment variables for this test to work.
+# 1) KUBECONFIG which points to your k8s config for a user who has cluster-admin rbac role.
+# 2) DOCKUP_BASE_DOMAIN that is configured to point to K8S cluster load balancer.
 defmodule Dockup.Backends.KubernetesTest do
   use ExUnit.Case, async: false
 
