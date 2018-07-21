@@ -15,14 +15,15 @@ defmodule DockupUi.Config do
 
   defp configs do
     [
-      {"DOCKUP_BACKEND", :backend_module, :module},
+      {"DOCKUP_URL_HOST", :dockup_url_host, :string},
       {"SLACK_WEBHOOK_URL", :slack_webhook_url, :string},
       {"DOCKUP_BACKEND", :backend_module, :module},
       {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
       {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string},
       {"GOOGLE_CLIENT_ID", :google_client_id, :string},
       {"GOOGLE_CLIENT_SECRET", :google_client_secret, :string},
-      {"GOOGLE_CLIENT_DOMAINS", :google_client_domains, :string}
+      {"GOOGLE_CLIENT_DOMAINS", :google_client_domains, :string},
+      {"DOCKUP_WEBHOOK_URL", :webhook_url, :string}
     ]
   end
 

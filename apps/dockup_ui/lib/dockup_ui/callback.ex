@@ -9,6 +9,7 @@ defmodule DockupUi.Callback do
   alias DockupUi.{
     DeploymentStatusUpdateService,
     SlackWebhook,
+    Webhook,
     Deployment,
     Repo,
     DeploymentQueue
@@ -21,6 +22,7 @@ defmodule DockupUi.Callback do
       when event in @valid_states do
     status_update_service = deps[:status_update_service] || DeploymentStatusUpdateService
     slack_webhook = deps[:slack_webhook] || SlackWebhook
+    webhook = deps[:webhook] || Webhook
     deployment_queue = deps[:deployment_queue] || DeploymentQueue
 
     event = use_restarting_event(deployment_id, event)
@@ -30,12 +32,14 @@ defmodule DockupUi.Callback do
     case deployment.status do
       "started" ->
         send_slack_message(deployment, slack_webhook)
+        send_webhook_request(deployment, webhook)
 
       "waiting_for_urls" ->
         process_deployment_queue(deployment_queue)
 
       "deleted" ->
         process_deployment_queue(deployment_queue)
+        send_webhook_request(deployment, webhook)
 
       "restarting" ->
         requeue_deployment(deployment, deployment_queue)
@@ -76,6 +80,12 @@ defmodule DockupUi.Callback do
       # TODO: This will change to "Deployed <tag name> of <project> : <dockup deployment url>"
       message = "Branch `#{deployment.branch}` deployed at <#{deployment_url}>"
       slack_webhook.send_message(url, message)
+    end
+  end
+
+  defp send_webhook_request(deployment, webhook) do
+    if webhook_url = Application.get_env(:dockup_ui, :webhook_url) do
+      webhook.send_webhook_request(webhook_url, deployment)
     end
   end
 
