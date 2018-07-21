@@ -12,25 +12,25 @@ defmodule Dockup.Spec do
   The container handle can be used to uniquely reference the container
   in the backend.
   """
-  @callback start(%Container{}) :: String.t() :: {:ok, String.t()} | :error
+  @callback start(%Container{}) :: String.t() :: {:ok, String.t()}
 
   @doc """
   This function is used to hibernate a container. Used to save money :D
   It takes a container handle as the argument.
   """
-  @callback hibernate(String.t()) :: :ok | :error
+  @callback hibernate(String.t()) :: :ok
 
   @doc """
   This function is used to wake up a hibernated container.
   It takes a container handle as the argument.
   """
-  @callback wake_up(String.t()) :: :ok | :error
+  @callback wake_up(String.t()) :: :ok
 
   @doc """
   This function is used to delete a container.
   It takes a container handle as the argument.
   """
-  @callback delete(String.t()) :: :ok | :error
+  @callback delete(String.t()) :: :ok
 
   @doc """
   This function is used to get the status of a container.

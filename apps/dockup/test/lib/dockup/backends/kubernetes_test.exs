@@ -5,18 +5,21 @@ defmodule Dockup.Backends.KubernetesTest do
   alias Dockup.Container
 
   @moduletag :integration
-  @moduletag timeout: 120000
+  @moduletag timeout: 200_000
 
   @deployment_id 1
   @container_name "helloworld"
 
   setup_all do
-    deployment_name = Kubernetes.deployment_name(@deployment_id, @container_name)
-    ensure_no_pods_are_running(deployment_name)
+    Application.ensure_all_started(:inets)
+    Application.ensure_all_started(:ssl)
 
-    on_exit fn ->
-      Kubernetes.delete(deployment_name)
-    end
+    container_handle = Kubernetes.container_handle(@deployment_id, @container_name)
+    ensure_no_pods_are_running(container_handle)
+
+    on_exit(fn ->
+      Kubernetes.delete(container_handle)
+    end)
   end
 
   test "K8S implementation of container interfaces" do
@@ -29,7 +32,7 @@ defmodule Dockup.Backends.KubernetesTest do
         {"FOO", "helloworld"}
       ],
       command: ["/http-echo"],
-      args: ["-text=$(echo $FOO)"],
+      args: ["-text=$(FOO)"],
       ports: [5678],
       init_containers: [
         %Container{
@@ -50,19 +53,27 @@ defmodule Dockup.Backends.KubernetesTest do
     assert [%{name: "FOO", value: "helloworld"}] = container.env
     assert Kubernetes.logs(container_handle) =~ "Server is listening on :5678\n"
 
-    assert :ok = Kubernetes.hibernate(container_handle)
-    wait_for_deployment(container_handle, :unknown, 120)
+    base_domain = Application.fetch_env!(:dockup, :base_domain)
+    url = String.to_charlist("https://1-dockup-#{@deployment_id}-helloworld.#{base_domain}")
+    assert {:ok, {{'HTTP/1.1', 200, 'OK'}, _headers, body}} =
+             :httpc.request(:get, {url, []}, [], [])
+    assert to_string(body) =~ "helloworld"
 
-    assert :ok = Kubernetes.wake_up(container_handle)
-    wait_for_deployment(container_handle, :running)
+     assert :ok = Kubernetes.hibernate(container_handle)
+     wait_for_deployment(container_handle, :unknown, 120)
+
+     assert :ok = Kubernetes.wake_up(container_handle)
+     wait_for_deployment(container_handle, :running)
   end
 
   defp wait_for_deployment(container_handle, expected_status) do
     wait_for_deployment(container_handle, expected_status, 30)
   end
+
   defp wait_for_deployment(_, _, 0) do
-    flunk "Timed out when waiting for pod"
+    flunk("Timed out when waiting for pod")
   end
+
   defp wait_for_deployment(container_handle, expected_status, i) do
     if Kubernetes.status(container_handle) != expected_status do
       :timer.sleep(1000)
