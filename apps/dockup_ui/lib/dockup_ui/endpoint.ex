@@ -63,9 +63,9 @@ defmodule DockupUi.Endpoint do
   end
 
   defp load_host_from_system_env(config) do
-    base_domain = System.get_env("DOCKUP_BASE_DOMAIN") ||
-      raise "expected DOCKUP_BASE_DOMAIN env var to be set"
+    dockup_url = Application.get_env(:dockup_ui, :dockup_url_host) ||
+      raise "expected DOCKUP_URL_HOST env var to be set"
 
-    put_in(config, [:url, :host], base_domain)
+    put_in(config, [:url, :host], dockup_url)
   end
 end
