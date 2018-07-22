@@ -93,3 +93,9 @@ This API endpoint is used to deploy a dockerized app.
 ```
 curl -XPOST  -d '{"git_url":"https://github.com/code-mancers/project.git","branch":"master","callback_url":"fake_callback"}' -H "Content-Type: application/json" http://localhost:4000/api/deployments
 ```
+
+### UI design by Sleekr
+
+Dockup is thankful to Sleekr (https://hr.sleekr.co) for providing their design and
+development efforts to give dockup a professional look. They also helped in
+piloting this project, and improving the tool.
