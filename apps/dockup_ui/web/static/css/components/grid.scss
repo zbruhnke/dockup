@@ -1,0 +1,131 @@
+// Style component button
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// Functions
+@function convertRem($size) {
+  $remSize: 1/$columns*$size;
+  @return #{$remSize}rem;
+}
+
+// Variable spaced
+$columns : 12;
+$spaced : convertRem(-15);
+$container : 1100;
+
+// Extends
+%flex {
+  justify-content: left;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+%col { flex: none; }
+
+%col-auto {
+  display: block;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  align-items: stretch;
+}
+
+.c-container {
+  @extend .u-px-15 ;
+  // max-width: convertRem($container);
+  max-width: 1170px;
+  margin: 0 auto;
+  &-fluid { max-width: 100% }
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+  &-700 {
+    width: 700px;
+    margin: 0 auto;
+    @extend .u-px-15 ;
+    @include max-query-media(xs) {
+      width: 100%;
+      margin-bottom: 60px;
+    }
+  }
+}
+
+// Row
+.c-row {
+  @extend .clearfix, %flex;
+  margin-left: -15px;
+  margin-right: -15px;
+  &-center {
+    @extend .c-row ;
+    justify-content: center;
+  }
+  &> [class*='c-col-'] {
+    padding-left: 15px;
+    padding-right: 15px;
+    @extend %col;
+  }
+  &> .c-col {
+    padding-left: 15px;
+    padding-right: 15px;
+    @extend %col-auto;
+  }
+  &-no-gutter {
+    @extend .c-row ;
+    margin-left: 0;
+    margin-right: 0;
+    &>[class*='c-col-'] {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+// Grid large
+@for $i from 1 through $columns {
+  .c-col-#{$i}{
+    @media screen and (min-width: $v-md) {
+      width: percentage($i / $columns);
+    }
+    width: 100%;
+  }
+
+  // Offset grid
+  .c-offset-#{$i} {
+    @media (min-width: $v-md) { margin-left: percentage($i / $columns); }
+    @media (max-width: $v-md) { margin-left: 0 }
+  }
+}
+
+// Grid md
+@for $i from 1 through $columns {
+  .c-col-md-#{$i}{
+    @include query-media(md) {
+      width: percentage($i / $columns);
+    }
+  }
+}
+// Grid sm
+@for $i from 1 through $columns {
+  .c-col-sm-#{$i}{
+    @include query-media(sm) {
+      width: percentage($i / $columns);
+    }
+  }
+}
+// Grid xs
+@for $i from 1 through $columns {
+  .c-col-xs-#{$i}{
+    @include query-media(xs) {
+      width: percentage($i / $columns);
+    }
+  }
+}
+// Grid xxs
+@for $i from 1 through $columns {
+  .c-col-xxs-#{$i}{
+    @include query-media(xxs) {
+      width: percentage($i / $columns);
+    }
+  }
+}

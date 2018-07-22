@@ -1,0 +1,305 @@
+// Style component Tabbing
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+// tabbing style
+
+.c-tabbing {
+  position: relative;
+
+  &__head {
+    border-bottom: 1px solid $v-ui-border;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+      display: inline-block;
+      cursor: pointer;
+      margin-right: 10px;
+      color: $v-slate ;
+      border-bottom: 5px solid transparent;
+      line-height: 16px;
+      @include mobile {
+        line-height: auto;
+      }
+      @include transition(all .3s);
+      &.btn-term {
+        padding: 8px 0;
+        .c-btn--default {
+          color: #212121;
+        }
+      }
+      a {
+        color: $v-slate;
+        text-decoration: none;
+        display: inline-block;
+        padding: 15px 10px;
+        @include transition(all .3s);
+        @include mobile {
+          padding: 10px 15px;
+          display: block;
+        }
+        span {
+          vertical-align: bottom;
+        }
+      }
+      &.active {
+        color: $v-black;
+        border-bottom: 5px solid $v-green;
+        > a {
+          @include transition(all .3s);
+          color: $v-black;
+          font-weight: 600;
+        }
+        &.btn-term{
+          border-bottom: 5px solid transparent;
+        }
+        .c-btn--default {
+          background-color: #f9f9f9;
+        }
+        @include mobile {
+          color: #000;
+          border-bottom: none;
+          > a {
+            padding: 15px;
+          }
+        }
+      }
+      &.is-disabled {
+        color: $btn-lighten-slate !important;
+        > a {
+          cursor: not-allowed;
+          color: $btn-lighten-slate !important;
+        }
+      }
+      .ju-dropdown-t {
+        span.fa {
+          padding-left: 5px;
+        }
+      }
+      .tab-wrapper-column {
+        position: absolute;
+        width: 100%;
+        max-width: 825px;
+        top: 51px;
+        left: 0;
+        background-color: $v-white;
+        z-index: 5;
+        color: $v-slate;
+        display: block;
+        border-radius: 2px;
+        @include transition(all .3s);
+        @include box-shadow(0, 5px, 10px, 0, #000, 0.25);
+
+        .tab-column{
+          width: calc(100% / 3);
+          height: 240px;
+          color: $v-black  ;
+          font-weight: 400;
+          float: left;
+          border-left: 1px solid $v-smoke;
+          span {
+            margin: 8px 15px 0px 15px;
+            padding-bottom: 8px;
+            display: block;
+            border-bottom: 1px solid $v-smoke;
+          }
+          &:first-child{
+            border-left: none;
+          }
+
+          ul {
+            height: 199px;
+            overflow-y: auto;
+            &::-webkit-scrollbar { width: 5px; }
+            &::-webkit-scrollbar-track { background-color: transparent; }
+            &::-webkit-scrollbar-thumb {
+              background-color: $v-slate;
+              border-radius: 5px;
+            }
+            li {
+              color: $v-slate ;
+              padding: 0;
+              width: 100%;
+              margin: 0;
+              border: none;
+              a {
+                display: block;
+                padding: 10px 15px;
+                &:hover {
+                  background-color: #ECF6FD;
+                  color: $v-black;
+                  cursor: pointer;
+                }
+              }
+              &.active{
+                a {
+                  background-color: #ECF6FD;
+                  color: $v-black;
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+        &.column-single-list{
+          width: 240px;
+          left: 50%;
+          @include transform(translateX(-50%));
+          background-color: $v-purple;
+          li {
+            width: 100%;
+            margin: 0;
+            cursor: pointer;
+            padding: 10px 15px;
+            border: none;
+            color: #fff;
+            a {
+              padding: 0;
+              color: #fff;
+            }
+            &:hover {
+              background-color: #5c5291;
+            }
+          }
+          &::after{
+            right: auto;
+            left: calc(50% - 6px);
+            border-bottom-color: $v-purple;
+            content: " ";
+            position: absolute;
+            width: 6px;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid $v-purple;
+            top: -12px;
+            margin: 0 auto;
+          }
+        }
+        &.column-2{
+          width: 50%;
+          left: 50%;
+          max-width: 550px;
+          .tab-column{
+            width: calc(100%/2);
+          }
+        }
+      }
+      @media screen and (min-width: 770px) and (max-width: 999px) {
+        &.btn-term {
+          position: absolute;
+          right: 0;
+          top: -80px;
+        }
+      }
+      @include mobile {
+        display: block;
+        margin-right: 0;
+        border-bottom: none;
+        &.active{
+          &>a, &>.c-btn--default {
+            background-color: #ECF6FD;
+            color: #212121;
+          }
+        }
+        .ju-dropdown-t {
+          display: none;
+        }
+        .tab-wrapper-column{
+          position: relative;
+          top: inherit;
+          left: inherit;
+          box-shadow: none;
+          border-radius: 0;
+          display: block !important;
+          .tab-column{
+            border: none;
+            width: 100%;
+            height: inherit;
+            float: none;
+            ul {
+              padding-left: 10px;
+              height: inherit;
+            }
+          }
+        }
+        &.btn-term{
+          float: none !important;
+          .c-btn--default{
+            border: none;
+            color: #777;
+            text-align: left;
+            padding: 10px 15px 10px 15px;
+            display: block;
+          }
+        }
+      }
+    }
+    @include mobile {
+      border-bottom: none;
+      display: none;
+      border: 1px solid $v-ui-border;
+      border-radius: 0px 0px 3px 3px;
+      border-top-color: $v-white;
+      top: -1px;
+      position: relative;
+    }
+  }
+  &__konten{
+    margin-top: 35px;
+    width: 100%;
+    display: none;
+    &.active {
+      display: block;
+    }
+    @include mobile {
+
+    }
+  }
+  &__mobile{
+    display: none;
+    @include mobile {
+      display: block;
+      width: 100%;
+      padding: 8px 15px;
+      border: 1px solid #e7ebf2;
+      border-radius: 3px;
+      margin-bottom: 0;
+      height: 40px;
+      position: relative;
+      cursor: pointer;
+      line-height: 24px;
+      &:after{
+        content: '\f107';
+        display: inline-block;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        vertical-align: middle;
+        color: #777777;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-family: FontAwesome;
+        text-rendering: auto;
+      }
+    }
+  }
+
+  &--staff {
+    .c-tabbing {
+      &__head {
+        padding: 0 20px;
+        margin: 0 -20px;
+        @include mobile {
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
+  }
+}
+
+.c-tabbing[tab-type="single-column"] {
+  li { position: relative; }
+}

@@ -1,0 +1,83 @@
+// Style component avatar
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// Variable
+$img-type : xs, sm, md, lg;
+$img-size : 24, 50, 80, 170;
+$img-font : 12, 20, 28, 56;
+$img-bg : #7EB8AC;
+$img-more : #3E83FF;
+
+// Images
+figure, img {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// avatar style
+.c-avatar {
+  @for $i from 1 through length($img-type) {
+    &--#{nth($img-type, $i)} {
+      display: inline-block;
+      width: #{nth($img-size, $i)}px;
+      height: #{nth($img-size, $i)}px;
+      span {
+        font-size: #{nth($img-font, $i)}px;
+        line-height: #{nth($img-size, $i)}px;
+        background-color: $img-bg;
+        text-transform: uppercase;
+        display: block;
+        text-align: center;
+        color: $v-white;
+        font-weight: 700;
+      }
+    }
+
+    &--more {
+      a {
+        position: absolute;
+        z-index: 9;
+        color: transparent;
+        width: 100%;
+        height: 100%;
+      }
+      span {
+        background-color: $v-blue;
+        color: $v-white;
+      }
+    }
+  }
+
+
+  // when avatar circle
+  &--circle {
+    @include border-radius(50%);
+    overflow: hidden;
+  }
+
+  // avatar group
+  &-group {
+    position: relative;
+    figure {
+      position: relative;
+      margin-right: -5px;
+      border: 3px solid transparent;
+      span { margin-top: -3px; }
+    }
+
+    &.is-text {
+      @include mobile { padding-left: 0!important; }
+      figure { border: none; }
+    }
+
+    .c-avatar-text{
+      @extend .u-dib ;
+      &--sm {
+        width: calc(100% - 50px);
+        padding-left: 10px;
+        a:hover { text-decoration: none; @extend .u-cl-black }
+      }
+    }
+    figure, .c-avatar-text { @extend .u-vat }
+  }
+}

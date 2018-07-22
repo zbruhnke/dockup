@@ -1,0 +1,473 @@
+// Mixins sleekr
+
+// Text Align [.u-ta($a-code)]
+$a-code : l, c, r, j;
+$align : left, center, right, justify;
+@for $a from 1 through length($a-code) {
+  .u-ta#{nth($a-code, $a)} {
+    text-align: #{nth($align, $a)};
+  }
+}
+
+// Text Transform [.u-ft-($t-code)]
+$t-code : low, up, cap, normal;
+$trans : lowercase, uppercase, capitalize, none;
+@for $t from 1 through length($t-code) {
+  .u-ft-#{nth($t-code, $t)} {
+    text-transform: #{nth($trans, $t)}!important;
+  }
+}
+
+// Text Decoration [.u-ft-($d-code)]
+$d-code : underline, overline, line-through, none;
+@for $d from 1 through length($d-code) {
+  .u-ft-#{nth($d-code, $d)} {
+    text-decoration: #{nth($d-code, $d)};
+    &.u-hover-#{nth($d-code, $d)} {
+      &:hover{
+        text-decoration: #{nth($d-code, $d)};
+      } 
+    }
+  }
+}
+
+// Font Weight [.u-ft-($w-code)]
+$w-code : lig, reg, smb, str;
+$weight : 300, 400, 600, 700;
+@for $w from 1 through length($w-code) {
+  .u-ft-#{nth($w-code, $w)} {
+    font-weight: #{nth($weight, $w)} !important;
+  }
+}
+
+// Vertical Align [.u-va($v-code)]
+$v-code : t, m, b, tt;
+$valign : top, middle, bottom, text-top;
+@for $v from 1 through length($v-code) {
+  .u-va#{nth($v-code, $v)} {
+    vertical-align: #{nth($valign, $v)} !important;
+  }
+}
+
+// Display [.u-d($d-code)]
+$d-code : b, i, ib, f, if, t, tc, n;
+$display : block, inline, inline-block, flex, inline-flex, table, table-cell, none;
+@for $d from 1 through length($d-code) {
+  .u-d#{nth($d-code, $d)} {
+    display: #{nth($display, $d)} !important;
+  }
+}
+
+// Align Self [.u-as-($as-code)]
+$as-code : auto, stretch, center, start, end, baseline;
+$alignself : auto, stretch, center, flex-start, flex-end, baseline;
+@for $as from 1 through length($as-code) {
+  .u-as-#{nth($as-code, $as)} {
+    align-self: #{nth($alignself, $as)} !important;
+  }
+}
+
+// Color [.u-cl-($colors)] and Background [.u-bg-($colors)]
+$colors : green, green-light, green-dark, purple, purple-light, purple-dark, blue, blue-dark, blue-light, orange, orange-light, orange-dark, black, slate, smoke, snow, snow-darker, white, red, red-light, red-dark, ui-background, ui-border, ui-red, ui-red-dark, ui-chart-blue, ui-chart-aqua, yellow, yellow-light, yellow-dark, cal-blue, cal-green, cal-yellow, cal-orange, cal-red, cal-purple, cal-lavender, cal-grey;
+$color-code : $v-green, $v-green-light, $v-green-dark, $v-purple, $v-purple-light, $v-purple-dark, $v-blue, $v-blue-dark, $v-blue-light, $v-orange, $v-orange-light, $v-orange-dark, $v-black, $v-slate, $v-smoke, $v-snow, $v-snow-darker, $v-white, $v-red, $v-red-light, $v-red-dark, $v-ui-background, $v-ui-border, $v-ui-red, $v-ui-red-dark, $v-ui-chart-blue, $v-ui-chart-aqua, $v-yellow, $v-yellow-light, $v-yellow-dark, $v-cal-blue, $v-cal-green, $v-cal-yellow, $v-cal-orange, $v-cal-red, $v-cal-purple, $v-cal-lavender, $v-cal-grey;
+@for $i from 1 through length($colors) {
+  .u-cl-#{nth($colors, $i)} {
+    color: #{nth($color-code, $i)} !important;
+  }
+  .u-bg-#{nth($colors, $i)} {
+    background-color: #{nth($color-code, $i)} !important;
+  }
+}
+
+// Color box (background & border color, used for calendar) [.u-bx-($bx-code)]
+$bx-code : cal-blue, cal-green, cal-yellow, cal-orange, cal-red, cal-purple, cal-lavender, cal-grey;
+$bx-bg : $v-cal-blue, $v-cal-green, $v-cal-yellow, $v-cal-orange, $v-cal-red, $v-cal-purple, $v-cal-lavender, $v-cal-grey;
+$bx-br : $v-cal-blue-border, $v-cal-green-border, $v-cal-yellow-border, $v-cal-orange-border, $v-cal-red-border, $v-cal-purple-border, $v-cal-lavender-border, $v-cal-grey-border;
+@for $bx from 1 through length($bx-code) {
+  .u-bx-#{nth($bx-code, $bx)} {
+    background-color: #{nth($bx-bg, $bx)};
+    border-color: #{nth($bx-br, $bx)};
+    color: #{nth($bx-br, $bx)};
+  }
+}
+
+// Margin, Padding, Width and Height [.u-(margin/padding/width/height)-($val)]
+$val  : -20 -15 -10 -9 -8 -7 -6 -5 -4 -3 -2 -1 0 2 3 4 5 7 10 15 20 25 30 35 40 45 50 60 65 70 80 90 100 115 120 125 140 160 165 180 190 200 240 255 270 280 300 320 350 400 420 470 500 550 600 700 750 800 900;
+@mixin margin-padding {
+  @each $n in $val {
+
+    // Margin
+    .u-m-#{$n} {
+      margin: #{$n}px !important;
+    }
+    .u-mt-#{$n} {
+      margin-top: #{$n}px !important;
+    }
+    .u-mb-#{$n} {
+      margin-bottom: #{$n}px !important;
+    }
+    .u-ml-#{$n} {
+      margin-left: #{$n}px !important;
+    }
+    .u-mr-#{$n} {
+      margin-right: #{$n}px !important;
+    }
+    .u-my-#{$n} {
+      margin-top: #{$n}px !important;
+      margin-bottom: #{$n}px !important;
+    }
+    .u-mx-#{$n} {
+      margin-left: #{$n}px !important;
+      margin-right: #{$n}px !important;
+    }
+
+    // Padding
+    .u-p-#{$n} {
+      padding: #{$n}px !important;
+    }
+    .u-pt-#{$n} {
+      padding-top: #{$n}px !important;
+    }
+    .u-pb-#{$n} {
+      padding-bottom: #{$n}px !important;
+    }
+    .u-pl-#{$n} {
+      padding-left: #{$n}px !important;
+    }
+    .u-pr-#{$n} {
+      padding-right: #{$n}px !important;
+    }
+    .u-py-#{$n} {
+      padding-top: #{$n}px !important;
+      padding-bottom: #{$n}px !important;
+    }
+    .u-px-#{$n} {
+      padding-left: #{$n}px !important;
+      padding-right: #{$n}px !important;
+    }
+
+    // Width
+    .u-w-#{$n} {
+      width: #{$n}px !important;
+    }
+    .u-minw-#{$n} {
+      min-width: #{$n}px !important;
+    }
+    .u-maxw-#{$n} {
+      max-width: #{$n}px!important;
+    }
+
+    // Height
+    .u-h-#{$n} {
+      height: #{$n}px!important;
+    }
+    .u-minh-#{$n} {
+      min-height: #{$n}px!important;
+    }
+    .u-maxh-#{$n} {
+      max-height: #{$n}px!important;
+    }
+
+    // border-radius
+    .u-br-#{$n} {
+      border-radius: #{$n}px !important;
+    }
+
+    // border-width
+    .u-bw-#{$n} {
+      border: #{$n}px solid !important;
+    }
+  }
+}
+@include margin-padding;
+
+
+// Animate: Transition [@include transition($val)] and Transform [@include transform($val)]
+@mixin transition($val) {
+  transition: $val;
+  -webkit-transition: $val;
+  -moz-transition: $val;
+}
+
+@mixin transform($val) {
+  transform: $val;
+  -webkit-transform: $val;
+  -moz-transform: $val;
+}
+
+@mixin animation($val) {
+  animation: $val;
+  -webkit-animation: $val;
+  -moz-animation: $val;
+}
+
+// Devices [@include mobile/tablet/laptop,etc]
+@mixin query-media($media) {
+  @if $media == xxs {
+    @media screen and (min-width: 0) and (max-width: $v-xxs) {
+      @content;
+    }
+  }
+  @else if $media == xs {
+    @media screen and (min-width: 0) and (max-width: $v-xs) {
+      @content;
+    }
+  }
+  @else if $media == sm {
+    @media screen and (min-width: $v-xs) and (max-width: $v-sm) {
+      @content;
+    }
+  }
+  @else if $media == md {
+    @media screen and (min-width: $v-sm) and (max-width: $v-md) {
+      @content;
+    }
+  }
+  @else if $media == lg {
+    @media screen and (min-width: $v-md) and (max-width: $v-lg) {
+      @content;
+    }
+  }
+  @else if $media == xl {
+    @media screen and (min-width: $v-lg) and (max-width: $v-xxl) {
+      @content;
+    }
+  }
+}
+
+@mixin min-query-media($media) {
+  @if $media == xl {
+    @media screen and (min-width: $v-xl){
+      @content;
+    }
+  }
+  @else if $media == lg {
+    @media screen and (min-width: $v-lg) {
+      @content;
+    }
+  }
+  @else if $media == md {
+    @media screen and (min-width: $v-md) {
+      @content;
+    }
+  }
+  @else if $media == sm {
+    @media screen and (min-width: $v-sm) {
+      @content;
+    }
+  }
+  @else if $media == xs {
+    @media screen and (min-width: $v-xs) {
+      @content;
+    }
+  }
+  @else if $media == xxs {
+    @media screen and (min-width: $v-xxs) {
+      @content;
+    }
+  }
+}
+
+@mixin max-query-media($media) {
+  @if $media == xl {
+    @media screen and (max-width: $v-xl) {
+      @content;
+    }
+  }
+  @else if $media == lg {
+    @media screen and (max-width: $v-lg) {
+      @content;
+    }
+  }
+  @else if $media == md {
+    @media screen and (max-width: $v-md) {
+      @content;
+    }
+  }
+  @else if $media == sm {
+    @media screen and (max-width: $v-sm) {
+      @content;
+    }
+  }
+  @else if $media == xs {
+    @media screen and (max-width: $v-xs) {
+      @content;
+    }
+  }
+  @else if $media == xxs {
+    @media screen and (max-width: $v-xxs) {
+      @content;
+    }
+  }
+}
+
+@mixin mobilexs {
+  @media screen and (max-width: #{$v-xxs}) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media screen and (max-width: #{$v-xs}) {
+    @content;
+  }
+}
+@mixin tabletPotrait {
+  @media screen and (min-width: #{$v-xs}) and (max-width: #{$v-sm}) {
+    @content;
+  }
+}
+@mixin tabletLandscape {
+  @media screen and (min-width: #{$v-sm}) and (max-width: #{$v-md}) {
+    @content;
+  }
+}
+@mixin laptopScreen {
+  @media screen and (min-width: #{$v-md}) and (max-width: #{$v-lg}) {
+    @content;
+  }
+}
+@mixin largeScreen {
+  @media screen and (min-width: #{$v-lg}) {
+    @content;
+  }
+}
+
+
+// Float [.u-fl($f-code)]
+.u-pull {float: left !important;}
+.u-push {float: right !important;}
+.u-clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+// Hiding, showing, float & full width based on breakpoint
+$b-code : xxs, xs, sm, md, lg, xl;
+@each $b in $b-code {
+  // For hiding content when the viewport is at the given breakpoint or wider.
+  .u-h#{$b}-up {
+    @include min-query-media(#{$b}) {
+      display: none !important;
+    }
+  }
+
+  // For hiding content when the viewport is at the given breakpoint or smaller.
+  .u-h#{$b}-down {
+    @include max-query-media(#{$b}) {
+      display: none !important;
+    }
+  }
+
+  // For pull left content when the viewport is at the given breakpoint or smaller.
+  .u-pull-#{$b}-down {
+    @include max-query-media(#{$b}) {
+      float: left !important;
+    }
+  }
+
+  // For hiding content only when the viewport is at the given breakpoints range.
+  .u-h#{$b} {
+    @include query-media(#{$b}) {
+      display: none !important;
+    }
+  }
+
+  // For showing content only when the viewport is at the given breakpoints range.
+  .u-s#{$b} {
+    @include query-media(#{$b}) {
+      display: inline-block !important;
+    }
+  }
+
+  // For set full width only when the viewport is at the given breakpoints range.
+  .u-w#{$b}-full {
+    @include query-media(#{$b}) {
+     width: 100% !important;
+    }
+  }
+}
+
+// Customize Scrollbar
+@mixin scrollbar($background-scrollbar-track, $srollbar-width, $scrollbar-background-color, $scrollbar-thumb-radius, $scrollbar-thumb-background) {
+  &::-webkit-scrollbar-track {
+    background-color: $background-scrollbar-track;
+  }
+  &::-webkit-scrollbar {
+    width: $srollbar-width;
+    height: $srollbar-width;
+    background-color: $scrollbar-background-color;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: $scrollbar-thumb-radius;
+    background-color: $scrollbar-thumb-background;
+    display: none;
+  }
+  &:hover, &focus {
+    &::-webkit-scrollbar-thumb {
+      display: block;
+    }
+  }
+}
+
+// Box shadow
+@mixin box-shadow($x, $y, $blur, $spread, $shadow, $opacity) {
+  -webkit-box-shadow: $x $y $blur $spread rgba($shadow, $opacity);
+  -moz-box-shadow: $x $y $blur $spread rgba($shadow, $opacity);
+  box-shadow: $x $y $blur $spread rgba($shadow, $opacity);
+}
+
+// Background gradient
+@mixin linear-gradient($direction, $colorA, $opacityA, $valueA, $colorB, $opacityB, $valueB) {
+  background: -webkit-linear-gradient($direction, rgba($colorA, $opacityA) $valueA, rgba($colorB, $opacityB) $valueB)
+}
+
+// Add border [.u-br-($br-code)]
+$br-code : top, right, bottom, left;
+@each $br in $br-code {
+  .u-br-#{$br} {
+    border-#{$br}: 1px solid $v-ui-border;
+  }
+}
+.u-br-all {border: 1px solid $v-ui-border;}
+.u-br-none {border: none !important;}
+
+// Border radius
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin positionSticky() {
+  position: sticky;
+  position: -webkit-sticky;
+  position: -o-sticky;
+  position: -moz-sticky;
+  position: -ms-sticky;
+}
+
+@mixin displayFlex() {
+  display: flex;
+  display: ms-flexbox;
+  display: -webkit-flex;
+}
+
+// Ellipsis
+@mixin ellipsis {
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 10px;
+}
+
+.u-elp { @include ellipsis }
+.u-h-auto { height: auto !important; }
+.u-ml-auto { margin-left: auto !important}
+.u-p-rel { position: relative; }
+.u-text-abs {
+  position: relative;
+}

@@ -1,0 +1,52 @@
+.c-modal {
+  &--dockup {
+    &:before {
+      background-color: transparent;
+      z-index: 1;
+    }
+  }
+  &-signin {
+    .c-modal--inner {
+      @include transition(all .6s);
+      @include transform(translateY(-100%));
+    }
+    &.is-show {
+      .c-modal--inner {
+        @include transform(translateY(0));
+      }
+    }
+  }
+  &--inner,
+  &__dialog {
+    width: 572px;
+    margin: 0 auto;
+    background-color: $v-white;
+    padding: 30px;
+    border: 1px solid $v-ui-border;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 15px 15px 0 #E2E2E2;
+    z-index: 2;
+    position: relative;
+    @include max-query-media(xs) {
+      width: 100%;
+    }
+  }
+  &.is-bg-show {
+    &:before {
+      background-color: rgba(33,33,33,0.5);
+    }
+    .c-modal__dialog {
+      box-shadow: none;
+      margin-top: 120px;
+      border: 1px solid #E2E2E2;
+      border-radius: 4px;
+    }
+  }
+  .c-form {
+    .c-modal__close {
+      position: relative;
+      top: auto;
+      right: auto;
+    }
+  }
+}

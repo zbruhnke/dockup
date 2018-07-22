@@ -21,13 +21,7 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: {
-        "css/app.css": /^web\/static\/css\/app/,
-        "css/home.css": "web/static/css/home.scss"
-      },
-      order: {
-        after: ["web/static/css/app/app.scss"]
-      }
+      joinTo: "css/app.css"
     },
     templates: {
       joinTo: "js/app.js"
@@ -38,6 +32,11 @@ exports.config = {
     // This option sets where we should place non-css and non-js assets in.
     // By default, we set this to "/web/static/assets". Files in this directory
     // will be copied to `paths.public`, which is "priv/static" by default.
+    ignored: [
+        /^(web\/static\/css\/bases)/,
+        /^(web\/static\/css\/components)/,
+        /^(web\/static\/css\/pages)/
+    ],
     assets: /^(web\/static\/assets)/
   },
 
@@ -59,9 +58,6 @@ exports.config = {
       presets: ["es2015", "react"],
       // Do not use ES6 compiler in vendor code
       ignore: [/web\/static\/vendor/]
-    },
-    copycat: {
-      "fonts": ["node_modules/font-awesome/fonts"]
     },
     sass: {
       options: {

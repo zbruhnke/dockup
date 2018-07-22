@@ -31,7 +31,12 @@ class DeploymentList extends Component {
     let channel = DockupUiSocket.getDeploymentsChannel();
 
     channel.on("status_updated", (deployment) => {
-      this.updateDeployment(deployment);
+      let found = this.state.deployments.find(d => d.id == deployment.id);
+      if (found) {
+        this.updateDeployment(deployment);
+      } else {
+        this.addDeployment(deployment);
+      }
     })
 
     channel.on("deployment_created", (deployment) => {
@@ -56,12 +61,17 @@ class DeploymentList extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.deployments.map((deployment) => {
-          return (
-            <DeploymentCard key={deployment.id} deployment={deployment}/>
-          )
-         })}
+      <div className="container">
+        <div className="c-list" style={{marginTop: 150 + 'px'}}>
+          <h2 className="u-cl-purple">Recent deployment</h2>
+          <ul className="c-list--wrapper">
+            {this.state.deployments.map((deployment) => {
+              return (
+                <DeploymentCard key={deployment.id} deployment={deployment}/>
+              )
+            })}
+          </ul>
+        </div>
       </div>
     )
   }

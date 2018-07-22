@@ -1,0 +1,183 @@
+// Style component accordion
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// accordion style
+@mixin accordion() {
+  .c-accordion {
+    .c-select__input, .with-icon--reset { line-height: normal; }
+    .c-table--wrapper { font-size: 1.4rem; }
+    &.is-show-all {
+      .c-accordion__panel {
+        border-bottom: 0;
+        .c-accordion__head {
+          border-bottom: 1px solid $v-ui-border;
+          &.c-row-no-gutter { align-items: start; }
+          .c-check__checkbox {
+            float: left;
+            display: block;
+          }
+          .c-avatar-group.is-text {
+            float: left;
+            width: calc(100% - 30px);
+            padding-left: 0 !important;
+          }
+          &.is-show-bulk {
+            .c-check__checkbox { margin-top: 8px; }
+            // .c-accordion__title-list,
+            // .c-accordion__department {
+            //   display: none;
+            // }
+            .c-accordion__title-bulk {
+              display: block;
+            }
+          }
+
+        }
+        .c-accordion__body {
+          max-height: 9999px;
+        }
+        .c-accordion__icon {
+          display: none;
+        }
+      }
+    }
+    &__panel {
+      @include transition(all .3s);
+      border-bottom: 1px solid $v-ui-border;
+      &:last-child { border-bottom: none !important; }
+      &.is-open {
+        &>.c-accordion__head {
+          &::after { display: none; }
+          .c-accordion__icon {
+            @include transition(all .4s);
+            @include transform(rotate(45deg));
+          }
+        }
+        &>.c-accordion__body {
+          padding-bottom: 20px;
+          max-height: 9999px;
+          overflow: visible;
+          .c-accordion__section { opacity: 1 }
+          &::after { display: block; }
+        }
+      }
+    }
+    &__head {
+      position: relative;
+      cursor: pointer;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border-bottom: 0;
+      &.c-row-no-gutter {
+        align-items: center;
+        &> [class*='c-col-'] {
+          @extend .c-smb-14, .u-cl-black ;
+          line-height: 30px;
+          width: 33.33%;
+          @include min-query-media(md) {
+            &:first-child { width: 50%; }
+            &:nth-child(2),
+            &:nth-child(3) { width: 25%; }
+          }
+          @include mobile { width: 100%; }
+        }
+      }
+    }
+    &__body {
+      max-height: 0;
+      overflow: hidden;
+      @extend .c-reg-15 ;
+      position: relative;
+    }
+    &__section {
+      @include transition(all .4s);
+      opacity: 0;
+    }
+    &__title {
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 600;
+      color: $v-purple;
+      padding-right: 40px;
+      &-bulk, .c-check__checkbox { display: none; }
+    }
+    &__icon {
+      border: solid $v-purple;
+      border-width: 0 1px 1px 0;
+      display: inline-block;
+      padding: 3px;
+      @include transform(rotate(-45deg));
+      position: absolute;
+      right: 0;
+      top: calc(50%  - 3px);
+      @include transition(all .4s);
+      cursor: pointer;
+    }
+    &--changelog {
+      max-width: 1170px;
+      margin: auto;
+      .c-accordion {
+        &__head {
+          &::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            content: '';
+            background-color: $v-ui-border ;
+          }
+          &::after { content: none; }
+        }
+        &__panel { &::after { content: none; } }
+        &__title { font-size: 1.5rem; }
+        &__body { &:after { content: none; } }
+      }
+      &__content { @extend .u-mb-10; }
+      &__date {
+        @extend .u-vat, .u-ft-smb, .u-dib;
+        width: 120px;
+        float: left;
+      }
+      &__value {
+        @extend .u-dib;
+        max-width: calc(100% - 140px);
+      }
+    }
+    &__table {
+      .c-accordion {
+        &__head { padding: 5px 0 }
+        &__department {
+          @include mobile { display: none;}
+        }
+        &__panel {
+          @include transition(none);
+        }
+      }
+    }
+    &__nested {
+      .c-accordion__panel {
+        &.is-open {
+          .c-accordion {
+            &__head::after { display: block }
+            &__body { padding-bottom: 0; }
+          }
+        }
+      }
+    }
+    &--alt {
+      .c-accordion__head {
+        @include laptopScreen { width: calc(100% - 30px); }
+      }
+      .c-accordion__title { padding-right: 50px; }
+      .c-accordion__action {
+        position: absolute;
+        top: 15px;
+        right: 30px;
+      }
+      .c-accordion__icon { right: 0; }
+    }
+  }
+}
+
+@include accordion();

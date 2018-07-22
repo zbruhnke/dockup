@@ -1,0 +1,312 @@
+// Style component popover
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+// Direction arrow
+%arrow-top {
+  &:before {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    @include transform(translateX(-50%));
+    display: inline-block;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid $v-smoke;
+    border-left: 11px solid transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    content: '';
+  }
+  &:after {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    @include transform(translateX(-50%));
+    display: inline-block;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid #ffffff;
+    border-left: 11px solid transparent;
+    content: '';
+  }
+}
+
+%arrow-bottom {
+  &:before {
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    @include transform(translateX(-50%));
+    display: inline-block;
+    border-right: 11px solid transparent;
+    border-top: 11px solid $v-smoke;
+    border-left: 11px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.2);
+    content: '';
+  }
+  &:after {
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    @include transform(translateX(-50%));
+    display: inline-block;
+    border-right: 11px solid transparent;
+    border-top: 11px solid #ffffff;
+    border-left: 11px solid transparent;
+    content: '';
+  }
+}
+
+// Popover
+.c-popover {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 100%;
+  z-index: 110;
+  max-width: 370px;
+  border: 1px solid $v-smoke;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,0.16);
+  @extend .u-bg-white, .u-db ;
+  @media(min-width: $v-xs) {
+    max-width: 370px;
+  }
+  @extend .u-maxw-270;
+  font-size: 1.4rem;
+  line-height: 16px;
+  padding: 15px;
+  h3 { @extend .c-str-15, .u-mb-0; }
+  &--top { @extend %arrow-top ; }
+  &--bottom { @extend %arrow-bottom ; }
+  &--mobile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    @include transform(translate(-50%, -50%));
+  }
+  &.c-confirmation { max-width: 350px; }
+  &--profile {
+    figure { @extend .c-avatar--sm; margin-bottom: 10px; }
+    div { @extend .u-mt-0; }
+    &__mb10 { @extend .u-mb-10; }
+  }
+  &--list {
+    @extend .c-popover ;
+    padding: 0;
+    .c-popover-head {
+      border-bottom: 1px solid $v-smoke;
+      @extend .c-row-no-gutter ;
+      padding: 8px 10px;
+      @extend .c-str-15;
+      a { @extend .u-cl-slate , .u-dib; padding-top: 0; }
+      @media(max-width: $v-sm) {
+        .c-col-8 { width: calc(100% - 30px); }
+        .c-col-4 { width: 30px; }
+      }
+    }
+    .c-popover-body {
+      width: calc(100% - 12px);
+      max-height: 200px;
+      margin: 12px 0;
+      overflow: auto;
+      @include scrollbar($v-white, 8px, transparent, 10px, $v-slate);
+      .c-list {
+        @extend .c-row-no-gutter ;
+        padding: 0 10px 10px;
+        &>div {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          &:last-child {
+            @extend .u-pl-10 ;
+          }
+        }
+        &:last-child { padding-bottom: 0 }
+      }
+    }
+  }
+  &--slide{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    margin-bottom: 0;
+    &-head{
+      position: relative;
+      .c-accordion__icon{
+        border: solid #fff;
+        border-width: 0 1px 1px 0;
+        top: 8px;
+      }
+      &.is-active{
+        .c-accordion__icon{
+          @include transition(all .4s);
+          @include transform(rotate(45deg));
+        }
+      }
+    }
+  }
+}
+
+// Popover tour
+[id*='tour-'] {
+  &.tour-step-backdrop {
+    pointer-events: none;
+  }
+}
+.tour-step-background { border-radius: 0!important; background-color: $v-white!important; }
+.popover {
+  &.tour-tour {
+    &.left {
+      margin-left: -90px;
+      .arrow {
+        margin-top: 0;
+        right: -75px;
+        &:after, &:before { right: 0; }
+      }
+    }
+    &.right {
+      margin-left: 90px;
+      .arrow {
+        margin-top: 0;
+        left: -75px;
+        &:after, &:before { left: 0; }
+      }
+    }
+    border: none;
+    padding: 0;
+    width: 300px;
+    .popover-title, .popover-content {
+      background-color: $v-purple;
+      color: $v-white;
+      border: none;
+    }
+    .arrow {
+      border: none;
+      width: 75px;
+      height: 2px;
+      background-color: $v-white;
+      &:after {
+        top: -5px;
+        height: 15px;
+        width: 15px;
+        border: none;
+        background-color: $v-white;
+        border-radius: 50%;
+        animation: pulse 2s ease-out;
+        animation-iteration-count: infinite;
+      }
+      &:before {
+        content: "";
+        position: absolute;
+        display: block;
+        top: -5px;
+        height: 15px;
+        width: 15px;
+        border: none;
+        background-color: transparent;
+        border-radius: 50%;
+        animation: pulseLarge 2s ease-out;
+        animation-iteration-count: infinite;
+      }
+    }
+    .popover-title {
+      font-size: 15px;
+      padding: 20px 20px 15px 20px; 
+    }
+    .popover-content {
+      padding: 0 20px 30px 20px;
+      @extend .c-reg-14;
+    }
+    .popover-navigation {
+      border: none;
+      padding: 22px 20px!important;
+      a {
+        &.disabled { display: none; }
+        &[data-role="prev"] { color: $v-slate; }
+        &[data-role="next"] { float: right; }
+        &[data-role="end"] { display: none; }
+      }
+    }
+  }
+
+  &.tour-shift-detail, &.tour-shift-detail-demo, &.tour-shift-realization, &.tour-shift-activity-detail, &.tour-shift-activity-detail-demo, &.tour-no-attendance, &.tour-shift-plan-detail-demo, &.tour-shift-realization-addedit-demo {
+    &.tour-tour-0 {
+      .popover-navigation {
+        a {
+          &[data-role="end"] { display: inline-block; }
+        }
+      }
+    }
+  }
+
+  &.tour-shift-upload, &.tour-shift-realization-demo, &.tour-office-location, &.tour-department, &.tour-job-title, &.tour-job-level {
+    &.tour-tour-1 {
+      .popover-navigation {
+        a {
+          &[data-role="end"] { display: inline-block; }
+        }
+      }
+    }
+  }
+
+  &.tour-shift-activity, &.tour-shift-activity-demo {
+    &.tour-tour-2 {
+      .popover-navigation {
+        a {
+          &[data-role="end"] { display: inline-block; }
+        }
+      }
+    }
+  }
+
+  &.tour-shift, &.tour-shift-demo, &.tour-shift-schedule-demo {
+    &.tour-tour-3 {
+      .popover-navigation {
+        a {
+          &[data-role="end"] { display: inline-block; }
+        }
+      }
+    }
+  }
+}
+
+@include max-query-media(sm) {
+  .tour-backdrop, .tour-step-background, .tour-tour, .c-modal--firstrun { display: none!important; }
+  .tour-tour-element { pointer-events: auto!important; }
+}
+
+// for pulse animation in tour
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 1px rgba(225,225,225, 0.4);
+    box-shadow: 0 0 0 1px rgba(225,225,225, 0.4);
+  }
+  25% {
+      -moz-box-shadow: 0 0 0 2px rgba(225,225,225, 0.7);
+      box-shadow: 0 0 0 2px rgba(225,225,225, 0.7);
+  }
+  75% {
+      -moz-box-shadow: 0 0 0 3px rgba(225,225,225, 0.7);
+      box-shadow: 0 0 0 3px rgba(225,225,225, 0.7);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 5px rgba(225,225,225, 0.4);
+      box-shadow: 0 0 0 5px rgba(225,225,225, 0.4);
+  }
+}
+
+@keyframes pulseLarge {
+  0% {
+    -moz-box-shadow: 0 0 0 3px rgba(225,225,225, 0.2);
+    box-shadow: 0 0 0 3px rgba(225,225,225, 0.2);
+  }
+  25% {
+    -moz-box-shadow: 0 0 0 5px rgba(225,225,225, 0.5);
+    box-shadow: 0 0 0 5px rgba(225,225,225, 0.5);
+  }
+  75% {
+      -moz-box-shadow: 0 0 0 7px rgba(225,225,225, 0.5);
+      box-shadow: 0 0 0 7px rgba(225,225,225, 0.5);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 11px rgba(225,225,225, 0.2);
+      box-shadow: 0 0 0 11px rgba(225,225,225, 0.2);
+  }
+}

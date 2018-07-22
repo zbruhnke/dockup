@@ -1,0 +1,258 @@
+// Style for Checkbox & Radio
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+.c-form-group {
+	&.is-error {
+		.c-check__item {
+			.c-check {
+				&__checkbox,
+				&__radio {
+					border-color: $v-ui-border;
+					margin-bottom: 0;
+
+					&:checked {
+						border-color: $v-blue;
+					}
+				}
+			}
+		}
+	}
+}
+
+// check style
+.c-check {
+	// Class for each checkbox / radio
+	&__item {
+		cursor: pointer;
+		font-weight: 400;
+		margin-bottom: 0;
+
+		// when disabled
+		&.is-disabled {
+			cursor: not-allowed;
+			color: $v-slate;
+
+			.c-check {
+				// disabled checkbox
+				&__checkbox {
+					background-color: $v-ui-background;
+					cursor: not-allowed;
+
+					&:checked {
+						background-image: url(../images/component/icon-checkbox-slate.svg);
+						border-color: $v-ui-border;
+						outline: none;
+					}
+				}
+
+				// disabled radio
+				&__radio {
+					background-color: $v-ui-background;
+					cursor: not-allowed;
+
+					&:after {
+						position: absolute;
+						top: 3px;
+						left: 3px;
+						width: 7px;
+						height: 7px;
+						@include border-radius(50%);
+						background-color: lighten($v-slate, 30%);
+						opacity: 0;
+						visibility: hidden;
+						content: '';
+						box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2);
+					}
+
+					&:checked {
+						border-color: $v-ui-border;
+						background-color: $v-ui-background;
+						outline: none;
+
+						&:after {
+							opacity: 1;
+							visibility: visible;
+						}
+					}
+				}
+			}
+		}
+
+		span {
+			display: inline-block;
+			vertical-align: middle;
+			@include mobile {
+				&:first-child { vertical-align: top; }
+				vertical-align: sub;
+				margin-top: -1px;
+			}
+		}
+	}
+
+	// Default checkbox
+	&__checkbox {
+		-webkit-appearance: none;
+		margin: 4px 10px 0px 0;
+		width: 15px;
+		height: 15px;
+		border: 1px solid $v-ui-border;
+		@include border-radius(3px);
+		background-color: $v-white;
+		background-image: none;
+		background-size: calc(100% - 5px);
+		background-position: center;
+		background-repeat: no-repeat;
+		cursor: pointer;
+		outline: none;
+		@include transition(all .3s);
+
+		&:checked {
+			background-image: url(../images/component/icon-checkbox-white.svg);
+			border-color: $v-blue;
+			background-color: $v-blue;
+			outline: none;
+		}
+	}
+
+	// Default radio
+	&__radio {
+		-webkit-appearance: none;
+		display: inline-block;
+		position: relative;
+		margin: 5px 10px 3px 0;
+		border: 1px solid $v-ui-border;
+		@include border-radius(50%);
+		background-color: $v-white;
+		cursor: pointer;
+		outline: none;
+		@include transition(all .3s);
+		width: 15px;
+		height: 15px;
+
+		&:after {
+			position: absolute;
+			top: 3px;
+			left: 3px;
+			width: 7px;
+			height: 7px;
+			@include border-radius(50%);
+			background-color: $v-white;
+			opacity: 0;
+			visibility: hidden;
+			content: '';
+			box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2);
+		}
+
+		&:checked {
+			border-color: $v-blue;
+			background-color: $v-blue;
+			outline: none;
+
+			&:after {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
+	}
+
+	// Wrapper for more than one checkbox / radio
+	&__group {
+		margin-bottom: 5px;
+	}
+
+	// Wrapper for button checkbox / radio
+	&__button {
+		.c-check {
+			&__radio,
+			&__checkbox {
+				display: none;
+
+				~.c-btn {
+					width: 100%;
+					font-weight: 400;
+					margin-bottom: 0;
+				}
+
+				// when checked
+				&:checked {
+					~.c-btn {
+						background-color: $v-blue;
+						color: $v-white;
+						border-color: $v-blue;
+					}
+				}
+
+				// when disabled
+				&:disabled {
+					~.c-btn {
+						background-color: #F9F9F9;
+						border: 1px solid #E7EBF2;
+						font-size: 1.6rem;
+						color: #b7b7b7;
+						cursor: not-allowed;
+						box-shadow: none;
+					}
+				}
+			}
+		}
+	}
+
+	&__color {
+		.c-check {
+			&__radio,
+			&__checkbox {
+				display: none;
+				// when checked
+				&:checked {
+					~.c-check-color {
+						background-image: url(../images/component/icon-checkbox-slate.svg);
+						background-repeat: no-repeat;
+						background-position: center;
+						background-size: 60%;
+					}
+				}
+			}
+			&-color {
+				border-radius: 50%;
+				border: 2px solid;
+				width: 40px;
+				height: 40px;
+				cursor: pointer;
+				margin-right: 5px;
+				display: inline-block;
+				&--blue {
+					background-color: $v-cal-blue;
+					border-color: $v-cal-blue-border;
+				}
+				&--green {
+					background-color: $v-cal-green;
+					border-color: $v-cal-green-border;
+				}
+				&--yellow {
+					background-color: $v-cal-yellow;
+					border-color: $v-cal-yellow-border;
+				}
+				&--orange {
+					background-color: $v-cal-orange;
+					border-color: $v-cal-orange-border;
+				}
+				&--red {
+					background-color: $v-cal-red;
+					border-color: $v-cal-red-border;
+				}
+				&--purple {
+					background-color: $v-cal-purple;
+					border-color: $v-cal-purple-border;
+				}
+				&--lavender {
+					background-color: $v-cal-lavender;
+					border-color: $v-cal-lavender-border;
+				}
+				&--grey {
+					background-color: $v-cal-grey;
+					border-color: $v-cal-grey-border;
+				}
+			}
+		}
+	}
+}

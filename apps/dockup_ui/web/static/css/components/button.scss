@@ -1,0 +1,490 @@
+// Style component button
+// Use BLock Element Modifier (https://github.com/dropbox/css-style-guide)
+
+// variable button
+// general variable
+$btn-prefix                   : '.c-btn';
+$btn-border-radius            : 2px;
+$btn-primary-shadow           : 0 1px 0 0 #008E57;
+$btn-lighten-slate            : lighten($v-slate, 25%);
+// compact variable
+$btn-width-compact            : 120px;
+$btn-font-size-compact        : 14px;
+$btn-line-height-compact      : 14px;
+$btn-spaced-compact           : 7px 15px;
+$btn-spaced-xs-compact        : 4px 12px;
+
+// button style
+@mixin button() {
+  display: inline-block;
+  text-align: center;
+  position: relative;
+  font-size: $btn-font-size-compact;
+  line-height: $btn-line-height-compact;
+  min-width: $btn-width-compact;
+  padding: $btn-spaced-compact;
+  &--xs { padding: $btn-spaced-xs-compact; }
+  &.is-loading {
+    &:before {
+      width: 11px;
+      height: 11px;
+      margin-right: 10px !important;
+    }
+  }
+  @include buttonDecoration(none);
+}
+
+@mixin buttonDecoration($value) {
+  @include border-radius($btn-border-radius);
+  @include transition(all .3s);
+  @if($value == none) {
+    &:hover, &:focus, &:active {
+      cursor: pointer;
+      text-decoration: none;
+      outline: none;
+    }
+  }
+}
+
+@mixin buttonType($type) {
+  @if($type == primary) {
+    font-weight: 700;
+    background-color: $v-green;
+    color: $v-white;
+    @include box-shadow(0, 1px, 0, 0, $v-green-dark, 1);
+    border: 1px solid $v-green-dark;
+    &:hover, &:active, &:focus {
+      background-color: $v-green-dark;
+      color: $v-white;
+    }
+    a {
+      color: $v-white;
+      &:hover { text-decoration: none; }
+    }
+  }@else if($type == primary_o) {
+    font-weight: 700;
+    background-color: $v-white;
+    color: $v-green;
+    border: 1px solid $v-green-dark;
+    &:hover, &:active, &:focus {
+      background-color: $v-green;
+      color: $v-white;
+    }
+  }@else if($type == snow) {
+    background-color: $v-snow;
+    color: $v-slate;
+  	border: 1px solid $v-smoke;
+    @include box-shadow(0, 1px, 0, 0, $v-smoke, 1);
+    &:hover, &:active, &:focus { background-color: $v-smoke; }
+  }@else if($type == delete) {
+    font-weight: 700;
+    background-color: $v-red;
+    color: $v-white;
+    border: 1px solid $v-ui-red-dark;
+    &:hover, &:active, &:focus { background-color: $v-red-dark; }
+    a {
+      color: $v-white;
+      &:hover { text-decoration: none; }
+    }
+  }@else if($type == ghost) {
+    color: $v-slate;
+    background-color: transparent;
+  	border: none;
+    &:hover, &:active, &:focus { text-decoration: underline; }
+  }@else{
+    background-color: $v-white;
+    color: $v-slate;
+    border: 1px solid $v-smoke;
+    &:hover, &:active, &:focus {
+      background-color: $v-ui-background;
+      color: $v-slate;
+    }
+  }
+}
+
+@mixin buttonStatus($status) {
+  @if($status == loading) {
+    &:before {
+      border: 1px solid $v-slate;
+      border-top-color: transparent;
+      animation: rotating 1s infinite;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+  }@else if($status == disabled){
+    background-color: $v-snow;
+    border: 1px solid $v-ui-border;
+    color: $btn-lighten-slate !important;
+    box-shadow: none;
+    &:hover, &:active, &:focus {
+      background-color: $v-snow;
+      cursor: not-allowed;
+    }
+    &.c-btn--ghost {
+      background-color: transparent;
+      border: none;
+    }
+  }
+}
+
+@mixin buttonWhiteLoading {
+  &.is-loading:before {
+    border: 1px solid $v-white;
+    border-top-color: transparent;
+  }
+}
+
+#{$btn-prefix} {
+  @include button();
+  // when state loading
+  &.is-loading { @include buttonStatus(loading) }
+  // when state disabled
+  &.is-disabled { @include buttonStatus(disabled) }
+  // create loader
+  &:before {
+    content: "";
+    @extend .u-dib, .u-mr-0 ;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: 0;
+    @include border-radius(50%);
+    @include transition(all .5s);
+  }
+  // varian delete
+  &--delete {
+    @include buttonType(delete) ;
+    @include buttonWhiteLoading ;
+  }
+  // varian default
+  &--default { @include buttonType(default) }
+  // varian ghost
+  &--ghost { @include buttonType(ghost) }
+  // varian snow
+  &--snow { @include buttonType(snow) }
+  // varian primary
+  &--primary {
+    @include buttonType(primary) ;
+    @include buttonWhiteLoading ;
+  }
+  // varian primary
+  &--primary-o {
+    @include buttonType(primary_o) ;
+    @include buttonWhiteLoading ;
+  }
+  // square button
+  &--square {
+    min-width: 32px;
+    padding: 7px;
+  }
+  // make all varian button block
+  &--block { width: 100%; @extend .u-db ; }
+  // make all varian button small
+  &--sm, &--xs { min-width: 0; }
+  // make all varian button extrasmall
+  &--xs {
+    font-size: $btn-font-size-compact;
+    line-height: $btn-line-height-compact;
+  }
+  // button add
+  &--add {
+    &:hover, &:focus, &:active {
+      text-decoration: none;
+      span {
+        &:first-child {
+          background-color: $v-blue;
+          color: $v-white;
+        }
+      }
+    }
+    span {
+      &:first-child {
+        border: 1.5px solid $v-blue;
+        width: 30px;
+        height: 30px;
+        border-radius: 3px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+  //button back
+  &--back{
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    background-color: $v-smoke;
+    @extend .u-mr-20;
+    &:after{
+      content: '\f104';
+      font-family: 'fontAwesome';
+      position: absolute;
+      font-size: 22px;
+      top: calc(50% - 11px);
+      left: calc(50% - 5px);
+      font-weight: 400;
+      color: $v-slate;
+    }
+    @media screen and (max-width: 767px) {
+      width: 25px;
+      height: 25px;
+      margin-right: 10px!important;
+      &:after{
+        font-size: 17px;
+        top: calc(50% - 10px);
+        left: calc(50% - 4px);
+      }
+    }
+    &:hover{
+      background-color: $v-slate;
+      &:after{ color: $v-smoke; }
+    }
+  }
+  &--onboarding{
+    background-color: $v-white;
+    color: #191919;
+    border: 1px solid $v-ui-border;
+    &:hover{
+      box-shadow: 0 1px 0 0 $v-green-dark;
+      border: 1px solid $v-green-dark;
+      background-color: $v-green-dark;
+      color: $v-white;
+      font-weight: 600;
+    }
+  }
+}
+
+#{$btn-prefix} {
+  &--more {
+    padding: 5px 6px;
+    line-height: 20px;
+    &-dots {
+      width: 4px;
+      height: 4px;
+      margin: -2px 2px 0;
+      background-color: $v-slate;
+      @include border-radius(50%);
+      @include transition(all .3s);
+    }
+    &:hover, &:focus, &:active {
+      background-color: $v-slate;
+      .c-btn--more-dots { background-color: $v-white; }
+    }
+    &__content {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      min-width: 150px;
+      margin: 2px 0;
+      background-color: $v-white;
+      text-align: left;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(244,246,248,0.3) 100%);
+      box-shadow: 0 0 0 1px rgba(6,44,82,0.1), 0 1px 3px 0 rgba(64,66,69,0.12), 0 2px 3px 0 rgba(33,43,54,0.2);
+      @include border-radius(2px);
+      display: none;
+      &.left {
+        left: 0;
+        right: auto;
+      }
+      &.top {
+        bottom: 100%;
+        top: auto;
+      }
+      .c-item {
+        display: block;
+        color: $v-slate;
+        padding: 7px 10px;
+        line-height: 16px;
+        @include buttonDecoration(none);
+        &:hover, &focus {
+          background-color: #ECF6FD;
+        }
+
+        &.is-disabled {
+          background-color: $v-snow;
+          color: $btn-lighten-slate !important;
+          &:hover, &:active, &:focus {
+            background-color: $v-snow;
+            cursor: not-allowed;
+          }
+        }
+      }
+      &.fixed {
+        position: fixed;
+        max-width: 150px;
+        width: 100%;
+      }
+    }
+  }
+  &-wrapper {
+   display: inline-block;
+    position: relative;
+    &.is-active {
+      #{$btn-prefix}--more {
+        background-color: $v-slate;
+        .c-btn--more-dots {
+          background-color: $v-white;
+        }
+        &__content {
+          display: block;
+          z-index: 10;
+          background-color: $v-white;
+        }
+      }
+    }
+  }
+}
+
+// button group, actually this element for action group
+.c-btn-group {
+  position: relative;
+  // for position right
+  &--right {
+    .c-btn-group--item { float: right; }
+    @include mobile {
+      .c-btn-group--item { float: none; }
+    }
+  }
+  &--center {
+    .c-btn-group--item { float: none; }
+    @include mobile {
+      .c-btn-group--item { float: none; }
+    }
+  }
+  &--left {
+    .c-btn-group--item { float: left; }
+    @include mobile {
+      .c-btn-group--item { float: none; }
+    }
+  }
+  // item
+  &--item {
+    display: inline-block;
+    @include mobile {
+      display: block;
+      .c-btn {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  }
+}
+
+// Spaceial case button upload
+.c-btn {
+  &__upload {
+    @extend .c-btn, .c-reg-16 ;
+    padding: 6px 15px;
+    background-color: $v-white;
+    border: 1px solid $v-smoke;
+    color: $v-black;
+    text-align: center;
+    overflow: auto;
+    &:hover { background-color: $v-ui-background; }
+    &--file { display: none; }
+    &--primary {
+      @extend .c-btn;
+      padding: 6px 15px;
+      font-weight: 700;
+      background-color: $v-green;
+      color: $v-white;
+      @include box-shadow(0, 1px, 0, 0, $v-green-dark, 1);
+      border: 1px solid $v-green-dark;
+      &:hover, &:active, &:focus {
+        background-color: $v-green-dark;
+        color: $v-white;
+      }
+    }
+    &--snow {
+      @extend .c-btn;
+      padding: 6px 15px;
+      font-weight: 400;
+      background-color: $v-snow;
+      color: $v-slate;
+      border: 1px solid $v-smoke;
+      @include box-shadow(0, 1px, 0, 0, $v-smoke, 1);
+      &:hover, &:active, &:focus { background-color: $v-smoke; }
+    }
+  }
+  &__upload-wrapper { display: flex; }
+  &__upload-progress {
+    display: inline-flex;
+    label { margin-bottom: 0; };
+    &--inner {
+      position: absolute;
+      left: 0;
+      background-color: $v-ui-background;
+      top: 0;
+      height: 100%;
+      border-right: 2px;
+      opacity: 0.5;
+    }
+    &--multiple {
+      display: block;
+      .c-btn__upload-content--name {
+        display: block;
+        margin-left: 0;
+        div { margin-top: 10px; }
+        .c-btn__upload--name {
+          margin-left: 0;
+        }
+      }
+      .c-btn__upload {
+        margin-bottom: 0;
+      }
+    }
+  }
+  &__upload-content {
+    overflow: hidden;
+    max-height: 16px;
+    &--name {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      span {
+        margin-left: 15px;
+        font-size: 1.4rem;
+        max-width: 125px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      a {
+        color: $v-slate;
+        margin-top: 2px;
+      }
+    }
+    &--default {
+      transform: translateY(0);
+      line-height: 17px;
+      @include transition(all .5s);
+      &.is-hide { transform: translateY(-23px); }
+    }
+    &--done {
+      display: block;
+      text-align: center;
+      @include transition(all .5s);
+      transform: translateY(17px);
+      &.is-show { transform: translateY(-12px); }
+    }
+  }
+  &__upload-error {
+    @extend .u-cl-red, .c-reg-14;
+    border: 1px solid $v-red;
+    padding: 15px;
+    &--noborder {
+      padding: 0;
+      border: none;
+    }
+  }
+}
+
+// Transition loader
+@keyframes rotating {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

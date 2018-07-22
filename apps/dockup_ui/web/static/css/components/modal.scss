@@ -1,0 +1,501 @@
+.c-modal {
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	outline: 0;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	&.is-show {
+		visibility: visible;
+		opacity: 1;
+		transition: all .3s ease-in;
+		.c-modal__dialog {
+			transform: translateY(0);
+			transition: all .5s ease-in;
+		}
+	}
+
+	&--confirm {
+		&:before { background-color: transparent !important; }
+		.c-modal__dialog {
+			max-width: 370px;
+			text-align: center;
+			@include mobile { max-width: 100%; }
+		}
+		.c-modal__body { border-top: 0; }
+		.c-modal__close { position: inherit; }
+	}
+
+	&:before {
+		width: 100%;
+		height: 100%;
+		opacity: 1;
+		display: block;
+		content: '';
+		position: fixed;
+		background: #F2F4F7;
+	}
+
+	&__dialog {
+		margin: 50px auto;
+		max-width: 840px;
+		width: 100%;
+		height: auto;
+		border-radius: 4px;
+		box-shadow: 0 20px 60px 0 rgba(0,0,0,0.3);
+		background: $v-white;
+		position: relative;
+		z-index: 10000;
+		transform: translateY(-1000px);
+		transition: all .5s ease-out;
+		@include tabletLandscape { margin: 30px auto; }
+		@include tabletPotrait {
+			margin: 0 auto;
+			border-radius: 0;
+		}
+		@include mobile {
+			margin: 0 auto;
+			border-radius: 0;
+		}
+	}
+
+	&__close {
+		position: absolute;
+		top: 10px;
+		right: -80px;
+		&--circle {
+			border-radius: 50%;
+			border: 2px solid $v-slate;
+			color: $v-slate;
+			font-size: 1.4rem;
+			line-height: 36px;
+			max-width: 41px;
+			text-align: center;
+			transition: all .5s;
+			margin: auto;
+			&:hover {
+				background: $v-slate;
+				color: $v-white;
+				&:after { color: $v-slate; }
+			}
+		}
+		&--back {
+			font-size: 1.4rem;
+			color: $v-slate;
+			margin-top: 10px;
+			text-align: center;
+		}
+		@include tabletLandscape {
+			top: 0px;
+			right: 15px;
+			a {
+				color: $v-slate;
+				font-size: 3.8rem;
+				position: relative;
+				z-index: 20;
+			}
+		}
+		@include tabletPotrait {
+			top: 0px;
+			right: 15px;
+			a {
+				color: $v-slate;
+				font-size: 3.8rem;
+				position: relative;
+				z-index: 20;
+			}
+		}
+		@include mobile {
+			top: 0px;
+			right: 15px;
+			z-index: 10;
+			a {
+				color: $v-slate;
+				font-size: 3.8rem;
+				position: relative;
+				z-index: 20;
+			}
+		}
+	}
+
+	&__head {
+		padding: 30px 30px 15px 30px;
+		background-color: $v-snow;
+		border-radius: 4px 4px 0 0;
+		position: relative;
+		@include mobile { padding: 30px; }
+	}
+
+	&__status {
+		font-size: 1.4rem;
+		padding: 2px 15px;
+		background-color: $v-slate;
+		color: $v-white;
+		font-weight: 600;
+		text-align: center;
+		border-radius: 50px;
+		display: inline-block;
+		margin-left: 10px;
+		min-width: 100px;
+		@include mobile {
+			position: absolute;
+			bottom: -36px;
+			left: calc(50% - (200px / 2));
+			margin-right: 0;
+			width: 190px;
+		}
+		&--rejected { background-color: $v-red; }
+		&--approved { background-color: $v-green; }
+	}
+
+	&__title {
+		display: inline-block;
+		vertical-align: sub;
+		float: left;
+		@include mobile { width: 100%; }
+		h1 {
+			max-width: 600px;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+	}
+
+	&__info-list {
+		padding: 5px 0;
+		@include mobile { padding: 8px 0; }
+
+		&--left {
+			float: left;
+			width: 200px;
+			margin-right: 20px;
+			@include mobile { width: 100%; }
+		}
+
+		&--right {
+			position: relative;
+			display: inline-block;
+			width: calc(100% - 220px);
+			@include mobile { width: 100%; }
+		}
+	}
+
+	&__body {
+		padding: 15px 30px 30px 30px;
+		background-color: $v-white;
+		border-radius: 0 0 4px 4px;
+		border-top: 1px solid $v-ui-border;
+		@include mobile { padding-top: 30px; }
+	}
+
+	&__foot {
+		padding: 0 30px 30px 30px;
+		.c-btn-group--item { margin: 0 5px; }
+	}
+
+	&__icon {
+		position: absolute;
+		right: 0;
+		top: calc(50%  - 8px);
+		width: 15px;
+		height: 15px;
+		border: 1px solid $v-slate;
+		@include border-radius(3px);
+		overflow: hidden;
+		cursor: pointer;
+		&::before {
+			position: absolute;
+			top: calc(50% - 0.5px);
+			left: 2px;
+			width: calc(100% - 4px);
+			height: 1px;
+			@extend .u-bg-slate ;
+			content: '';
+		}
+		&::after {
+			position: absolute;
+			top: 2px;
+			left: calc(50% - 0.5px);
+			width: 1px;
+			height: calc(100% - 4px);
+			@extend .u-bg-slate ;
+			@include transform(rotate(0));
+			@include transition(all .4s);
+			content: '';
+		}
+		&.is-active {
+			&::after {
+				display: none;
+			}
+		}
+	}
+
+	&--onboarding {
+		&:before {
+			background: $v-black;
+			opacity: 0.8;
+		}
+
+		.c-modal__dialog {
+			line-height: 0;
+			.c-modal__close {
+				position: absolute;
+				right: -20px;
+				top: -20px;
+				font-size: 36px;
+				background: $v-slate;
+				border: 1px solid $v-white;
+				border-radius: 50%;
+				color: $v-white;
+				padding: 0px 9px;
+				line-height: 36px;
+				&:hover {
+					text-decoration: none;
+					background: $v-white;
+					color: $v-black;
+				}
+				&:focus,&:active {
+					text-decoration: none;
+				}
+				@include tabletPotrait {
+					right: 8px;
+					top: 10px;
+					padding: 0 7px;
+					line-height: 23px;
+					font-size: 22px;
+				}
+				@include mobile {
+					right: 8px;
+					top: 10px;
+					padding: 0 7px;
+					line-height: 23px;
+					font-size: 22px;
+				}
+			}
+			.c-modal__content {
+				border-radius: 4px;
+				overflow: hidden;
+			}
+		}
+	}
+
+	&--firstrun {
+		&:before {
+			background: $v-black;
+			opacity: 0.8;
+		}
+
+		&.is-show {
+			.c-modal__dialog {
+				transform: translateY(-50%);
+				top: 50%;
+				margin: 0 auto;
+				width: 780px;
+			}
+		}
+
+		.c-modal__dialog {
+			line-height: 0;
+			.c-modal__close {
+					height: 20px;
+					width: 20px;
+					color: $v-black;
+					position: absolute;
+					right: 15px;
+					top: 25px;
+					font-size: 40px;
+					text-align: center;
+					z-index: 1;
+					cursor: pointer;
+				&:hover {
+					text-decoration: none;
+				}
+				&:focus,&:active {
+					text-decoration: none;
+				}
+			}
+			.c-modal__content {
+				border-radius: 4px;
+				overflow: hidden;
+				box-shadow: 0 20px 60px 0 rgba(0, 0, 0, 0.5);
+				padding: 45px;
+			}
+		}
+	}
+
+	&--paper {
+		.c-modal {
+			&__header {
+				.c-modal__info {
+					column-count: 2;
+					&-list {
+						&--left { width: 100px; }
+						&--right { width: calc(100% - 120px); }
+					}
+
+					@include mobile {
+						column-count: 1;
+					}
+				}
+			}
+			&__content {
+				margin: 0 40px;
+				padding: 40px 30px;
+				&:before, &:after {
+					content: "";
+					position: absolute;
+					top: 0;
+					z-index: 1;
+					min-width: 50px;
+					height: 100%;
+					background-image: url(../images/component/paperside.png);
+					background-repeat: repeat-y;
+					background-origin: padding-box;
+					background-size: 35px;
+					background-position: top center;
+					background-color: $v-white;
+				}
+				&:before {
+					left: 0;
+					border-radius: 6px 0 0 6px;
+					border-right: 2px dashed $v-ui-border;
+				}
+				&:after {
+					right: 0;
+					border-radius: 0 6px 6px 0;
+					border-left: 2px dashed $v-ui-border;
+				}
+			}
+		}
+
+		@include mobilexs {
+			.c-modal {
+				&__content {
+					margin: 0;
+					&:before, &:after {
+						content: none;
+					}
+				}
+			}
+		}
+	}
+
+	&--payrolldetail {
+		@include max-query-media(md) { display: none; }
+		&:before {
+			opacity: 0.2;
+			background-color: $v-black;
+		}
+		.c-modal {
+			&__dialog {
+				width: 470px;
+				margin: 0 auto;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				border-radius: 2px;
+				@include mobile { max-width: 100%; }
+			}
+			&__close {
+				position: relative;
+				top: auto;
+				right: auto;
+			}
+			&__header {
+				background-color: $v-snow;
+				padding: 20px;
+				.c-modal__close {
+					position: absolute;
+					right: 24px;
+					top: 15px;
+					font-size: 24px;
+					cursor: pointer;
+					color: $v-slate;
+				}
+			}
+			&__body {
+				padding: 0 0 15px 0;
+				border-radius: 0 0 2px 2px;
+				border-top: none;
+			}
+			&__row {
+				padding: 15px 20px;
+				border-bottom: 1px solid $v-ui-border;
+			}
+		}
+
+		&.is-show {
+			.c-modal__dialog { transform: translate(-50%, -50%); }
+		}
+
+		// for payroll process modal with form type
+		&-form {
+			.c-modal {
+				&__dialog {
+					margin: 50px auto;
+					width: 980px;
+					max-width: 100%;
+					position: relative;
+					top: auto;
+					left: auto;
+					transform: translateY(0);
+					.c-row {
+						margin: 0;
+						> [class*='c-col-'] {
+							padding: 0;
+							border-right: 1px solid $v-ui-border;
+
+							&:last-child { border-right: none; }
+						}
+					}
+					.c-form-group { margin: 0; }
+				}
+				&__row {
+					&-inner {
+						padding: 5px 20px;
+						border: none;
+						&--blank { min-height: 42.33px; }
+					}
+				}
+				&__footer {
+					margin: 0 20px;
+					border-top: 1px solid $v-ui-border;
+				}
+			}
+
+			&.is-show {
+				.c-modal__dialog { transform: translateY(0); }
+			}
+		}
+	}
+	&#modal-otp-key {
+		.icode {
+			margin-left: 5px;
+			margin-right: 5px;
+			margin-bottom: 0;
+			width: 35px;
+			display: inline-block;
+			input {
+				padding: 0;
+				text-align: center;
+				box-shadow: 0 0 0 2px #e2e2e2;
+				border-radius: 4px;
+				height: auto;			
+				-moz-appearance:textfield;
+				&::-webkit-outer-spin-button,
+				&::-webkit-inner-spin-button {
+					-webkit-appearance: none;
+				}
+				&:focus, &:hover {
+					border-color: transparent;
+				}
+			}
+		}
+	}
+}

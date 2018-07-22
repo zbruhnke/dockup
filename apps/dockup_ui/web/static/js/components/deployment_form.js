@@ -79,21 +79,26 @@ class DeploymentForm extends Component {
 
   render() {
     return (
-      <div>
-        <form>
-          <div className="form-group">
-            <label>Git URL</label>
-            <GitUrlInput urls={this.urls} onUrlChange={this.handleUrlChange}/>
-          </div>
-          <div className="form-group">
-            <label htmlFor="branch">Branch</label>
-            <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}}/>
-          </div>
+    <div className="c-header--dockup">
+      <div className="c-container">
+        <div className="c-header--dockup-form">
+            <form className="c-form">
+              <div className="c-form-group">
+                <GitUrlInput urls={this.urls} onUrlChange={this.handleUrlChange}/>
+              </div>
+              <div className="c-form-group">
+                <input className="c-form-control" placeholder="Git branch" id="branch" onChange={
+                  (event) => { this.handleBranchChange(event.target.value)}
+                } />
+                <img className="c-form-icon" src="/icons/icon-branch.svg" />
+              </div>
+              <div className="u-mt-20">
+                <button type="submit" onClick={this.handleDeployClick} disabled={!this.validInputs()} className="c-btn c-btn--primary c-btn--block">Deploy</button>
+              </div>
+            </form>
 
-          <button type="submit" onClick={this.handleDeployClick} disabled={!this.validInputs()} className="btn btn-primary">Deploy</button>
-        </form>
-
-        {this.renderDeploymentCard()}
+          </div>
+        </div>
       </div>
     )
   }

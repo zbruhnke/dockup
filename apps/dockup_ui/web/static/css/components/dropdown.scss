@@ -1,0 +1,197 @@
+.c-dropdown {
+  background-color: $v-purple;
+  min-width: 250px;
+  position: absolute;
+  right: 0;
+  border-radius: 3px;
+  visibility: hidden;
+  opacity: 0;
+  margin-top: 5px;
+  @include max-query-media(sm){ margin-top: 1px; }
+  @include transition(all .3s);
+  @include transform(translateY(5px));
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+  z-index: 999;
+
+  &.is-open {
+    visibility: visible;
+    opacity: 1;
+    @include transform(translateY(0));
+  }
+
+  // dropdown item
+  &__item {
+    color: $v-white;
+    padding: 8px 10px;
+    display: block;
+    line-height: 20px;
+    &:hover, &active, &:focus {
+      background-color: $v-purple-dark;
+      text-decoration: none;
+    }
+
+    // modifier item
+    &--title {
+      &:hover, &active, &:focus {
+        background-color: inherit;
+        cursor: default;
+      }
+    }
+  }
+
+  // modifier
+  &--right {
+    right: -10px;
+    &:after {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid $v-purple;
+      top: -12px;
+      right: 8px;
+    }
+    @include tabletPotrait { right: -9px; }
+    @include mobile { right: -2px; }
+    @include mobilexs {
+      border-radius: 0;
+      position: fixed;
+      width: 100%;
+      right: 0;
+      &:after {
+        right: 27px;
+      }
+    }
+    .c-dropdown__item {
+      &:last-child { border-top: 1px solid darken($v-ui-border, 30%); }
+      // when item active
+      &.is-active { font-weight: 700; }
+    }
+    &-add {
+      margin-top: 10px;
+      .c-dropdown__item { &:last-child { border: none; } }
+      &:after { right: 17px; }
+    }
+  }
+
+  // modifier
+  &--notif {
+    background-color: $v-white;
+    min-width: 450px;
+    right: -6px;
+    &-header {
+      padding: 3px 0;
+      border-bottom: 1px solid $v-ui-border;
+    }
+    &-title {
+      display: inline-block;
+      margin-left: 10px;
+      h1 {
+        margin-bottom: 0;
+        line-height: normal;
+      }
+    }
+    &-action {
+      display: inline-block;
+      float: right;
+      margin-right: 10px;
+    }
+    &-content {
+      max-height: 450px;
+      overflow: auto;
+      @include scrollbar($v-white, 8px, transparent, 10px, $v-slate);
+    }
+    &-text {
+      width: calc(100% - 25px);
+      display: inline-block;
+      float: left;
+      line-height: 21px;
+    }
+    &-dots {
+      width: 25px;
+      height: 25px;
+      float: left;
+      span {
+        width: 10px;
+        height: 10px;
+        background-color: $v-ui-border;
+        border-radius: 50%;
+      }
+    }
+    &.c-dropdown-help {
+      min-width: 300px;
+      @include mobilexs {
+        &:after {
+          right: 122px;
+        }
+      }
+    }
+    &-footer {
+      padding: 3px 0;
+      text-align: center;
+    }
+    &:after {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid $v-white;
+      top: -11px;
+      right: 8px;
+    }
+    @include mobilexs {
+      border-radius: 0;
+      position: fixed;
+      width: 100%;
+      min-width: inherit;
+      right: 0;
+      &:after {
+        right: 74px;
+      }
+    }
+    .c-dropdown__item {
+      color: $v-black;
+      border-bottom: 1px solid $v-ui-border;
+      @extend .clearfix;
+      &:hover, &:active, &:focus {
+        background-color: $v-ui-background;
+      }
+      &.is-unread {
+        background-color: $v-snow;
+        &:hover, &:active, &:focus {
+          background-color: $v-ui-background;
+        }
+        .c-dropdown--notif-dots {
+          span { background-color: $v-orange; }
+        }
+      }
+      &.is-unreaction {
+        .c-dropdown--notif-dots {
+          span { background-color: $v-blue; }
+        }
+      }
+    }
+  }
+
+  &--center {
+    left: -65px;
+    &:after {
+      position: absolute;
+      content: '';
+      width: 6px;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid $v-purple;
+      top: -12px;
+      right: calc(50% - 6px);
+    }
+  }
+}

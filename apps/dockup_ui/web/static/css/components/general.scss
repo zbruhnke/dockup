@@ -1,0 +1,158 @@
+// Style general
+// Default viewport fontsize for rem
+html { font-size: 62.5%; }
+
+// Default body
+body {
+  margin: 0;
+  font-family: $v-lato;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: none;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: $v-black;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+
+  &.p-menu-show {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;;
+    .c-header {
+      @include transform(translateX(300px));
+    }
+  }
+
+  &.p-modal-show { overflow-y: hidden; }
+
+  &.p-tour-modal-show, &.p-tour-show {
+    @include min-query-media(sm) { overflow-y: hidden; }
+  }
+
+}
+
+// Default box viewport
+*, *:after, *:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+// Default hyperlink with blue sleekr
+a {
+  color: $v-blue;
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  &:hover, &:focus, &:active {
+    outline: none;
+    text-decoration: underline;
+  }
+}
+
+// image fluid
+.c-img-fluid {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+
+  @include mobilexs {
+    width: 100%;
+    height: auto;
+  }
+}
+
+// clearfix
+.clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+// hr style
+hr{
+  border: 0;
+  border-bottom: 1px solid $v-smoke;
+  margin: 30px 0;
+}
+
+// pointer
+.u-cpointer { cursor: pointer; }
+
+// default label
+label {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+// default span
+span {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+//Color picker
+.c-color-picker {
+  height: 30px;
+  width: 30px;
+  border-radius: 2px;
+  background-color: $v-green;
+}
+
+// Color picker
+.colorpicker {
+  position: absolute;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16);
+  background-color: $v-white;
+  border: 1px solid #e7ebf2;
+  border-radius: 3px;
+  z-index: 99;
+  padding: 15px;
+  min-width: 255px!important;
+  .colorpicker-saturation {
+    width: 196px;
+    height: 196px;
+  }
+  .colorpicker-hue, .colorpicker-alpha {
+    height: 196px;
+    width: 20px;
+  }
+  .colorpicker-color {
+    height: 20px;
+    div { height: 20px; }
+  }
+}
+
+.colorpicker-component {
+  &.colorpicker-element {
+    .input-group-addon {
+      i {
+        height: 30px;
+        width: 30px;
+        margin-top: -1px;
+        border-radius: 3px;
+      }
+    }
+  }
+}
+
+// Input type password for salary
+.c-input-dot {
+  min-height: 24px!important;
+  padding: 0!important;
+  border: 0!important;
+  cursor: pointer;
+}
+
+input, textarea {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
+}

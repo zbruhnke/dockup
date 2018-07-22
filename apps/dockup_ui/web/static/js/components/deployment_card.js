@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import TimeAgo from 'react-timeago';
 import DeploymentStatus from './deployment_status';
-import {getStatusColorClass} from '../status_colors';
 import FlashMessage from '../flash_message';
 
 class DeploymentCard extends Component {
@@ -25,6 +24,7 @@ class DeploymentCard extends Component {
   renderOpenButton() {
     // TODO: these status checks can be removed if the urls are cleared on hibernation
     if(!this.props.deployment.urls ||
+       this.props.deployment.status == "deleted" ||
        this.props.deployment.status == "hibernating" ||
        this.props.deployment.status == "hibernated" ||
        this.props.deployment.status == "waking_up") {
@@ -35,7 +35,7 @@ class DeploymentCard extends Component {
     if(url) {
       let absoluteUrl = `http://${url}`;
       return(
-        <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Open</a>
+        <a href={absoluteUrl} className="c-btn c-btn--primary" target="_blank">Open</a>
       )
     }
   }
@@ -45,7 +45,7 @@ class DeploymentCard extends Component {
     if(url) {
       let absoluteUrl = (url.indexOf("http") === 0 ? url : `//${url}`);
       return(
-        <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Logs</a>
+        <a href={absoluteUrl} className="c-btn c-btn--ghost" target="_blank">Logs</a>
       )
     }
   }
@@ -72,7 +72,7 @@ class DeploymentCard extends Component {
   renderHibernateButton() {
     if (this.props.deployment.status == "started") {
       return(
-        <button type="button" onClick={this.handleHibernate} className="btn btn-outline-primary mr-2">Hibernate</button>
+        <a className="c-btn c-btn--ghost" onClick={this.handleHibernate}>Hibernate</a>
       );
     }
   }
@@ -99,7 +99,7 @@ class DeploymentCard extends Component {
   renderWakeUpButton() {
     if (this.props.deployment.status == "hibernated") {
       return(
-        <button type="button" onClick={this.handleWakeUp} className="btn btn-outline-primary mr-2">Wake Up</button>
+        <a onClick={this.handleWakeUp} className="c-btn c-btn--ghost">Wake Up</a>
       );
     }
   }
@@ -126,48 +126,34 @@ class DeploymentCard extends Component {
   renderDeleteButton() {
     if(this.props.deployment.status != "deleted" && this.props.deployment.status != "deleting") {
       return(
-        <button type="button" onClick={this.handleDelete} className="btn btn-outline-danger">Delete</button>
+        <a onClick={this.handleDelete} className="c-btn c-btn--ghost">Delete</a>
       );
     }
   }
 
   render() {
-    let statusClass = getStatusColorClass(this.props.deployment.status);
-    let borderClass = `border-${statusClass}`;
-    let textClass = `text-${statusClass}`;
+    let deleted = this.props.deployment.status == "deleted" ? "is-deleted" : "";
+
     return(
-      <div className="row mt-5">
-        <div className={`card ${borderClass} ${textClass} dockup-card`}>
-          <div className="card-body">
-            <div className="row">
-              <div className="col-8">
-                <h4 className="card-title display-4 dockup-card-branch">{this.props.deployment.branch}</h4>
-              </div>
-              <div className="col text-right dockup-card-timeago">
-                <TimeAgo date={this.props.deployment.inserted_at} title={new Date(this.props.deployment.inserted_at)}/>
-              </div>
-
-            </div>
-
-            <h6 className="card-subtitle mb-2">{this.getGithubRepo()}</h6>
-
-
-          </div>
-          <div className="card-footer dockup-card-footer">
-            <div className="row">
-              <div className="col-8">
-                {this.renderOpenButton()}
-                {this.renderLogButton()}
-                {this.renderHibernateButton()}
-                {this.renderWakeUpButton()}
-                {this.renderDeleteButton()}
-              </div>
-
-              <DeploymentStatus status={this.props.deployment.status}/>
-            </div>
-          </div>
-        </div>
-      </div>
+      <li className={"c-list--item " + deleted}>
+        <DeploymentStatus status={this.props.deployment.status}/>
+        <span className="c-list--name">
+          <h3>
+            {this.props.deployment.branch}
+            <span className="c-pill c-pill--slate">
+              <TimeAgo date={this.props.deployment.inserted_at} title={new Date(this.props.deployment.inserted_at)}/>
+            </span>
+          </h3>
+          <p>{this.getGithubRepo()}</p>
+        </span>
+        <span className="c-list--action">
+          {this.renderHibernateButton()}
+          {this.renderWakeUpButton()}
+          {this.renderDeleteButton()}
+          {this.renderLogButton()}
+          {this.renderOpenButton()}
+        </span>
+      </li>
     );
   }
 }

@@ -1,60 +1,29 @@
 import React from 'react';
 import {getStatusColorClass} from '../status_colors';
 
-const renderStatus = (text, textClass, iconClass) => {
-  return(
-    <div className={`col text-right ${textClass} dockup-card-status`}>
-      <div>
-        {text}
-      </div>
-
-      <div>
-        <i className={`fa ${iconClass} dockup-card-icon`} aria-hidden="true"></i>
-      </div>
-    </div>
-  );
+const statusToIcon = {
+  "queued": "icon-queued",
+  "starting": "icon-sync",
+  "waiting_for_urls": "icon-sync",
+  "started": "icon-deployed",
+  "hibernating": "icon-sync",
+  "hibernated": "icon-deployed",
+  "waking_up": "icon-sync",
+  "restarting": "icon-sync",
+  "deleting": "icon-sync",
+  "deleted": "icon-deleted",
+  "failed": "icon-errored"
 }
 
 const DeploymentStatus = ({status}) => {
-  let textClass = `text-${getStatusColorClass(status)}`;
+  let icon = statusToIcon[status] || "icon-sync";
+  let spinClass = icon == "icon-sync" ? "is-run" : "";
 
-  switch (status) {
-    case 'queued':
-      return renderStatus('Queued', textClass, "fa-circle-o-notch fa-spin");
-      break;
-    case 'starting':
-      return renderStatus('Starting', textClass, "fa-cog fa-spin");
-      break;
-    case 'waiting_for_urls':
-      return renderStatus('Pinging', textClass, "fa-exchange");
-      break;
-    case 'started':
-      return renderStatus('Deployed', textClass, "fa-check-circle");
-      break;
-    case 'hibernating':
-      return renderStatus('Hibernating', textClass, "fa-cog fa-spin");
-      break;
-    case 'hibernated':
-      return renderStatus('Hibernated', textClass, "fa-check-circle");
-      break;
-    case 'waking_up':
-      return renderStatus('Waking', textClass, "fa-cog fa-spin");
-      break;
-    case 'deleted':
-      return renderStatus('Deleted', textClass, "fa-trash");
-      break;
-    case 'deleting':
-      return renderStatus('Deleting', textClass, "fa-cog fa-spin");
-      break;
-    case 'restarting':
-      return renderStatus('Restarting', textClass, "fa-cog fa-spin");
-      break;
-    case 'failed':
-      return renderStatus('Error', textClass, "fa-times-circle");
-      break;
-    default:
-      return renderStatus(status, "text-info", "fa-info-circle");
-  }
+  return(
+    <span className="c-list--icon">
+      <img className={"c-animation " + spinClass} src={"/icons/"+ icon +".svg"} width="40" height="40"/>
+    </span>
+  );
 }
 
 export default DeploymentStatus;
