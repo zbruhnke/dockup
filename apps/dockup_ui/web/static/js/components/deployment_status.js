@@ -3,13 +3,11 @@ import {getStatusColorClass} from '../status_colors';
 
 const statusToIcon = {
   "queued": "icon-queued",
-  "processing": "icon-sync",
-  "cloning_repo": "icon-cloning-repo",
   "starting": "icon-sync",
-  "checking_urls": "icon-sync",
+  "waiting_for_urls": "icon-sync",
   "started": "icon-deployed",
   "hibernating": "icon-sync",
-  "hibernated": "icon-hibernated",
+  "hibernated": "icon-deployed",
   "waking_up": "icon-sync",
   "restarting": "icon-sync",
   "deleting": "icon-sync",
@@ -18,7 +16,6 @@ const statusToIcon = {
 }
 
 const DeploymentStatus = ({status}) => {
-  console.log(status);
   let icon = statusToIcon[status] || "icon-sync";
   let spinClass = icon == "icon-sync" ? "is-run" : "";
 

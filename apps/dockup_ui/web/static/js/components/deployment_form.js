@@ -36,7 +36,7 @@ class DeploymentForm extends Component {
 
   handleDeployClick(e) {
     this.setState({deployment: null});
-    // e.preventDefault();
+    e.preventDefault();
     let xhr = this.createRequest();
     xhr.done((response) => {
       this.setState({deployment: Object.assign({}, response.data)});
