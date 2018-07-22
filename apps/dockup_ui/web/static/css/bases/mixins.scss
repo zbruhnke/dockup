@@ -79,6 +79,20 @@ $color-code : $v-green, $v-green-light, $v-green-dark, $v-purple, $v-purple-ligh
   }
 }
 
+.u-cl-black {
+  color: $v-black !important;
+}
+.u-bg-black {
+  background-color: $v-black !important;
+}
+
+.u-cl-white {
+  color: $v-white !important;
+}
+.u-bg-white {
+  background-color: $v-white !important;
+}
+
 // Color box (background & border color, used for calendar) [.u-bx-($bx-code)]
 $bx-code : cal-blue, cal-green, cal-yellow, cal-orange, cal-red, cal-purple, cal-lavender, cal-grey;
 $bx-bg : $v-cal-blue, $v-cal-green, $v-cal-yellow, $v-cal-orange, $v-cal-red, $v-cal-purple, $v-cal-lavender, $v-cal-grey;
