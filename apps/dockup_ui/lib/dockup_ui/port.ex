@@ -1,28 +1,27 @@
 defmodule DockupUi.Port do
   use Ecto.Schema
   import Ecto.Changeset
+
   alias DockupUi.{
     Port,
-    Container
+    Container,
+    PortSpec
   }
 
 
   schema "ports" do
-    field :custom_subdomain, :string
-    field :expose, :boolean, default: false
-    field :port, :integer
-    field :protocol, :string
+    field :endpoint, :string
+    field :ready, :boolean
 
     belongs_to :container, Container
-
-    timestamps()
+    belongs_to :port_spec, PortSpec
   end
 
   @doc false
   def changeset(%Port{} = port, attrs) do
     port
-    |> cast(attrs, [:protocol, :port, :expose, :custom_subdomain])
-    |> validate_required([:protocol, :port, :expose, :custom_subdomain])
-    |> unique_constraint(:custom_subdomain)
+    |> cast(attrs, [:endpoint, :ready])
+    |> validate_required([:endpoint, :container_id, :port_spec_id])
+    |> unique_constraint(:endpoint)
   end
 end

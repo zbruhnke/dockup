@@ -3,32 +3,33 @@ defmodule DockupUi.Container do
   import Ecto.Changeset
   alias DockupUi.{
     Container,
-    Port,
-    InitContainer,
-    Project
+    ContainerSpec,
+    Deployment
   }
 
 
   schema "containers" do
-    field :args, {:array, :string}
+    field :handle, :string
     field :autodeploy, :boolean, default: false
-    field :command, :string
-    field :env, {:array, :map}
-    field :image, :string
-    field :name, :string
+    field :status_synced_at, :utc_datetime
+    field :status, :string
     field :tag, :string
 
-    belongs_to :project, Project
-    has_many :ports, Port
-    has_many :init_containers, InitContainer
-
-    timestamps()
+    belongs_to :deployment, Deployment
+    belongs_to :container_spec, ContainerSpec
   end
 
   @doc false
-  def changeset(%Container{} = container, attrs) do
+  def create_changeset(%Container{} = container, attrs) do
     container
-    |> cast(attrs, [:name, :image, :tag, :autodeploy, :env, :command, :args])
-    |> validate_required([:name, :image, :tag, :autodeploy, :env, :command, :args])
+    |> cast(attrs, [:autodeploy, :tag])
+    |> validate_required([:autodeploy, :status, :tag, :container_spec_id, :project_id])
+  end
+
+  @doc false
+  def status_update_changeset(%Container{} = container, status) do
+    container
+    |> cast(%{status: status, status_synced_at: DateTime.utc_now()}, [:status, :status_synced_at])
+    |> validate_required([:status, :status_synced_at])
   end
 end

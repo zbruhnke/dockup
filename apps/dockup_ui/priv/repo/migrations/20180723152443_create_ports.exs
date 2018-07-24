@@ -3,16 +3,14 @@ defmodule DockupUi.Repo.Migrations.CreatePorts do
 
   def change do
     create table(:ports) do
-      add :protocol, :string
-      add :port, :integer
-      add :expose, :boolean, default: false, null: false
-      add :custom_subdomain, :string
+      add :endpoint, :string
+      add :ready, :boolean
       add :container_id, references(:containers, on_delete: :nothing)
-
-      timestamps()
+      add :port_spec_id, references(:port_specs, on_delete: :nothing)
     end
 
-    create unique_index(:ports, [:custom_subdomain])
     create index(:ports, [:container_id])
+    create index(:ports, [:port_spec_id])
+    create index(:ports, [:endpoint], unique: true)
   end
 end
