@@ -1,7 +1,6 @@
 defmodule DockupUi.Factory do
   alias DockupUi.{
     Deployment,
-    WhitelistedUrl,
     Repo
   }
 
@@ -14,7 +13,7 @@ defmodule DockupUi.Factory do
   end
 
   defp deployment_factory do
-    %DockupUi.Deployment{
+    %Deployment{
       name: "dockup/master",
       status: "pending"
     }
