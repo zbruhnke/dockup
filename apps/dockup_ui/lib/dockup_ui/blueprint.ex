@@ -1,14 +1,14 @@
-defmodule DockupUi.Project do
+defmodule DockupUi.Blueprint do
   use Ecto.Schema
   import Ecto.Changeset
   alias DockupUi.{
-    Project,
+    Blueprint,
     ContainerSpec,
     Deployment
   }
 
 
-  schema "projects" do
+  schema "blueprints" do
     field :name, :string
 
     has_many :container_specs, ContainerSpec
@@ -18,8 +18,8 @@ defmodule DockupUi.Project do
   end
 
   @doc false
-  def changeset(%Project{} = project, attrs) do
-    project
+  def changeset(%Blueprint{} = blueprint, attrs) do
+    blueprint
     |> cast(attrs, [:name])
     |> validate_required([:name])
   end

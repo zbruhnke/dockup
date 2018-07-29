@@ -1,8 +1,8 @@
-defmodule DockupUi.Repo.Migrations.CreateProjects do
+defmodule DockupUi.Repo.Migrations.CreateBlueprint do
   use Ecto.Migration
 
   def change do
-    create table(:projects) do
+    create table(:blueprints) do
       add :name, :string
 
       timestamps()

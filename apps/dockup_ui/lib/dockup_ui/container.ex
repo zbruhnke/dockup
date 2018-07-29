@@ -23,7 +23,7 @@ defmodule DockupUi.Container do
   def create_changeset(%Container{} = container, attrs) do
     container
     |> cast(attrs, [:autodeploy, :tag])
-    |> validate_required([:autodeploy, :status, :tag, :container_spec_id, :project_id])
+    |> validate_required([:autodeploy, :status, :tag, :container_spec_id, :blueprint_id])
   end
 
   @doc false

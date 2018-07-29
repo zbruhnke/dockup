@@ -4,7 +4,7 @@ defmodule DockupUi.Deployment do
   alias DockupUi.{
     Deployment,
     Container,
-    Project
+    Blueprint
   }
 
   @moduledoc """
@@ -20,7 +20,7 @@ defmodule DockupUi.Deployment do
     field :wake_up_at, :utc_datetime
     field :status, :string
 
-    belongs_to :project, Project
+    belongs_to :blueprint, Blueprint
     has_many :containers, Container
 
     timestamps type: :utc_datetime

@@ -4,7 +4,7 @@ defmodule DockupUi.ContainerSpec do
   alias DockupUi.{
     PortSpec,
     InitContainerSpec,
-    Project,
+    Blueprint,
     ContainerSpec,
   }
 
@@ -17,7 +17,7 @@ defmodule DockupUi.ContainerSpec do
     field :args, {:array, :string}, default: []
     field :env_vars, {:array, :map}, default: []
 
-    belongs_to :project, Project
+    belongs_to :blueprint, Blueprint
     has_many :port_specs, PortSpec
     has_many :init_container_specs, InitContainerSpec
   end
@@ -26,6 +26,6 @@ defmodule DockupUi.ContainerSpec do
   def changeset(%ContainerSpec{} = container_spec, attrs) do
     container_spec
     |> cast(attrs, [:name, :image, :default_tag, :command, :args, :env_vars])
-    |> validate_required([:name, :image, :default_tag, :project_id])
+    |> validate_required([:name, :image, :default_tag, :blueprint_id])
   end
 end

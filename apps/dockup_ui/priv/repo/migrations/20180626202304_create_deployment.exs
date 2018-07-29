@@ -8,12 +8,12 @@ defmodule DockupUi.Repo.Migrations.CreateDeployment do
       add :hibernate_at, :utc_datetime
       add :wake_up_at, :utc_datetime
       add :status, :string
-      add :project_id, references(:projects, on_delete: :nothing)
+      add :blueprint_id, references(:blueprints, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:deployments, [:project_id])
+    create index(:deployments, [:blueprint_id])
     create index(:deployments, [:delete_at])
     create index(:deployments, [:hibernate_at])
     create index(:deployments, [:wake_up_at])
