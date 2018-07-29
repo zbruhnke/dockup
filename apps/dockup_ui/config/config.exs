@@ -6,7 +6,7 @@
 use Mix.Config
 
 config :dockup_ui,
-  backend_module: FakeDockup,
+  backend_module: Dockup.Backends.Fake,
   retention_days: 1
 
 # Configures the endpoint
@@ -30,5 +30,14 @@ import_config "#{Mix.env}.exs"
 config :phoenix, :generators,
   migration: true,
   binary_id: false
+
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, []}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: "",
+  client_secret: ""
 
 config :dockup_ui, ecto_repos: [DockupUi.Repo]

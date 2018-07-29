@@ -12,7 +12,7 @@ defmodule Dockup.Mixfile do
 
   def application do
     [
-      applications: [:logger, :poison, :httpotion],
+      applications: [:logger, :kazan],
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -22,9 +22,7 @@ defmodule Dockup.Mixfile do
 
   defp deps do
     [
-      {:poison, "~> 3.1.0"},
-      {:httpotion, "~> 3.0.3"},
-      {:dockup_spec, in_umbrella: true}
+      {:kazan, github: "emilsoman/kazan"}
     ]
   end
 end

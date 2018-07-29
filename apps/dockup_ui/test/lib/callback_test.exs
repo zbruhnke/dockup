@@ -36,7 +36,7 @@ defmodule DockupUi.CallbackTest do
     insert(:deployment, id: 1)
 
     Callback.update_status(1, "started", %{status_update_service: FakeStatusUpdateService, slack_webhook: FakeSlackWebhook})
-    message = "Dockup has a new deployment at <http://localhost:4001/deployments/1>"
+    message = "Branch `master` deployed at <http://localhost:4001/deployments/1>"
     assert_received {"https://slackurl", ^message}
   end
 end

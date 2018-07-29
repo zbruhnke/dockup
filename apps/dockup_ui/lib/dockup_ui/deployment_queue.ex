@@ -87,17 +87,22 @@ defmodule DockupUi.DeploymentQueue do
   end
 
   defp has_capacity_to_deploy? do
+    current_deployment_count = current_deployment_count()
+    max_concurrent_deployments = max_concurrent_deployments()
+    current_build_count = current_build_count()
+    max_concurrent_builds = max_concurrent_builds()
+
     # Useful for debugging queueing issues
     Logger.info(
       "Processing queue -
-      current_deployment_count(#{current_deployment_count()})
-      max_concurrent_deployments(#{max_concurrent_deployments()})
-      current_build_count(#{current_build_count()})
-      max_concurrent_builds(#{max_concurrent_builds()})"
+      current_deployment_count(#{current_deployment_count})
+      max_concurrent_deployments(#{max_concurrent_deployments})
+      current_build_count(#{current_build_count})
+      max_concurrent_builds(#{max_concurrent_builds})"
     )
 
-    current_deployment_count() < max_concurrent_deployments() &&
-      current_build_count() < max_concurrent_builds()
+    current_deployment_count < max_concurrent_deployments &&
+      current_build_count < max_concurrent_builds
   end
 
   defp deploy_from_queue(queue, backend, callback_module) do
@@ -107,12 +112,18 @@ defmodule DockupUi.DeploymentQueue do
 
         # There is a chance that the deployment may have been
         # deleted. In that case, we should skip to the next item in the queue.
-        if deployable?(deployment) do
-          DeploymentStatusUpdateService.run("starting", deployment_id)
-          backend.deploy(deployment, callback_module)
-          queue
-        else
-          deploy_from_queue(queue, backend, callback_module)
+        case deployment.status do
+          "queued" ->
+            DeploymentStatusUpdateService.run("starting", deployment_id)
+            backend.deploy(deployment, callback_module)
+            queue
+
+          "waking_up" ->
+            backend.wake_up(deployment.id, callback_module)
+            queue
+
+          _ ->
+            deploy_from_queue(queue, backend, callback_module)
         end
 
       {:empty, queue} ->
@@ -124,7 +135,7 @@ defmodule DockupUi.DeploymentQueue do
     query =
       from(
         d in Deployment,
-        where: d.status not in ["queued", "deleted", "hibernated", "starting"]
+        where: d.status not in ["queued", "deleted", "hibernated"]
       )
 
     Repo.aggregate(query, :count, :id)
@@ -150,9 +161,5 @@ defmodule DockupUi.DeploymentQueue do
     else
       @default_max_concurrent_builds
     end
-  end
-
-  defp deployable?(%{id: id}) do
-    Repo.get_by(Deployment, id: id, status: "queued")
   end
 end

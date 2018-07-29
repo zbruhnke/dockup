@@ -12,6 +12,10 @@ defmodule DockupUi.DeploymentStatusUpdateService do
     DeploymentChannel
   }
 
+  def run(deployment) do
+    DeploymentChannel.update_deployment_status(deployment)
+  end
+
   def run(status, deployment_id, channel \\ DeploymentChannel) do
     with \
       deployment <- Repo.get!(Deployment, deployment_id),

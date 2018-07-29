@@ -1,4 +1,10 @@
 defmodule DockupUi.Config do
+  @moduledoc """
+  This module makes it easy to override application configs (found in config/config.exs)
+  using environment variables. `set_configs_from_env()` is called when
+  the application starts up.
+  """
+
   require Logger
 
   def set_configs_from_env do
@@ -13,7 +19,10 @@ defmodule DockupUi.Config do
       {"SLACK_WEBHOOK_URL", :slack_webhook_url, :string},
       {"DOCKUP_BACKEND", :backend_module, :module},
       {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
-      {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string}
+      {"DOCKUP_WAKEUP_ALL_AT", :wakeup_all_at, :string},
+      {"GOOGLE_CLIENT_ID", :google_client_id, :string},
+      {"GOOGLE_CLIENT_SECRET", :google_client_secret, :string},
+      {"GOOGLE_CLIENT_DOMAINS", :google_client_domains, :string}
     ]
   end
 
@@ -36,10 +45,9 @@ defmodule DockupUi.Config do
 
   defp module_for_backend(env_val) do
     case env_val do
-      "compose" -> Dockup.Backends.Compose
-      "helm" -> Dockup.Backends.Helm
-      "fake" -> FakeDockup
-      _ -> raise "unknown backend #{env_val}"
+      "kubernetes" -> Dockup.Backends.Kubernetes
+      "fake" -> Dockup.Backends.Fake
+      _ -> raise "Unknown backend #{env_val}"
     end
   end
 end

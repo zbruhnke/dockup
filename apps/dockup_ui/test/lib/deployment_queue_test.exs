@@ -50,7 +50,7 @@ defmodule DockupUi.DeploymentQueueTest do
   end
 
   test "deploys from tail of queue when there aren't enough concurrent deployments" do
-    for _ <- 1..4 do
+    for _ <- 1..3 do
       insert(:deployment, status: "started")
     end
     for _ <- 1..4 do

@@ -9,23 +9,15 @@ defmodule Dockup.Config do
 
   defp configs do
     [
-      {"DOCKUP_WORKDIR", :workdir, :directory},
       {"DOCKUP_BASE_DOMAIN", :base_domain, :string},
       {"DOCKUP_DEPLOYMENT_RETENTION_DAYS", :deployment_retention_days, :integer},
-      {"DOCKUP_HTPASSWD_DIR", :htpasswd_dir, :directory},
       {"DOCKUP_HTPASSWD", :htpasswd, :string},
-      {"DOCKUP_GITHUB_OAUTH_TOKEN", :github_oauth_token, :string},
       {"DOCKUP_STACKDRIVER_URL", :stackdriver_url, :string}
     ]
   end
 
   defp set_config(nil, _, _) do
     # Do nothing if env var is not set
-  end
-
-  defp set_config(env_val, config_key, :directory) do
-    dir = ensure_dir_exists(env_val)
-    Application.put_env(:dockup, config_key, dir)
   end
 
   defp set_config(env_val, config_key, :string) do
@@ -35,14 +27,6 @@ defmodule Dockup.Config do
   defp set_config(env_val, config_key, :integer) do
     integer = parse_as_integer(env_val)
     Application.put_env(:dockup, config_key, integer)
-  end
-
-  defp ensure_dir_exists(dir) do
-    unless File.exists?(dir) do
-      Logger.info "Creating missing directory: #{dir}"
-      File.mkdir_p! dir
-    end
-    dir
   end
 
   defp parse_as_integer(value) do
