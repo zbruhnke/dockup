@@ -9,7 +9,7 @@ defmodule DockupUi.DeployService do
     deployment_queue = deps[:deployment_queue] || DeploymentQueue
 
     with \
-      changeset <- Deployment.create_changeset(%Deployment{status: "queued"}, deployment_params),
+      changeset <- Deployment.changeset(%Deployment{status: "queued"}, deployment_params),
       {:ok, deployment} <- Repo.insert(changeset),
       :ok <- queue_deployment(deployment.id, deployment_queue)
     do

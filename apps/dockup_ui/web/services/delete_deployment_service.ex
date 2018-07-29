@@ -17,8 +17,6 @@ defmodule DockupUi.DeleteDeploymentService do
 
     with \
       deployment <- Repo.get!(Deployment, deployment_id),
-      changeset <- Deployment.delete_changeset(deployment),
-      {:ok, deployment} <- Repo.update(changeset),
       {:ok, deployment} <- DeploymentStatusUpdateService.run("deleting", deployment.id),
       :ok <- delete_deployment(delete_deployment_job, deployment, callback)
     do

@@ -14,7 +14,7 @@ defmodule DockupUi.Repo.Migrations.CreateDeployment do
     end
 
     create index(:deployments, [:project_id])
-    create index(:deployments, [:deleted_at])
+    create index(:deployments, [:delete_at])
     create index(:deployments, [:hibernate_at])
     create index(:deployments, [:wake_up_at])
     create index(:deployments, [:status])
