@@ -3,18 +3,18 @@ defmodule DockupUi.DeploymentController do
 
   alias DockupUi.{
     Deployment,
-    WhitelistedUrl
+    Blueprint
   }
 
   import Ecto.Query
 
   def new(conn, _params) do
     query =
-      from w in WhitelistedUrl,
-      select: w.git_url
+      from b in Blueprint,
+      preload: [:container_specs]
 
-    whitelisted_urls = Repo.all(query)
-    render conn, "new.html", whitelisted_urls_json: Poison.encode!(whitelisted_urls)
+    blueprint = Repo.one!(query)
+    render conn, "new.html", blueprint: blueprint
   end
 
   def index(conn, _params) do
