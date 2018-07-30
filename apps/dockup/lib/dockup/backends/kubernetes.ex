@@ -248,7 +248,6 @@ defmodule Dockup.Backends.Kubernetes do
     ingress_rules =
       container.ports
       |> Enum.filter(fn %{public: public, host: host} -> public && host end)
-      |> Enum.with_index()
       |> Enum.map(&prepare_ingress_rule(container_handle, &1))
 
     %Ingress{
@@ -257,7 +256,7 @@ defmodule Dockup.Backends.Kubernetes do
     }
   end
 
-  defp prepare_ingress_rule(container_handle, {%{port: port, host: host}, index}) do
+  defp prepare_ingress_rule(container_handle, %{port: port, host: host}) do
 
     %IngressRule{
       host: host,
