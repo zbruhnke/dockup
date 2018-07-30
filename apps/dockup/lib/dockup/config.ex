@@ -9,10 +9,7 @@ defmodule Dockup.Config do
 
   defp configs do
     [
-      {"DOCKUP_BASE_DOMAIN", :base_domain, :string},
       {"DOCKUP_DEPLOYMENT_RETENTION_DAYS", :deployment_retention_days, :integer},
-      {"DOCKUP_HTPASSWD", :htpasswd, :string},
-      {"DOCKUP_STACKDRIVER_URL", :stackdriver_url, :string}
     ]
   end
 

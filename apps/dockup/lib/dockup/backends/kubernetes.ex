@@ -238,7 +238,7 @@ defmodule Dockup.Backends.Kubernetes do
     %Service{
       metadata: %ObjectMeta{name: service_name(container_handle)},
       spec: %ServiceSpec{
-        ports: get_service_ports(container.ports),
+        ports: get_service_ports(container.ports, container_handle),
         selector: %{app: container_handle}
       }
     }
@@ -247,6 +247,7 @@ defmodule Dockup.Backends.Kubernetes do
   defp prepare_ingress({container, container_handle}) do
     ingress_rules =
       container.ports
+      |> Enum.filter(fn %{public: public, host: host} -> public && host end)
       |> Enum.with_index()
       |> Enum.map(&prepare_ingress_rule(container_handle, &1))
 
@@ -256,11 +257,10 @@ defmodule Dockup.Backends.Kubernetes do
     }
   end
 
-  defp prepare_ingress_rule(container_handle, {port, index}) do
-    base_domain = Application.fetch_env!(:dockup, :base_domain)
+  defp prepare_ingress_rule(container_handle, {%{port: port, host: host}, index}) do
 
     %IngressRule{
-      host: "#{index + 1}-#{container_handle}.#{base_domain}",
+      host: host,
       http: %HTTPIngressRuleValue{
         paths: [
           %HTTPIngressPath{
@@ -295,14 +295,14 @@ defmodule Dockup.Backends.Kubernetes do
   end
 
   defp get_container_ports(ports) do
-    for port <- ports do
+    for %{port: port} <- ports do
       %ContainerPort{container_port: port}
     end
   end
 
-  defp get_service_ports(ports) do
-    for port <- ports do
-      %ServicePort{port: port}
+  defp get_service_ports(ports, container_handle) do
+    for %{port: port} <- ports do
+      %ServicePort{port: port, name: "#{container_handle}-port-#{port}"}
     end
   end
 

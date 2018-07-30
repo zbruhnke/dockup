@@ -2,13 +2,6 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-# All configurations are assumed to be strings
-config :dockup,
-  workdir: "workdir",
-  htpasswd_dir: "htpasswd",
-  command_module: Dockup.ShellCommand,
-  base_domain: "127.0.0.1.xip.io"
-#
 # And access this configuration in your application as:
 #
 #     Application.get_env(:dockup, :key)

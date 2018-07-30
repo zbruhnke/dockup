@@ -37,7 +37,7 @@ defmodule Dockup.Backends.KubernetesTest do
       ],
       command: ["/http-echo"],
       args: ["-text=$(FOO)"],
-      ports: [5678],
+      ports: [%{port: 5678, public: true, host: "echo.k8stest.c9s.tech"}],
       init_containers: [
         %Container{
           image: "busybox",
@@ -57,8 +57,7 @@ defmodule Dockup.Backends.KubernetesTest do
     assert [%{name: "FOO", value: "helloworld"}] = container.env
     assert Kubernetes.logs(container_handle) =~ "Server is listening on :5678\n"
 
-    base_domain = Application.fetch_env!(:dockup, :base_domain)
-    url = String.to_charlist("https://1-dockup-#{@deployment_id}-helloworld.#{base_domain}")
+    url = String.to_charlist("https://echo.k8stest.c9s.tech")
     assert {:ok, {{'HTTP/1.1', 200, 'OK'}, _headers, body}} =
              :httpc.request(:get, {url, []}, [], [])
     assert to_string(body) =~ "helloworld"
