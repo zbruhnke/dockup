@@ -44,6 +44,8 @@ is specified, backend will be defaulted to `fake`
     ./scripts/setup
     mix deps.get
     iex -S mix phx.server
+    # to start your app with the google_oauth variable use(recommended)
+    GOOGLE_CLIENT_ID=<GOOGLE_CLIENT_ID> GOOGLE_CLIENT_SECRET=<GOOGLE_CLIENT_SECRET> GOOGLE_CLIENT_DOMAINS=codemancers.com mix phx.server
 
 You can access Dockup UI at http://localhost:4000.
 
