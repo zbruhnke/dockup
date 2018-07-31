@@ -1,102 +1,128 @@
-import React, {Component} from 'react';
-import $ from 'jquery';
-import GitUrlInput from './git_url_input';
+// libraries
+import React, { Component } from 'react';
+import cx from 'classnames';
+
+// helpers
+import { request } from '../request';
+
+// components
 import FlashMessage from '../flash_message';
 import DeploymentCard from './deployment_card';
 
 class DeploymentForm extends Component {
   constructor(props) {
     super(props);
+
+    // just for dev purpose, can remove once we start getting this via props;
+    const response = { containerSpecs: [
+      {id: 1, image: "my_frontend", defaultTag: "latest"},
+      {id: 2, image: "my-backend", defaultTag: "master"}
+    ]};
+
     this.state = {
+      containerSpecs: response.containerSpecs,
       deployment: null,
-      gitUrl: "",
-      branch: ""
+      errors: {},
     }
 
-    this.handleUrlChange = this.handleUrlChange.bind(this);
-    this.handleDeployClick = this.handleDeployClick.bind(this);
-    this.urls = JSON.parse(this.props.urls);
-
-    this.connectToDeploymentsChannel();
+    this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleOnDeploy = this.handleOnDeploy.bind(this);
   }
 
-  connectToDeploymentsChannel() {
+  componentDidMount() {
     let channel = DockupUiSocket.getDeploymentsChannel();
 
     channel.on("status_updated", (deployment) => {
       this.updateDeployment(deployment);
-    })
+    });
   }
 
-  updateDeployment(newDeployment) {
-    if(this.state.deployment.id == newDeployment.id) {
-      this.setState({deployment: Object.assign({}, newDeployment)});
+  updateDeployment(deployment) {
+    if(this.state.deployment.id == deployment.id) {
+      this.setState({ deployment });
     }
   }
 
-  handleDeployClick(e) {
-    this.setState({deployment: null});
+  handleOnDeploy(e) {
     e.preventDefault();
-    let xhr = this.createRequest();
+    const { containerSpecs } = this.state;
+    this.setState({ deployment: null });
+
+    const xhr = this.createRequest(containerSpecs);
     xhr.done((response) => {
-      this.setState({deployment: Object.assign({}, response.data)});
+      this.setState({ deployment: response.data });
     });
     xhr.fail(() => {
       FlashMessage.showMessage("danger", "Deployment cannot be queued.");
     });
   }
 
-  createRequest() {
-    return $.ajax({
+  createRequest(containerSpecs) {
+    return request({
       url: '/api/deployments',
       type: 'POST',
-      contentType: 'application/json',
       data: JSON.stringify({
-        git_url: this.state.gitUrl,
-        branch: this.state.branch,
-        callback_url: null
+        containerSpecs,
       })
     });
   }
 
-  handleUrlChange(url) {
-    this.setState({gitUrl: url});
-  }
+  handleOnChange(e) {
+    const { name, value } = e.target;
+    const { containerSpecs, errors } = this.state;
 
-  handleBranchChange(branch) {
-    this.setState({branch: branch.trim()});
-  }
+    containerSpecs.forEach(spec => {
+      if (spec.image === name) {
+        spec.defaultTag = value.trim();
+      }
+    });
 
-  validInputs() {
-    return (this.state.gitUrl.length > 0 && this.state.branch.length > 0);
-  }
-
-  renderDeploymentCard() {
-    if(this.state.deployment) {
-      return(<DeploymentCard deployment={this.state.deployment}/>);
+    if (!value.trim()) {
+      errors[name] = `Please enter a release tag for ${name}!`
+    } else {
+      delete errors[name];
     }
+
+    this.setState({
+      containerSpecs,
+      errors,
+    });
   }
 
   render() {
+    const { deployment, containerSpecs = [], errors } = this.state;
+
     return (
       <div>
-        <form>
-          <div className="form-group">
-            <label>Git URL</label>
-            <GitUrlInput urls={this.urls} onUrlChange={this.handleUrlChange}/>
-          </div>
-          <div className="form-group">
-            <label htmlFor="branch">Branch</label>
-            <input className="form-control" id="branch" onChange={(event) => { this.handleBranchChange(event.target.value)}}/>
-          </div>
-
-          <button type="submit" onClick={this.handleDeployClick} disabled={!this.validInputs()} className="btn btn-primary">Deploy</button>
+        <form onSubmit={this.handleOnDeploy}>
+          {containerSpecs.map((spec) => (
+            <div className="form-group">
+              <label htmlFor={spec.image}>{spec.image}</label>
+              <input
+                className={cx("form-control", {
+                  error: !!errors[spec.image]
+                })}
+                placeholder="release tag"
+                name={spec.image}
+                value={spec.defaultTag}
+                onChange={this.handleOnChange}
+              />
+              {errors[spec.image] && <span className="error">{errors[spec.image]}</span>}
+            </div>
+          ))}
+          <input
+            type="submit"
+            value="Deploy"
+            className={cx("btn btn-primary", {
+              disabled: !!Object.keys(errors).length
+            })}
+          />
         </form>
 
-        {this.renderDeploymentCard()}
+        {deployment && <DeploymentCard deployment={deployment} />}
       </div>
     )
   }
 }
 
-export default DeploymentForm
+export default DeploymentForm;

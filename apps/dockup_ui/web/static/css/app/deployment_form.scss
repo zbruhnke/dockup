@@ -14,3 +14,21 @@
   margin-top: 20px;
   padding: 10px;
 }
+
+span.error {
+  font-size: 12px;
+  color: red;
+}
+
+input.error {
+  border-color: red;
+
+  &:focus {
+    border-color: red;
+    box-shadow: none;
+  }
+}
+
+.disabled {
+  pointer-events: none;
+}
