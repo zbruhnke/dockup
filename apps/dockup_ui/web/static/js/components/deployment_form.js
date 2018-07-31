@@ -48,19 +48,20 @@ class DeploymentForm extends Component {
     const { containerSpecs } = this.state;
     this.setState({ deployment: null });
 
-    const xhr = this.createRequest(containerSpecs);
-    xhr.done((response) => {
-      this.setState({ deployment: response.data });
-    });
-    xhr.fail(() => {
-      FlashMessage.showMessage("danger", "Deployment cannot be queued.");
-    });
+    this.createRequest(containerSpecs)
+      .then((response) => response.json())
+      .then((response) => {
+        this.setState({ deployment: response.data });
+      })
+      .catch(() => {
+        FlashMessage.showMessage("danger", "Deployment cannot be queued.");
+      });
   }
 
   createRequest(containerSpecs) {
     return request({
       url: '/api/deployments',
-      type: 'POST',
+      method: 'POST',
       data: JSON.stringify({
         containerSpecs,
       })
