@@ -62,7 +62,7 @@ class DeploymentForm extends Component {
     return request({
       url: '/api/deployments',
       method: 'POST',
-      data: JSON.stringify({
+      body: JSON.stringify({
         containerSpecs,
       })
     });
