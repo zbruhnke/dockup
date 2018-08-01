@@ -19,7 +19,7 @@ const Deployment = {
   mountDeploymentForm: (elementId, container_specs_json) => {
     let element = document.getElementById(elementId);
     let container_specs = JSON.parse(container_specs_json);
-    ReactDOM.render(<DeploymentForm urls={"[]"}/>, element);
+    ReactDOM.render(<DeploymentForm containerSpecs={container_specs}/>, element);
   },
 
   mountDeploymentItem: (elementId, deploymentJSON) => {

@@ -5,7 +5,8 @@ defmodule DockupUi.Port do
   alias DockupUi.{
     Port,
     Container,
-    PortSpec
+    PortSpec,
+    Subdomain
   }
 
 
@@ -15,13 +16,15 @@ defmodule DockupUi.Port do
 
     belongs_to :container, Container
     belongs_to :port_spec, PortSpec
+    has_one :subdomain, Subdomain
   end
 
   @doc false
   def changeset(%Port{} = port, attrs) do
     port
-    |> cast(attrs, [:endpoint, :ready])
-    |> validate_required([:endpoint, :container_id, :port_spec_id])
+    |> cast(attrs, [:endpoint, :ready, :port_spec_id])
+    |> put_assoc(:subdomain, attrs[:subdomain])
+    |> validate_required([:container_id, :port_spec_id])
     |> unique_constraint(:endpoint)
   end
 end

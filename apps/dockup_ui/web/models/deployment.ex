@@ -13,6 +13,8 @@ defmodule DockupUi.Deployment do
   status - Refer to DockupUi.Callback for various states for this field.
   """
 
+  @valid_statuses ~w(queued starting started hibernating hibernated waking_up deleting deleted failed)
+
   schema "deployments" do
     field :name, :string
     field :delete_at, :utc_datetime
@@ -30,6 +32,8 @@ defmodule DockupUi.Deployment do
   def changeset(%Deployment{} = deployment, attrs) do
     deployment
     |> cast(attrs, [:name, :delete_at, :hibernate_at, :wake_up_at, :status])
-    |> validate_required([:name, :status])
+    |> cast_assoc(:containers)
+    |> validate_required([:name, :status, :deployment_id])
+    |> validate_inclusion(:status, @valid_statuses)
   end
 end

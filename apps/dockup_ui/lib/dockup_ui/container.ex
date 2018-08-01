@@ -4,9 +4,11 @@ defmodule DockupUi.Container do
   alias DockupUi.{
     Container,
     ContainerSpec,
-    Deployment
+    Deployment,
+    Port
   }
 
+  @valid_statuses ~w(unknown pending running failed)
 
   schema "containers" do
     field :handle, :string
@@ -17,12 +19,14 @@ defmodule DockupUi.Container do
 
     belongs_to :deployment, Deployment
     belongs_to :container_spec, ContainerSpec
+    has_many :ports, Port
   end
 
   @doc false
-  def create_changeset(%Container{} = container, attrs) do
-    container
-    |> cast(attrs, [:autodeploy, :tag])
+  def create_changeset(attrs) do
+    %Container{status: "unknown"}
+    |> cast(attrs, [:autodeploy, :tag, :container_spec_id])
+    |> cast_assoc(:ports)
     |> validate_required([:autodeploy, :status, :tag, :container_spec_id, :blueprint_id])
   end
 
@@ -31,5 +35,6 @@ defmodule DockupUi.Container do
     container
     |> cast(%{status: status, status_synced_at: DateTime.utc_now()}, [:status, :status_synced_at])
     |> validate_required([:status, :status_synced_at])
+    |> validate_inclusion(:status, @valid_statuses)
   end
 end

@@ -16,14 +16,8 @@ class DeploymentForm extends Component {
   constructor(props) {
     super(props);
 
-    // just for dev purpose, can remove once we start getting this via props;
-    const response = { containerSpecs: [
-      {id: 1, image: "my_frontend", defaultTag: "latest"},
-      {id: 2, image: "my-backend", defaultTag: "master"}
-    ]};
-
     this.state = {
-      containerSpecs: response.containerSpecs,
+      containerSpecs: this.props.containerSpecs,
       deployment: null,
       errors: {},
       name: buildDeploymentNameFromTags(response.containerSpecs),
@@ -79,12 +73,12 @@ class DeploymentForm extends Component {
 
     containerSpecs.forEach(spec => {
       if (spec.image === name) {
-        spec.defaultTag = value.trim();
+        spec.tag = value.trim();
       }
     });
 
     if (!value.trim()) {
-      errors[name] = `Please enter a release tag for ${name}!`
+      errors[name] = `Please enter an image tag for ${name}`
     } else {
       delete errors[name];
     }
@@ -102,15 +96,15 @@ class DeploymentForm extends Component {
       <div>
         <form onSubmit={this.handleOnDeploy}>
           {containerSpecs.map((spec) => (
-            <div className="form-group">
+            <div className="form-group" key={spec.id}>
               <label htmlFor={spec.image}>{spec.image}</label>
               <input
                 className={cx("form-control", {
                   error: !!errors[spec.image]
                 })}
-                placeholder="release tag"
+                placeholder="Image tag"
                 name={spec.image}
-                value={spec.defaultTag}
+                value={spec.tag}
                 onChange={this.handleOnChange}
               />
               {errors[spec.image] && <span className="error">{errors[spec.image]}</span>}

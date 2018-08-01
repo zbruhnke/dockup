@@ -24,15 +24,19 @@ defmodule DockupUi.API.DeploymentController do
     deploy_service = conn.assigns[:deploy_service] || DeployService
 
     case deploy_service.run(deployment_params) do
-      {:ok, deployment} ->
+      {:ok, %{deployment: deployment}} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", api_deployment_path(conn, :show, deployment))
         |> render("show.json", deployment: deployment)
-      {:error, changeset} ->
+      {:error, :deployment, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
+      {:error, :start_containers, error} ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{errors: [error]})
     end
   end
 

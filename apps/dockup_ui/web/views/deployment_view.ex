@@ -7,7 +7,7 @@ defmodule DockupUi.DeploymentView do
 
   def container_specs_json(blueprint) do
     blueprint.container_specs
-    |> Enum.map(fn spec -> %{id: spec.id, image: spec.image, defaultTag: spec.default_tag} end)
+    |> Enum.map(fn spec -> %{id: spec.id, image: spec.image, tag: spec.default_tag} end)
     |> Poison.encode!()
   end
 end
