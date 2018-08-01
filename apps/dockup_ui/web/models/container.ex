@@ -5,7 +5,7 @@ defmodule DockupUi.Container do
     Container,
     ContainerSpec,
     Deployment,
-    Port
+    Ingress
   }
 
   @valid_statuses ~w(unknown pending running failed)
@@ -19,14 +19,14 @@ defmodule DockupUi.Container do
 
     belongs_to :deployment, Deployment
     belongs_to :container_spec, ContainerSpec
-    has_many :ports, Port
+    has_many :ingresses, Ingress
   end
 
   @doc false
   def changeset(%Container{}, attrs) do
     %Container{status: "unknown"}
     |> cast(attrs, [:autodeploy, :tag, :container_spec_id])
-    |> cast_assoc(:ports)
+    |> cast_assoc(:ingresses)
     |> validate_required([:autodeploy, :status, :tag, :container_spec_id])
   end
 

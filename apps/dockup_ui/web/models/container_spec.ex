@@ -5,6 +5,7 @@ defmodule DockupUi.ContainerSpec do
     PortSpec,
     InitContainerSpec,
     Blueprint,
+    Container,
     ContainerSpec,
   }
 
@@ -15,9 +16,10 @@ defmodule DockupUi.ContainerSpec do
     field :default_tag, :string
     field :command, :string
     field :args, {:array, :string}, default: []
-    field :env_vars, {:array, :map}, default: []
+    field :env_vars, {:map, :string}, default: %{}
 
     belongs_to :blueprint, Blueprint
+    has_one :container, Container
     has_many :port_specs, PortSpec
     has_many :init_container_specs, InitContainerSpec
   end

@@ -141,7 +141,7 @@ class DeploymentCard extends Component {
           <div className="card-body">
             <div className="row">
               <div className="col-8">
-                <h4 className="card-title display-4 dockup-card-branch">{this.props.deployment.branch}</h4>
+                <h4 className="card-title display-4 dockup-card-branch">{this.props.deployment.name}</h4>
               </div>
               <div className="col text-right dockup-card-timeago">
                 <TimeAgo date={this.props.deployment.inserted_at} title={new Date(this.props.deployment.inserted_at)}/>
@@ -149,7 +149,7 @@ class DeploymentCard extends Component {
 
             </div>
 
-            <h6 className="card-subtitle mb-2">{this.getGithubRepo()}</h6>
+            <h6 className="card-subtitle mb-2">{this.props.deployment.blueprint_name}</h6>
 
 
           </div>

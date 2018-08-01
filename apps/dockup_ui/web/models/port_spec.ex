@@ -4,7 +4,7 @@ defmodule DockupUi.PortSpec do
   alias DockupUi.{
     ContainerSpec,
     PortSpec,
-    Port
+    Ingress
   }
 
 
@@ -15,7 +15,7 @@ defmodule DockupUi.PortSpec do
     field :http_ready_response_code, :integer
 
     belongs_to :container_spec, ContainerSpec
-    has_many :ports, Port
+    has_one :ingress, Ingress
   end
 
   @doc false

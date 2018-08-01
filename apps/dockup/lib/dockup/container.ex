@@ -10,7 +10,7 @@ end
 #   image: "gcr.io/my-frontend-image",
 #   tag: "master",
 #   env_vars: [{"FOO", "BAR"}],
-#   command: "node",
+#   command: ["node"],
 #   args: ["./run", "--production"],
 #   init_containers: %{
 #     image: "gcr.io/wait-for-postgres",

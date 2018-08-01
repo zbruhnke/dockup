@@ -1,6 +1,8 @@
 defmodule DockupUi.API.DeploymentView do
   use DockupUi.Web, :view
 
+  alias DockupUi.Repo
+
   def render("index.json", %{deployments: deployments}) do
     %{data: render_many(deployments, DockupUi.API.DeploymentView, "deployment.json")}
   end
@@ -10,13 +12,13 @@ defmodule DockupUi.API.DeploymentView do
   end
 
   def render("deployment.json", %{deployment: deployment}) do
+    deployment = Repo.preload(deployment, :blueprint)
+
     %{
       id: deployment.id,
-      git_url: deployment.git_url,
-      branch: deployment.branch,
+      blueprint_name: deployment.blueprint.name,
+      name: deployment.name,
       status: deployment.status,
-      log_url: deployment.log_url,
-      urls: deployment.urls,
       inserted_at: deployment.inserted_at,
       updated_at: deployment.updated_at
     }

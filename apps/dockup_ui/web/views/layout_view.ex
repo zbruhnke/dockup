@@ -8,7 +8,7 @@ defmodule DockupUi.LayoutView do
         filter = "advancedFilter=resource.labels.container_name%3D%22dockup%22"
         base_url <> "&" <> filter
       _ ->
-        base_domain = Application.fetch_env!(:dockup, :base_domain)
+        base_domain = Application.fetch_env!(:dockup_ui, :base_domain)
         "//logio.#{base_domain}/#?projectName=dockup"
     end
   end

@@ -3,7 +3,7 @@ defmodule DockupUi.Subdomain do
   import Ecto.Changeset
 
   alias DockupUi.{
-    Port,
+    Ingress,
     Subdomain
   }
 
@@ -11,13 +11,13 @@ defmodule DockupUi.Subdomain do
   schema "subdomains" do
     field :subdomain, :string
 
-    belongs_to :port, Port
+    belongs_to :ingress, Ingress
   end
 
   @doc false
   def changeset(%Subdomain{} = subdomain, attrs) do
     subdomain
-    |> cast(attrs, [:subdomain, :port_id])
+    |> cast(attrs, [:subdomain, :ingress_id])
     |> validate_required([:subdomain])
     |> unique_constraint(:subdomain)
   end

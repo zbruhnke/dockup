@@ -15,7 +15,8 @@ defmodule DockupUi.API.DeploymentController do
     query =
       from d in Deployment,
       order_by: [desc: :inserted_at],
-      limit: 100
+      limit: 100,
+      preload: :blueprint
     deployments = Repo.all(query)
     render(conn, "index.json", deployments: deployments)
   end

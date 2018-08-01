@@ -6,7 +6,7 @@ defmodule DockupUi.Repo.Migrations.CreateContainerSpecs do
       add :name, :string
       add :image, :string
       add :default_tag, :string
-      add :env_vars, {:array, :map}
+      add :env_vars, {:map, :string}
       add :command, :string
       add :args, {:array, :string}
       add :blueprint_id, references(:blueprints, on_delete: :nothing)

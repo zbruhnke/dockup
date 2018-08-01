@@ -3,7 +3,8 @@ defmodule DockupUi.DeployService do
     Deployment,
     ContainerSpec,
     Subdomain,
-    Repo
+    Repo,
+    BackendAdapter
   }
 
   alias Ecto.Multi
@@ -13,14 +14,14 @@ defmodule DockupUi.DeployService do
   def run(container_spec_params, name \\ nil) do
     container_spec_params
     |> create_deployment(name)
+    |> prepare_backend_containers()
     |> start_containers()
     |> Repo.transaction()
   end
 
   defp create_deployment(container_spec_params, name) do
-    #TODO: auto generate if name is nil
-    name = name || "foo"
     container_specs = fetch_container_specs(container_spec_params)
+    name = name || autogenerate_name(container_specs, container_spec_params)
     containers = prepare_containers(container_specs, container_spec_params)
 
     [container_spec, _] = container_specs
@@ -31,10 +32,17 @@ defmodule DockupUi.DeployService do
     Multi.insert(Multi.new, :deployment, Deployment.changeset(deployment, %{name: name, containers: containers}))
   end
 
+  defp prepare_backend_containers(multi) do
+    Multi.run(multi, :backend_containers, fn %{deployment: deployment} ->
+      containers = BackendAdapter.prepare_containers(deployment)
+      {:ok, containers}
+    end)
+  end
+
   defp start_containers(multi) do
-    Multi.run(multi, :start_containers, fn %{deployment: deployment} ->
-      IO.inspect deployment
-      {:ok, deployment}
+    Multi.run(multi, :backend_response, fn %{backend_containers: containers} ->
+      IO.inspect containers
+      {:ok, containers}
     end)
   end
 
@@ -43,14 +51,14 @@ defmodule DockupUi.DeployService do
       %{
         tag: get_tag(container_spec_params, container_spec.id),
         container_spec_id: container_spec.id,
-        ports: prepare_ports(container_spec.port_specs)
+        ingresses: prepare_ingresses(container_spec.port_specs)
       }
     end)
   end
 
-  defp prepare_ports(port_specs) do
+  defp prepare_ingresses(port_specs) do
     Enum.map(port_specs, fn port_spec ->
-      {endpoint, subdomain} = get_unused_endpoint_if_public!(port_spec)
+      {endpoint, subdomain} = get_endpoint_if_public!(port_spec)
 
       %{
         port_spec_id: port_spec.id,
@@ -60,7 +68,7 @@ defmodule DockupUi.DeployService do
     end)
   end
 
-  defp get_unused_endpoint_if_public!(%{public: public}) do
+  defp get_endpoint_if_public!(%{public: public}) do
     if public do
       base_domain = Application.fetch_env!(:dockup_ui, :base_domain)
       subdomain = get_unused_subdomain!()
@@ -96,5 +104,20 @@ defmodule DockupUi.DeployService do
         tag
       end
     end)
+  end
+
+  defp autogenerate_name(container_specs, container_spec_params) do
+    name =
+      container_specs
+      |> Enum.map(&({&1.name, get_tag(container_spec_params, &1.id), &1.default_tag}))
+      |> Enum.filter(fn {name, tag, default_tag} -> tag != default_tag end)
+      |> Enum.map(fn {name, tag, _} -> "#{name}:#{tag}" end)
+      |> Enum.join(", ")
+
+    if name == "" do
+      "default"
+    else
+      name
+    end
   end
 end
