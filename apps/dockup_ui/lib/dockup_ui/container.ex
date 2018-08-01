@@ -23,11 +23,11 @@ defmodule DockupUi.Container do
   end
 
   @doc false
-  def create_changeset(attrs) do
+  def changeset(%Container{}, attrs) do
     %Container{status: "unknown"}
     |> cast(attrs, [:autodeploy, :tag, :container_spec_id])
     |> cast_assoc(:ports)
-    |> validate_required([:autodeploy, :status, :tag, :container_spec_id, :blueprint_id])
+    |> validate_required([:autodeploy, :status, :tag, :container_spec_id])
   end
 
   @doc false

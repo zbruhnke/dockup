@@ -20,20 +20,20 @@ defmodule DockupUi.API.DeploymentController do
     render(conn, "index.json", deployments: deployments)
   end
 
-  def create(conn, deployment_params) do
+  def create(conn, %{"containerSpecs" => container_specs_params}) do
     deploy_service = conn.assigns[:deploy_service] || DeployService
 
-    case deploy_service.run(deployment_params) do
+    case deploy_service.run(container_specs_params) do
       {:ok, %{deployment: deployment}} ->
         conn
         |> put_status(:created)
         |> put_resp_header("location", api_deployment_path(conn, :show, deployment))
         |> render("show.json", deployment: deployment)
-      {:error, :deployment, %Ecto.Changeset{} = changeset} ->
+      {:error, :deployment, changeset, _} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
-      {:error, :start_containers, error} ->
+      {:error, :start_containers, error, _} ->
         conn
         |> put_status(:internal_server_error)
         |> json(%{errors: [error]})

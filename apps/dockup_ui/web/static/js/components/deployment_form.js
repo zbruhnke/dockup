@@ -9,9 +9,6 @@ import { request } from '../request';
 import FlashMessage from '../flash_message';
 import DeploymentCard from './deployment_card';
 
-// utils
-const buildDeploymentNameFromTags = containerSpecs => containerSpecs.map(spec => `${spec.image}/${spec.defaultTag}`).join(',');
-
 class DeploymentForm extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +16,7 @@ class DeploymentForm extends Component {
     this.state = {
       containerSpecs: this.props.containerSpecs,
       deployment: null,
-      errors: {},
-      name: buildDeploymentNameFromTags(response.containerSpecs),
+      errors: {}
     }
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -61,8 +57,7 @@ class DeploymentForm extends Component {
       url: '/api/deployments',
       method: 'POST',
       body: JSON.stringify({
-        containerSpecs,
-        name: buildDeploymentNameFromTags(containerSpecs),
+        containerSpecs
       })
     });
   }

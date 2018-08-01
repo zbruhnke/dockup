@@ -24,7 +24,7 @@ defmodule DockupUi.Port do
     port
     |> cast(attrs, [:endpoint, :ready, :port_spec_id])
     |> put_assoc(:subdomain, attrs[:subdomain])
-    |> validate_required([:container_id, :port_spec_id])
+    |> validate_required([:port_spec_id])
     |> unique_constraint(:endpoint)
   end
 end

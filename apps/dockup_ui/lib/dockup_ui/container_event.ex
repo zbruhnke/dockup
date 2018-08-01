@@ -19,6 +19,6 @@ defmodule DockupUi.ContainerEvent do
   def changeset(%ContainerEvent{} = container_event, event) do
     container_event
     |> cast(%{event: event, timestamp: DateTime.utc_now()}, [:event, :timestamp])
-    |> validate_required([:event, :timestamp, :container_id])
+    |> validate_required([:event, :timestamp])
   end
 end

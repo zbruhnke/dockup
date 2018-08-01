@@ -10,17 +10,18 @@ defmodule DockupUi.DeployService do
 
   import Ecto.Query
 
-  def run(deployment_params) do
-    deployment_params
-    |> create_deployment()
+  def run(container_spec_params, name \\ nil) do
+    container_spec_params
+    |> create_deployment(name)
     |> start_containers()
     |> Repo.transaction()
   end
 
-  defp create_deployment(deployment_params) do
-    name = deployment_params["name"]
-    container_specs = fetch_container_specs(deployment_params["container_specs"])
-    containers = prepare_containers(container_specs, deployment_params["container_specs"])
+  defp create_deployment(container_spec_params, name) do
+    #TODO: auto generate if name is nil
+    name = name || "foo"
+    container_specs = fetch_container_specs(container_spec_params)
+    containers = prepare_containers(container_specs, container_spec_params)
 
     [container_spec, _] = container_specs
     blueprint_id = container_spec.blueprint_id
@@ -33,6 +34,7 @@ defmodule DockupUi.DeployService do
   defp start_containers(multi) do
     Multi.run(multi, :start_containers, fn %{deployment: deployment} ->
       IO.inspect deployment
+      {:ok, deployment}
     end)
   end
 

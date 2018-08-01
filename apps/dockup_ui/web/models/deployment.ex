@@ -33,7 +33,7 @@ defmodule DockupUi.Deployment do
     deployment
     |> cast(attrs, [:name, :delete_at, :hibernate_at, :wake_up_at, :status])
     |> cast_assoc(:containers)
-    |> validate_required([:name, :status, :deployment_id])
+    |> validate_required([:name, :status, :blueprint_id])
     |> validate_inclusion(:status, @valid_statuses)
   end
 end
