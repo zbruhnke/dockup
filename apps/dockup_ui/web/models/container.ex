@@ -25,7 +25,7 @@ defmodule DockupUi.Container do
   @doc false
   def changeset(%Container{}, attrs) do
     %Container{status: "unknown"}
-    |> cast(attrs, [:autodeploy, :tag, :container_spec_id])
+    |> cast(attrs, [:autodeploy, :tag, :container_spec_id, :handle])
     |> cast_assoc(:ingresses)
     |> validate_required([:autodeploy, :status, :tag, :container_spec_id])
   end

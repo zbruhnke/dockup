@@ -63,10 +63,10 @@ defmodule Dockup.Backends.KubernetesTest do
     assert to_string(body) =~ "helloworld"
 
      assert :ok = Kubernetes.hibernate(container_handle)
-     wait_for_deployment(container_handle, :unknown, 120)
+     wait_for_deployment(container_handle, "unknown", 120)
 
      assert :ok = Kubernetes.wake_up(container_handle)
-     wait_for_deployment(container_handle, :running)
+     wait_for_deployment(container_handle, "running")
   end
 
   defp wait_for_deployment(container_handle, expected_status) do

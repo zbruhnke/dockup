@@ -107,11 +107,11 @@ defmodule Dockup.Backends.Kubernetes do
       end
 
     case pod_status do
-      "Unknown" -> :unknown
-      "Pending" -> :pending
-      "Running" -> :running
-      "Succeeded" -> :running
-      "Failed" -> :failed
+      "Unknown" -> "unknown"
+      "Pending" -> "pending"
+      "Running" -> "running"
+      "Succeeded" -> "running"
+      "Failed" -> "failed"
     end
   end
 

@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :dockup_ui,
+  backend_module: Dockup.Backends.Kubernetes,
+
 # For production, we configure the host to read the PORT
 # from the system environment. Therefore, you will need
 # to set PORT=80 before running your server.

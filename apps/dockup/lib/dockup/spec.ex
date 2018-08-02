@@ -12,7 +12,7 @@ defmodule Dockup.Spec do
   The container handle can be used to uniquely reference the container
   in the backend.
   """
-  @callback start(%Container{}) :: String.t() :: {:ok, String.t()}
+  @callback start(%Container{}) :: {:ok, String.t()}
 
   @doc """
   This function is used to hibernate a container. Used to save money :D

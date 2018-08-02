@@ -2,6 +2,7 @@ defmodule DockupUi.DeployService do
   alias DockupUi.{
     Deployment,
     ContainerSpec,
+    Container,
     Subdomain,
     Repo,
     BackendAdapter
@@ -16,9 +17,12 @@ defmodule DockupUi.DeployService do
     |> create_deployment(name)
     |> prepare_backend_containers()
     |> start_containers()
+    |> update_container_handles()
     |> Repo.transaction()
   end
 
+  # Returns a multi for creating a deployment along with the associated
+  # models - containers, ports and ingresses
   defp create_deployment(container_spec_params, name) do
     container_specs = fetch_container_specs(container_spec_params)
     name = name || autogenerate_name(container_specs, container_spec_params)
@@ -32,18 +36,56 @@ defmodule DockupUi.DeployService do
     Multi.insert(Multi.new, :deployment, Deployment.changeset(deployment, %{name: name, containers: containers}))
   end
 
+  # From the deployment multi, prepares container structs which backend understands
+  # Adds these backend containers to the multi and returns it
   defp prepare_backend_containers(multi) do
     Multi.run(multi, :backend_containers, fn %{deployment: deployment} ->
-      containers = BackendAdapter.prepare_containers(deployment)
+      deployment = Repo.preload(deployment, [containers: [container_spec: [:init_container_specs, port_specs: [ingress: :subdomain]]]])
+
+      containers =
+        Enum.map(deployment.containers, fn container ->
+          {container.id, BackendAdapter.prepare_container(container)}
+        end)
+
       {:ok, containers}
     end)
   end
 
+  # From the backend_containers multi, starts each backend container
+  # and returns a multi with a list of {<container_id>, <container_handle>}
   defp start_containers(multi) do
+    backend = Application.fetch_env!(:dockup_ui, :backend_module)
+
     Multi.run(multi, :backend_response, fn %{backend_containers: containers} ->
-      IO.inspect containers
-      {:ok, containers}
+      container_handles =
+        Enum.map(containers, fn {id, container} ->
+          {:ok, container_handle} = backend.start(container)
+          {id, container_handle}
+        end)
+
+      {:ok, container_handles}
     end)
+  end
+
+  # From the backend_response multi, prepares multiple multi's for updating
+  # containers with their handles. Returns a merged multi of all these updates.
+  defp update_container_handles(multi) do
+    Multi.merge(multi, fn %{backend_response: container_handles} ->
+      get_merged_multi(multi, container_handles)
+    end)
+  end
+
+  defp get_merged_multi(multi, []) do
+    multi
+  end
+
+  defp get_merged_multi(multi, [{id, handle} | rest]) do
+    changeset = Container.changeset(%Container{id: id}, %{handle: handle})
+    update_multi = Multi.update(multi, "update_handle_#{id}", changeset)
+
+    multi
+    |> Multi.append(update_multi)
+    |> get_merged_multi(rest)
   end
 
   defp prepare_containers(container_specs, container_spec_params) do
