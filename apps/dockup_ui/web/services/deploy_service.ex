@@ -110,7 +110,7 @@ defmodule DockupUi.DeployService do
     name =
       container_specs
       |> Enum.map(&({&1.name, get_tag(container_spec_params, &1.id), &1.default_tag}))
-      |> Enum.filter(fn {name, tag, default_tag} -> tag != default_tag end)
+      |> Enum.filter(fn {_name, tag, default_tag} -> tag != default_tag end)
       |> Enum.map(fn {name, tag, _} -> "#{name}:#{tag}" end)
       |> Enum.join(", ")
 
