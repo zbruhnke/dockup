@@ -4,7 +4,6 @@ defmodule DockupUi.HibernateDeploymentService do
 
   alias DockupUi.{
     DeploymentStatusUpdateService,
-    Callback,
     Deployment,
     Repo
   }

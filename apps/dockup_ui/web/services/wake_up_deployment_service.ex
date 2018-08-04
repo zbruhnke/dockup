@@ -5,7 +5,6 @@ defmodule DockupUi.WakeUpDeploymentService do
   alias DockupUi.{
     Deployment,
     Repo,
-    DeploymentQueue,
     DeploymentStatusUpdateService
   }
 

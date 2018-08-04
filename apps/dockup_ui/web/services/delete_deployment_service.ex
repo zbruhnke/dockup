@@ -7,26 +7,12 @@ defmodule DockupUi.DeleteDeploymentService do
     DeploymentStatusUpdateService
   }
 
-  def run(deployment_id, deps \\ []) do
+  def run(deployment_id) do
     Logger.info "Deleting deployment with ID: #{deployment_id}"
 
     with \
       deployment <- Repo.get!(Deployment, deployment_id),
       {:ok, deployment} <- DeploymentStatusUpdateService.run("deleting", deployment.id),
-      :ok <- delete_deployment(deployment)
-    do
-      {:ok, deployment}
-    end
-  end
-
-  def run_for_restarting(deployment_id, deps \\ []) do
-    Logger.info "Deleting deployment with ID: #{deployment_id} for attempting restart"
-
-    with \
-      deployment <- Repo.get!(Deployment, deployment_id),
-      changeset <- Deployment.changeset(deployment, %{status: "restarting"}),
-      {:ok, deployment} <- Repo.update(changeset),
-      :ok <- DeploymentStatusUpdateService.run(deployment),
       :ok <- delete_deployment(deployment)
     do
       {:ok, deployment}
