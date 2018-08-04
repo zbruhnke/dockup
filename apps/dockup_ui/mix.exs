@@ -44,7 +44,6 @@ defmodule DockupUi.Mixfile do
      {:cowboy, "~> 1.1"},
      {:httpotion, "~> 3.0.0"},
      {:poison, "~> 3.1.0"},
-     {:flow, "~> 0.12.0"},
      {:ueberauth, "~> 0.4"},
      {:ueberauth_google, "~> 0.7"},
      {:dockup, in_umbrella: true}]

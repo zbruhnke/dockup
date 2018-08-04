@@ -25,9 +25,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsService do
 
     query
     |> Repo.all
-    |> Flow.from_enumerable()
-    |> Flow.map(fn id -> service.run(id) end)
-    |> Flow.run()
+    |> Enum.each(fn id -> service.run(id) end)
   end
 
   defp get_retention_days() do
