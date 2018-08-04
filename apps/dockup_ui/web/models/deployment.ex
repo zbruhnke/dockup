@@ -20,6 +20,7 @@ defmodule DockupUi.Deployment do
     field :delete_at, :utc_datetime
     field :hibernate_at, :utc_datetime
     field :wake_up_at, :utc_datetime
+    field :deployed_at, :utc_datetime
     field :status, :string
 
     belongs_to :blueprint, Blueprint
@@ -31,7 +32,7 @@ defmodule DockupUi.Deployment do
   @doc false
   def changeset(%Deployment{} = deployment, attrs) do
     deployment
-    |> cast(attrs, [:name, :delete_at, :hibernate_at, :wake_up_at, :status])
+    |> cast(attrs, [:name, :delete_at, :hibernate_at, :wake_up_at, :status, :deployed_at])
     |> cast_assoc(:containers)
     |> validate_required([:name, :status, :blueprint_id])
     |> validate_inclusion(:status, @valid_statuses)

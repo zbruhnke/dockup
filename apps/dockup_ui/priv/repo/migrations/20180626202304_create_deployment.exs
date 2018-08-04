@@ -7,6 +7,7 @@ defmodule DockupUi.Repo.Migrations.CreateDeployment do
       add :delete_at, :utc_datetime
       add :hibernate_at, :utc_datetime
       add :wake_up_at, :utc_datetime
+      add :deployed_at, :utc_datetime
       add :status, :string
       add :blueprint_id, references(:blueprints, on_delete: :nothing)
 

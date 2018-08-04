@@ -11,6 +11,10 @@ defmodule DockupUi.DeploymentChannel do
     end
   end
 
+  def update_container_status(container) do
+    container_event("status_updated", container)
+  end
+
   #============== Internal API below=============#
 
   def deployment_event(event, deployment) do
@@ -18,7 +22,12 @@ defmodule DockupUi.DeploymentChannel do
     Endpoint.broadcast("deployments:all", event, deployment_json)
   end
 
-  def join("deployments:all", _message, socket) do
+  def container_event(event, container) do
+    container_json = %{id: container.id, status: container.status}
+    Endpoint.broadcast("deployments:#{container.deployment_id}", event, container_json)
+  end
+
+  def join("deployments:" <> _, _message, socket) do
     {:ok, socket}
   end
 end

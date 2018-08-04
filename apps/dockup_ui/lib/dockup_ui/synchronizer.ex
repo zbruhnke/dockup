@@ -7,7 +7,8 @@ defmodule DockupUi.Synchronizer do
     Deployment,
     Container,
     Repo,
-    DeploymentStatusUpdateService
+    DeploymentStatusUpdateService,
+    ContainerStatusUpdateService
   }
   alias Ecto.Multi
 
@@ -49,7 +50,7 @@ defmodule DockupUi.Synchronizer do
     |> update_container_statuses()
     |> update_deployment_status(deployment)
     # Also update statuses via websockets here
-    |> publish_deployment_update()
+    |> publish_status_update()
     |> run_in_transaction()
   end
 
@@ -76,22 +77,31 @@ defmodule DockupUi.Synchronizer do
     new_deployment_status = container_statuses_changed && get_deployment_status(container_statuses, deployment.status)
 
     if new_deployment_status do
-      changeset = Deployment.changeset(deployment, %{status: new_deployment_status})
+      attrs =
+        if new_deployment_status == "started" do
+          %{status: new_deployment_status}
+        else
+          %{status: new_deployment_status, deployed_at: DateTime.utc_now()}
+        end
+
+      changeset = Deployment.changeset(deployment, attrs)
       Multi.update(multi, "deployment_status", changeset)
     else
       multi
     end
   end
 
-  defp publish_deployment_update(multi) do
+  defp publish_status_update(multi) do
     if Multi.to_list(multi) == [] do
       multi
     else
-      Multi.run(multi, "publish_deployment_status", fn
-        %{"deployment_status" => deployment} ->
-          {:ok, DeploymentStatusUpdateService.run(deployment)}
-        _ ->
-          {:ok, :ok}
+      Multi.run(multi, "publish_status_update", fn changes ->
+        Enum.each(changes, fn
+          {"status-" <> _, container} ->  ContainerStatusUpdateService.run(container)
+          {"deployment_status", deployment} -> DeploymentStatusUpdateService.run(deployment)
+        end)
+
+        {:ok, :ok}
       end)
     end
   end

@@ -40,12 +40,20 @@ class DeploymentCard extends Component {
     }
   }
 
-  renderContainersSection() {
-    //if(!this.props.showDetails) {
-      //return null;
-    //}
+  renderDetailsButton() {
+    if (!this.props.showDetails) {
+      return(
+        <a href={`/deployments/${this.props.deployment.id}`} className="btn btn-outline-primary mr-2">Details</a>
+      );
+    }
+  }
 
-    return(<ContainersSection containers={this.props.deployment.containers}/>);
+  renderContainersSection() {
+    if(!this.props.showDetails) {
+      return null;
+    }
+
+    return(<ContainersSection containers={this.props.deployment.containers} deploymentId={this.props.deployment.id}/>);
   }
 
   handleWakeUp(e) {
@@ -128,7 +136,7 @@ class DeploymentCard extends Component {
           <div className="card-footer dockup-card-footer">
             <div className="row">
               <div className="col-8">
-                <a href={`/deployments/${this.props.deployment.id}`} className="btn btn-outline-primary mr-2">Details</a>
+                {this.renderDetailsButton()}
                 {this.renderHibernateButton()}
                 {this.renderWakeUpButton()}
                 {this.renderDeleteButton()}

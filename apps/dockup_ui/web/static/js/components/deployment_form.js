@@ -114,7 +114,7 @@ class DeploymentForm extends Component {
           />
         </form>
 
-        {deployment && <DeploymentCard deployment={deployment} />}
+        {deployment && <DeploymentCard deployment={deployment} showDetails={true}/>}
       </div>
     )
   }

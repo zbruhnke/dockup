@@ -21,6 +21,14 @@ class DockupUiSocket {
       .receive("error", resp => { console.log("Unable to join deployments:all channel", resp) })
     return channel;
   }
+
+  getDeploymentChannel(id) {
+    let channel = this.socket.channel(`deployments:${id}`, {});
+    channel.join()
+      .receive("ok", resp => { console.log(`Joined deployments:${id} channel`, resp) })
+      .receive("error", resp => { console.log(`Unable to join deployments:${id} channel`, resp) })
+    return channel;
+  }
 }
 
 window.DockupUiSocket = new DockupUiSocket();

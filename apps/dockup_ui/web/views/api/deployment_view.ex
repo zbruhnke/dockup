@@ -20,7 +20,34 @@ defmodule DockupUi.API.DeploymentView do
       name: deployment.name,
       status: deployment.status,
       inserted_at: deployment.inserted_at,
-      updated_at: deployment.updated_at
+      updated_at: deployment.updated_at,
+      deployed_at: deployment.deployed_at
+    }
+  end
+
+  def render("deployment_details.json", %{deployment: deployment}) do
+    deployment = Repo.preload(deployment, [:blueprint, containers: [:container_spec, [ingresses: :port_spec]]])
+
+    details = %{
+      containers: Enum.map(deployment.containers, &(render("container.json", %{container: &1})))
+    }
+
+    "deployment.json"
+    |> render(%{deployment: deployment})
+    |> Map.merge(details)
+  end
+
+  def render("container.json", %{container: container}) do
+    container = Repo.preload(container, [:container_spec, [ingresses: :port_spec]])
+    endpoints = Enum.map(container.ingresses, fn ingress -> [ingress.endpoint, ingress.port_spec.port] end)
+
+    %{
+      id: container.id,
+      status: container.status,
+      name: container.container_spec.name,
+      image: container.container_spec.image,
+      tag: container.tag,
+      endpoints: endpoints
     }
   end
 end
