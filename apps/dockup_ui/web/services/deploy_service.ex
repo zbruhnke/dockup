@@ -71,7 +71,7 @@ defmodule DockupUi.DeployService do
   # containers with their handles. Returns a merged multi of all these updates.
   defp update_container_handles(multi) do
     Multi.merge(multi, fn %{backend_response: container_handles} ->
-      get_merged_multi(multi, container_handles)
+      get_merged_multi(Multi.new(), container_handles)
     end)
   end
 
@@ -80,8 +80,8 @@ defmodule DockupUi.DeployService do
   end
 
   defp get_merged_multi(multi, [{id, handle} | rest]) do
-    changeset = Container.changeset(%Container{id: id}, %{handle: handle})
-    update_multi = Multi.update(multi, "update_handle_#{id}", changeset)
+    changeset = Container.update_tag_changeset(id, handle)
+    update_multi = Multi.update(Multi.new(), "update_handle_#{id}", changeset)
 
     multi
     |> Multi.append(update_multi)

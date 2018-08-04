@@ -24,7 +24,7 @@ defmodule DockupUi.HibernateDeploymentService do
     with \
        deployment <- Repo.get!(Deployment, deployment_id),
        changeset <-
-         Deployment.changeset(deployment, %{log_url: nil, urls: nil, status: "hibernating"}),
+         Deployment.changeset(deployment, %{status: "hibernating"}),
        {:ok, deployment} <- Repo.update(changeset),
        :ok <- DeploymentStatusUpdateService.run(deployment),
        :ok <- hibernate(deployment)
@@ -34,8 +34,11 @@ defmodule DockupUi.HibernateDeploymentService do
   end
 
   defp hibernate(deployment) do
+    deployment = Repo.preload(deployment, :containers)
     backend = Application.fetch_env!(:dockup_ui, :backend_module)
-    backend.hibernate(deployment.id, Callback)
+    for container <- deployment.containers do
+      backend.hibernate(container.handle)
+    end
     :ok
   end
 end

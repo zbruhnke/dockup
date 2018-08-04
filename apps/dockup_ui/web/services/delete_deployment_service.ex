@@ -4,21 +4,16 @@ defmodule DockupUi.DeleteDeploymentService do
   alias DockupUi.{
     Deployment,
     Repo,
-    Callback,
     DeploymentStatusUpdateService
   }
 
   def run(deployment_id, deps \\ []) do
     Logger.info "Deleting deployment with ID: #{deployment_id}"
 
-    backend = Application.fetch_env!(:dockup_ui, :backend_module)
-    delete_deployment_job = deps[:delete_deployment_job] || backend
-    callback = deps[:callback] || Callback
-
     with \
       deployment <- Repo.get!(Deployment, deployment_id),
       {:ok, deployment} <- DeploymentStatusUpdateService.run("deleting", deployment.id),
-      :ok <- delete_deployment(delete_deployment_job, deployment, callback)
+      :ok <- delete_deployment(deployment)
     do
       {:ok, deployment}
     end
@@ -27,16 +22,12 @@ defmodule DockupUi.DeleteDeploymentService do
   def run_for_restarting(deployment_id, deps \\ []) do
     Logger.info "Deleting deployment with ID: #{deployment_id} for attempting restart"
 
-    backend = Application.fetch_env!(:dockup_ui, :backend_module)
-    delete_deployment_job = deps[:delete_deployment_job] || backend
-    callback = deps[:callback] || Callback
-
     with \
       deployment <- Repo.get!(Deployment, deployment_id),
       changeset <- Deployment.changeset(deployment, %{status: "restarting"}),
       {:ok, deployment} <- Repo.update(changeset),
       :ok <- DeploymentStatusUpdateService.run(deployment),
-      :ok <- delete_deployment(delete_deployment_job, deployment, callback)
+      :ok <- delete_deployment(deployment)
     do
       {:ok, deployment}
     end
@@ -49,8 +40,12 @@ defmodule DockupUi.DeleteDeploymentService do
     end
   end
 
-  defp delete_deployment(delete_deployment_job, deployment, callback) do
-    delete_deployment_job.destroy(deployment.id, callback)
+  defp delete_deployment(deployment) do
+    deployment = Repo.preload(deployment, :containers)
+    backend = Application.fetch_env!(:dockup_ui, :backend_module)
+    for container <- deployment.containers do
+      backend.delete(container.handle)
+    end
     :ok
   end
 end

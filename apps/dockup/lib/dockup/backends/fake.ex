@@ -7,10 +7,7 @@ defmodule Dockup.Backends.Fake do
 
   @impl Spec
   def start(%{name: name, deployment_id: deployment_id}) do
-    unless GenServer.whereis(__MODULE__) do
-      GenServer.start(__MODULE__, [], name: __MODULE__)
-    end
-
+    start_server()
     handle = "#{name}-#{deployment_id}"
     GenServer.cast(__MODULE__, {:start, handle})
 
@@ -19,24 +16,28 @@ defmodule Dockup.Backends.Fake do
 
   @impl Spec
   def hibernate(handle) do
+    start_server()
     GenServer.cast(__MODULE__, {:hibernate, handle})
     :ok
   end
 
   @impl Spec
   def wake_up(handle) do
+    start_server()
     GenServer.cast(__MODULE__, {:wake_up, handle})
     :ok
   end
 
   @impl Spec
   def delete(handle) do
+    start_server()
     GenServer.cast(__MODULE__, {:delete, handle})
     :ok
   end
 
   @impl Spec
   def status(handle) do
+    start_server()
     GenServer.call(__MODULE__, {:get_status, handle})
   end
 
@@ -77,7 +78,8 @@ defmodule Dockup.Backends.Fake do
 
   @impl GenServer
   def handle_call({:get_status, handle}, _from, state) do
-    {:reply, state[handle], state}
+    status = Map.get(state, handle, "running")
+    {:reply, status, state}
   end
 
   @impl GenServer
@@ -91,6 +93,12 @@ defmodule Dockup.Backends.Fake do
   def handle_info({:set_state, handle, status}, state) when status in ["running", "unknown"] do
     state = change_state(handle, status, state)
     {:noreply, state}
+  end
+
+  defp start_server do
+    unless GenServer.whereis(__MODULE__) do
+      GenServer.start(__MODULE__, [], name: __MODULE__)
+    end
   end
 
   defp state_change_after(handle, msec, state) do

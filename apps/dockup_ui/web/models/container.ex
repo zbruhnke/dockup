@@ -30,11 +30,20 @@ defmodule DockupUi.Container do
     |> validate_required([:autodeploy, :status, :tag, :container_spec_id])
   end
 
+  def update_tag_changeset(id, handle) do
+    %Container{id: id}
+    |> cast(%{handle: handle}, [:handle])
+  end
+
   @doc false
   def status_update_changeset(%Container{} = container, status) do
     container
     |> cast(%{status: status, status_synced_at: DateTime.utc_now()}, [:status, :status_synced_at])
     |> validate_required([:status, :status_synced_at])
     |> validate_inclusion(:status, @valid_statuses)
+  end
+
+  def transient_states do
+    ~w(pending running failed)
   end
 end

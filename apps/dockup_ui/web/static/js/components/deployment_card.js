@@ -3,6 +3,7 @@ import TimeAgo from 'react-timeago';
 import DeploymentStatus from './deployment_status';
 import {getStatusColorClass} from '../status_colors';
 import FlashMessage from '../flash_message';
+import ContainersSection from './containers_section';
 
 class DeploymentCard extends Component {
   constructor(props) {
@@ -10,44 +11,6 @@ class DeploymentCard extends Component {
     this.handleHibernate = this.handleHibernate.bind(this);
     this.handleWakeUp = this.handleWakeUp.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-  }
-
-  getGithubRepo() {
-    let match = this.props.deployment.git_url.match(/.*[:\/](.*\/.*).git/)
-    if(match) {
-      let [_, repo] = match;
-      return repo;
-    } else {
-      return "";
-    }
-  }
-
-  renderOpenButton() {
-    // TODO: these status checks can be removed if the urls are cleared on hibernation
-    if(!this.props.deployment.urls ||
-       this.props.deployment.status == "hibernating" ||
-       this.props.deployment.status == "hibernated" ||
-       this.props.deployment.status == "waking_up") {
-      return null;
-    }
-
-    let [url] = this.props.deployment.urls;
-    if(url) {
-      let absoluteUrl = `http://${url}`;
-      return(
-        <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Open</a>
-      )
-    }
-  }
-
-  renderLogButton() {
-    let url = this.props.deployment.log_url;
-    if(url) {
-      let absoluteUrl = (url.indexOf("http") === 0 ? url : `//${url}`);
-      return(
-        <a href={absoluteUrl} className="btn btn-outline-primary mr-2" target="_blank">Logs</a>
-      )
-    }
   }
 
   handleHibernate(e) {
@@ -75,6 +38,14 @@ class DeploymentCard extends Component {
         <button type="button" onClick={this.handleHibernate} className="btn btn-outline-primary mr-2">Hibernate</button>
       );
     }
+  }
+
+  renderContainersSection() {
+    //if(!this.props.showDetails) {
+      //return null;
+    //}
+
+    return(<ContainersSection containers={this.props.deployment.containers}/>);
   }
 
   handleWakeUp(e) {
@@ -151,13 +122,13 @@ class DeploymentCard extends Component {
 
             <h6 className="card-subtitle mb-2">{this.props.deployment.blueprint_name}</h6>
 
+            {this.renderContainersSection()}
 
           </div>
           <div className="card-footer dockup-card-footer">
             <div className="row">
               <div className="col-8">
-                {this.renderOpenButton()}
-                {this.renderLogButton()}
+                <a href={`/deployments/${this.props.deployment.id}`} className="btn btn-outline-primary mr-2">Details</a>
                 {this.renderHibernateButton()}
                 {this.renderWakeUpButton()}
                 {this.renderDeleteButton()}

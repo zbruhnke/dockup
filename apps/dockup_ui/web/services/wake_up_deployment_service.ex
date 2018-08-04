@@ -23,12 +23,17 @@ defmodule DockupUi.WakeUpDeploymentService do
          changeset <- Deployment.changeset(deployment, %{status: "waking_up"}),
          {:ok, deployment} <- Repo.update(changeset),
          :ok <- DeploymentStatusUpdateService.run(deployment),
-         :ok <- queue_deployment(deployment_id) do
+         :ok <- wake_up(deployment) do
       {:ok, deployment}
     end
   end
 
-  defp queue_deployment(deployment_id) do
-    DeploymentQueue.enqueue(deployment_id)
+  defp wake_up(deployment) do
+    deployment = Repo.preload(deployment, :containers)
+    backend = Application.fetch_env!(:dockup_ui, :backend_module)
+    for container <- deployment.containers do
+      backend.wake_up(container.handle)
+    end
+    :ok
   end
 end

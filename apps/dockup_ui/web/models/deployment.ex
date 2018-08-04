@@ -36,4 +36,8 @@ defmodule DockupUi.Deployment do
     |> validate_required([:name, :status, :blueprint_id])
     |> validate_inclusion(:status, @valid_statuses)
   end
+
+  def transient_states do
+    ~w(queued starting started hibernating waking_up deleting failed)
+  end
 end

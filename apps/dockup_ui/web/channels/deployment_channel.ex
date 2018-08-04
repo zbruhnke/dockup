@@ -13,8 +13,9 @@ defmodule DockupUi.DeploymentChannel do
 
   #============== Internal API below=============#
 
-  def deployment_event(event, args) do
-    Endpoint.broadcast("deployments:all", event, args)
+  def deployment_event(event, deployment) do
+    deployment_json = DockupUi.API.DeploymentView.render("deployment.json", %{deployment: deployment})
+    Endpoint.broadcast("deployments:all", event, deployment_json)
   end
 
   def join("deployments:all", _message, socket) do

@@ -116,20 +116,9 @@ defmodule Dockup.Backends.Kubernetes do
   end
 
   def get_pods(container_handle) do
-    response =
-      @namespace
-      |> CoreV1.list_namespaced_pod!(label_selector: "app=#{container_handle}")
-      |> Kazan.run()
-
-    case response do
-      {:ok, %{items: pods}} ->
-        pods
-
-      {:error, error} ->
-        Logger.error("Cannot get pods of deployment #{container_handle}: #{inspect(error)}")
-        []
-    end
+    get_pods_by_label("app", container_handle)
   end
+
 
   ############## Helper functions to name resources ##########
   defp deployment_name(container_handle) do
@@ -142,6 +131,23 @@ defmodule Dockup.Backends.Kubernetes do
 
   defp ingress_name(container_handle) do
     "#{container_handle}-ingress"
+  end
+
+  ############## Helper function to fetch pods using a label
+  defp get_pods_by_label(label, value) do
+    response =
+      @namespace
+      |> CoreV1.list_namespaced_pod!(label_selector: "#{label}=#{value}")
+      |> Kazan.run()
+
+    case response do
+      {:ok, %{items: pods}} ->
+        pods
+
+      {:error, error} ->
+        Logger.error("Cannot get pods of label #{label} - #{value}: #{inspect(error)}")
+        []
+    end
   end
 
   ############## Functions to create K8S resources ############
