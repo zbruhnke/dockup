@@ -69,7 +69,7 @@ exports.config = {
         includePaths: [
           "node_modules/bootstrap/scss",
           "node_modules/react-bootstrap-typeahead/css",
-          "node_modules/notie/src",
+          "node_modules/toastr/build",
           "node_modules/font-awesome/scss"
         ],
         precision: 8

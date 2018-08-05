@@ -45,7 +45,7 @@ class DeploymentForm extends Component {
     this.createRequest(containerSpecs)
       .then((response) => response.json())
       .then((response) => {
-        this.setState({ deployment: response.data });
+        this.setState({ deployment: response });
       })
       .catch(() => {
         FlashMessage.showMessage("danger", "Deployment cannot be queued.");
@@ -67,7 +67,7 @@ class DeploymentForm extends Component {
     const { containerSpecs, errors } = this.state;
 
     containerSpecs.forEach(spec => {
-      if (spec.image === name) {
+      if (spec.name === name) {
         spec.tag = value.trim();
       }
     });
@@ -92,17 +92,17 @@ class DeploymentForm extends Component {
         <form onSubmit={this.handleOnDeploy}>
           {containerSpecs.map((spec) => (
             <div className="form-group" key={spec.id}>
-              <label htmlFor={spec.image}>{spec.image}</label>
+              <label htmlFor={spec.name}>{spec.name}</label>
               <input
                 className={cx("form-control", {
-                  error: !!errors[spec.image]
+                  error: !!errors[spec.name]
                 })}
                 placeholder="Image tag"
-                name={spec.image}
+                name={spec.name}
                 value={spec.tag}
                 onChange={this.handleOnChange}
               />
-              {errors[spec.image] && <span className="error">{errors[spec.image]}</span>}
+              {errors[spec.name] && <span className="error">{errors[spec.name]}</span>}
             </div>
           ))}
           <input

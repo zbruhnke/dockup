@@ -16,7 +16,7 @@ defmodule DockupUi.Ingress do
 
     belongs_to :container, Container
     belongs_to :port_spec, PortSpec
-    has_one :subdomain, Subdomain
+    has_one :subdomain, Subdomain, on_replace: :nilify
   end
 
   @doc false

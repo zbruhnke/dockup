@@ -5,7 +5,8 @@ defmodule DockupUi.DeployService do
     Container,
     Subdomain,
     Repo,
-    BackendAdapter
+    BackendAdapter,
+    NotificationChannel
   }
 
   alias Ecto.Multi
@@ -28,7 +29,7 @@ defmodule DockupUi.DeployService do
     name = name || autogenerate_name(container_specs, container_spec_params)
     containers = prepare_containers(container_specs, container_spec_params)
 
-    [container_spec, _] = container_specs
+    container_spec = Enum.at(container_specs, 0)
     blueprint_id = container_spec.blueprint_id
 
     deployment = %Deployment{blueprint_id: blueprint_id, status: "queued"}
@@ -123,10 +124,17 @@ defmodule DockupUi.DeployService do
   defp get_unused_subdomain!() do
     query =
       from s in Subdomain,
-      where: is_nil(s.port_id),
+      where: is_nil(s.ingress_id),
       limit: 1
 
-    Repo.one!(query)
+    case Repo.one(query) do
+      nil ->
+        NotificationChannel.send_notification("error", "No free subdomains. Create new ones or free up existing ones.")
+        raise "No free subdomains"
+
+      subdomain ->
+        subdomain
+    end
   end
 
   defp fetch_container_specs(container_spec_params) do

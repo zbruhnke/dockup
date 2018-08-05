@@ -23,7 +23,7 @@ defmodule DockupUi.DeploymentChannel do
   end
 
   def container_event(event, container) do
-    container_json = %{id: container.id, status: container.status}
+    container_json = DockupUi.API.DeploymentView.render("container.json", %{container: container})
     Endpoint.broadcast("deployments:#{container.deployment_id}", event, container_json)
   end
 

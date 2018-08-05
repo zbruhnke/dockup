@@ -44,25 +44,10 @@ defmodule DockupUi.API.BitbucketWebhookController do
     end
   end
 
-  defp handle(conn, event, git_url, branch) when event in ["pullrequest:fulfilled", "pullrequest:rejected"] do
-    delete_deployment_service = conn.assigns[:delete_deployment_service] || DeleteDeploymentService
-    query =
-      from d in Deployment,
-      where: d.git_url == ^git_url,
-      where: d.branch == ^branch,
-      select: d.id
-    deployment_ids = Repo.all(query)
-
-    case delete_deployment_service.run_all(deployment_ids) do
-      true ->
-        conn
-        |> put_status(:ok)
-        |> text("ok")
-      false ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> text("error")
-    end
+  defp handle(conn, event, _, _) when event in ["pullrequest:fulfilled", "pullrequest:rejected"] do
+    conn
+    |> put_status(:ok)
+    |> text("ok")
   end
 
   defp handle(conn, _, _, _) do

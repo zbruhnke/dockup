@@ -41,7 +41,7 @@ class DeploymentCard extends Component {
   }
 
   renderDetailsButton() {
-    if (!this.props.showDetails) {
+    if (!this.props.showDetails && !(this.props.deployment.status == "deleted")) {
       return(
         <a href={`/deployments/${this.props.deployment.id}`} className="btn btn-outline-primary mr-2">Details</a>
       );

@@ -29,7 +29,7 @@ defmodule DockupUi.API.DeploymentController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", api_deployment_path(conn, :show, deployment))
-        |> render("show.json", deployment: deployment)
+        |> render("deployment_details.json", deployment: deployment)
       {:error, :deployment, changeset, _} ->
         conn
         |> put_status(:unprocessable_entity)

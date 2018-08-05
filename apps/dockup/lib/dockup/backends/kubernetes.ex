@@ -103,13 +103,22 @@ defmodule Dockup.Backends.Kubernetes do
     pod_status =
       case pods do
         [] -> "Unknown"
-        [%{status: status}] -> status.phase
+        [%{status: %{phase: "Succeeded"}}] -> "Succeeded"
+        [%{status: %{phase: "Failed"}}] -> "Failed"
+        [%{status: %{container_statuses: [status]}}] -> status
+        [%{status: %{phase: "Pending"}}] -> "Pending"
       end
 
     case pod_status do
+      %{state: %{waiting: %{reason: "ContainerCreating"}}} -> "pending"
+      %{state: %{waiting: %{reason: reason}}} ->
+        # For debugging, keep it here until stable
+        IO.inspect reason
+        "failed"
+      %{state: %{terminated: %{reason: _}}} -> "failed"
+      %{state: %{running: %{started_at: _}}} -> "running"
       "Unknown" -> "unknown"
       "Pending" -> "pending"
-      "Running" -> "running"
       "Succeeded" -> "running"
       "Failed" -> "failed"
     end
@@ -117,6 +126,10 @@ defmodule Dockup.Backends.Kubernetes do
 
   def get_pods(container_handle) do
     get_pods_by_label("app", container_handle)
+  end
+
+  def get_deployment(container_handle) do
+    get_deployment_by_label("app", container_handle)
   end
 
 
@@ -150,6 +163,22 @@ defmodule Dockup.Backends.Kubernetes do
     end
   end
 
+  defp get_deployment_by_label(label, value) do
+    response =
+      @namespace
+      |> AppsV1.list_namespaced_deployment!(label_selector: "#{label}=#{value}")
+      |> Kazan.run()
+
+    case response do
+      {:ok, %{items: deployments}} ->
+        deployments
+
+      {:error, error} ->
+        Logger.error("Cannot get deployments of label #{label} - #{value}: #{inspect(error)}")
+        []
+    end
+  end
+
   ############## Functions to create K8S resources ############
   defp create_deployment(args) do
     args
@@ -164,9 +193,7 @@ defmodule Dockup.Backends.Kubernetes do
   defp create_service(args) do
     args
     |> prepare_service()
-    |> CoreV1.create_namespaced_service!(@namespace)
-    |> Kazan.run()
-    |> handle_response()
+    |> create_k8s_service()
 
     args
   end
@@ -174,11 +201,29 @@ defmodule Dockup.Backends.Kubernetes do
   defp create_ingress(args) do
     args
     |> prepare_ingress()
+    |> create_k8s_ingress()
+
+    args
+  end
+
+  defp create_k8s_service(nil) do
+    :ok
+  end
+  defp create_k8s_service(service) do
+    service
+    |> CoreV1.create_namespaced_service!(@namespace)
+    |> Kazan.run()
+    |> handle_response()
+  end
+
+  defp create_k8s_ingress(nil) do
+    :ok
+  end
+  defp create_k8s_ingress(ingress) do
+    ingress
     |> V1beta1.create_namespaced_ingress!(@namespace)
     |> Kazan.run()
     |> handle_response()
-
-    args
   end
 
   ############## Functions to delete K8S resources ############
@@ -241,13 +286,15 @@ defmodule Dockup.Backends.Kubernetes do
   end
 
   defp prepare_service({container, container_handle}) do
-    %Service{
-      metadata: %ObjectMeta{name: service_name(container_handle)},
-      spec: %ServiceSpec{
-        ports: get_service_ports(container.ports, container_handle),
-        selector: %{app: container_handle}
+    if container.ports != [] do
+      %Service{
+        metadata: %ObjectMeta{name: service_name(container_handle)},
+        spec: %ServiceSpec{
+          ports: get_service_ports(container.ports, container_handle),
+          selector: %{app: container_handle}
+        }
       }
-    }
+    end
   end
 
   defp prepare_ingress({container, container_handle}) do
@@ -256,10 +303,14 @@ defmodule Dockup.Backends.Kubernetes do
       |> Enum.filter(fn %{public: public, host: host} -> public && host end)
       |> Enum.map(&prepare_ingress_rule(container_handle, &1))
 
-    %Ingress{
-      metadata: %ObjectMeta{name: ingress_name(container_handle)},
-      spec: %IngressSpec{rules: ingress_rules}
-    }
+    if ingress_rules == [] do
+      nil
+    else
+      %Ingress{
+        metadata: %ObjectMeta{name: ingress_name(container_handle)},
+        spec: %IngressSpec{rules: ingress_rules}
+      }
+    end
   end
 
   defp prepare_ingress_rule(container_handle, %{port: port, host: host}) do

@@ -73,15 +73,14 @@ defmodule DockupUi.Synchronizer do
   end
 
   defp update_deployment_status({multi, container_statuses}, deployment) do
-    container_statuses_changed = Multi.to_list(multi) != []
-    new_deployment_status = container_statuses_changed && get_deployment_status(container_statuses, deployment.status)
+    new_deployment_status = get_deployment_status(container_statuses, deployment.status)
 
-    if new_deployment_status do
+    if new_deployment_status && new_deployment_status != deployment.status do
       attrs =
         if new_deployment_status == "started" do
-          %{status: new_deployment_status}
-        else
           %{status: new_deployment_status, deployed_at: DateTime.utc_now()}
+        else
+          %{status: new_deployment_status}
         end
 
       changeset = Deployment.changeset(deployment, attrs)

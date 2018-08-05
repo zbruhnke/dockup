@@ -3,12 +3,23 @@ import ReactDOM from "react-dom"
 import DeploymentList from "./components/deployment_list"
 import DeploymentItem from "./components/deployment_item"
 import DeploymentForm from "./components/deployment_form"
+import FlashMessage from "./flash_message"
 
 let deployment_form_container = document.getElementById('deployment_form_container');
+
+let connectToNotificationChannel = () => {
+  let channel = DockupUiSocket.getNotificationChannel();
+
+  channel.on("notification", (data) => {
+    FlashMessage.showMessage(data.type, data.message);
+  })
+}
 
 if (deployment_form_container) {
   ReactDOM.render(<DeploymentForm/>, deployment_form_container);
 }
+
+connectToNotificationChannel();
 
 const Deployment = {
   mountDeploymentList: (elementId) => {

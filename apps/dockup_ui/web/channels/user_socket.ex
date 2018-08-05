@@ -2,7 +2,8 @@ defmodule DockupUi.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-   channel "deployments:*", DockupUi.DeploymentChannel
+  channel "deployments:*", DockupUi.DeploymentChannel
+  channel "notifications", DockupUi.NotificationChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
