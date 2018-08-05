@@ -4,11 +4,8 @@ defmodule DockupUi.API.BitbucketWebhookController do
   require Logger
 
   alias DockupUi.{
-    Deployment,
     DeployService
   }
-
-  import Ecto.Query
 
   def create(conn, %{"pullrequest" => pull_request, "repository" => %{"full_name" => repo}}) do
     [event] = get_req_header(conn, "x-event-key")
