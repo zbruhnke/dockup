@@ -17,6 +17,6 @@ defmodule DockupUi.Plugs.GetCurrentUser do
   end
 
   defp load_current_user(conn) do
-    assign(conn, :current_user, conn.assigns[:current_user] || get_session(conn, :current_user))
+    conn.assigns[:current_user] || get_session(conn, :current_user)
   end
 end
