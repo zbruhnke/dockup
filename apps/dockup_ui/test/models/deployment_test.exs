@@ -2,11 +2,11 @@ defmodule DockupUi.DeploymentTest do
   use DockupUi.ModelCase
 
   alias DockupUi.Deployment
-
-  @valid_attrs %{git_url: "foo", branch: "bar", callback_url: "baz"}
+  import DockupUi.Factory
 
   test "changeset with valid attributes" do
-    changeset = Deployment.changeset(%Deployment{}, @valid_attrs)
+    blueprint = insert(:blueprint)
+    changeset = Deployment.changeset(%Deployment{blueprint_id: blueprint.id}, %{name: "foo", status: "queued"})
     assert changeset.valid?
   end
 end

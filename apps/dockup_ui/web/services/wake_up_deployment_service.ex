@@ -5,7 +5,7 @@ defmodule DockupUi.WakeUpDeploymentService do
   alias DockupUi.{
     Deployment,
     Repo,
-    DeploymentStatusUpdateService
+    DeploymentChannel
   }
 
   def wake_up_all do
@@ -21,7 +21,7 @@ defmodule DockupUi.WakeUpDeploymentService do
     with deployment <- Repo.get!(Deployment, deployment_id),
          changeset <- Deployment.changeset(deployment, %{status: "waking_up"}),
          {:ok, deployment} <- Repo.update(changeset),
-         :ok <- DeploymentStatusUpdateService.run(deployment),
+         :ok <- DeploymentChannel.update_deployment_status(deployment),
          :ok <- wake_up(deployment) do
       {:ok, deployment}
     end

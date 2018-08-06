@@ -7,8 +7,8 @@ defmodule DockupUi.Synchronizer do
     Deployment,
     Container,
     Repo,
-    DeploymentStatusUpdateService,
-    ContainerStatusUpdateService
+    DeploymentChannel,
+    Hooks
   }
   alias Ecto.Multi
 
@@ -96,8 +96,11 @@ defmodule DockupUi.Synchronizer do
     else
       Multi.run(multi, "publish_status_update", fn changes ->
         Enum.each(changes, fn
-          {"status-" <> _, container} ->  ContainerStatusUpdateService.run(container)
-          {"deployment_status", deployment} -> DeploymentStatusUpdateService.run(deployment)
+          {"status-" <> _, container} ->
+            DeploymentChannel.update_container_status(container)
+          {"deployment_status", deployment} ->
+            DeploymentChannel.update_deployment_status(deployment)
+            Hooks.do_after(deployment.status, deployment)
         end)
 
         {:ok, :ok}

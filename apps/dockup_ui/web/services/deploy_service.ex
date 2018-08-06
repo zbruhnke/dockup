@@ -94,7 +94,8 @@ defmodule DockupUi.DeployService do
       %{
         tag: get_tag(container_spec_params, container_spec.id),
         container_spec_id: container_spec.id,
-        ingresses: prepare_ingresses(container_spec.port_specs)
+        ingresses: prepare_ingresses(container_spec.port_specs),
+        status: "unknown"
       }
     end)
   end

@@ -2,7 +2,6 @@ defmodule DockupUi.SubdomainControllerTest do
   use DockupUi.ConnCase
 
   alias DockupUi.Subdomain
-  @valid_attrs %{git_url: "some git_url"}
   @invalid_attrs %{}
 
   setup do

@@ -4,9 +4,7 @@ defmodule DockupUi.DeleteDeploymentService do
   alias DockupUi.{
     Deployment,
     Repo,
-    Ingress,
-    Subdomain,
-    DeploymentStatusUpdateService
+    DeploymentChannel
   }
 
   alias Ecto.Multi
@@ -17,13 +15,11 @@ defmodule DockupUi.DeleteDeploymentService do
     deployment = Repo.get!(Deployment, deployment_id)
     deployment = Repo.preload(deployment, [containers: [ingresses: :subdomain]])
     ingresses = Enum.flat_map(deployment.containers, &(&1.ingresses))
-    subdomains = Enum.map(ingresses, &(&1.subdomain)) |> Enum.reject(&is_nil/1)
 
     {:ok, %{"deployment" => deployment}} =
       deployment
       |> update_deployment_status()
-      |> clear_ingress_endpoints(ingresses)
-      |> clear_subdomain_ingress_id(subdomains)
+      |> delete_ingress_endpoints(ingresses)
       |> publish_and_delete()
       |> Repo.transaction()
 
@@ -37,24 +33,15 @@ defmodule DockupUi.DeleteDeploymentService do
     |> Multi.update("deployment", changeset)
   end
 
-  defp clear_ingress_endpoints(multi, ingresses) do
+  defp delete_ingress_endpoints(multi, ingresses) do
     Enum.reduce(ingresses, multi, fn ingress, multi ->
-      changeset = Ingress.changeset(ingress, %{endpoint: nil})
-      Multi.update(multi, "ingress_update_#{ingress.id}", changeset)
-    end)
-  end
-
-  defp clear_subdomain_ingress_id(multi, subdomains) do
-    IO.inspect subdomains
-    Enum.reduce(subdomains, multi, fn subdomain, multi ->
-      changeset = Subdomain.changeset(subdomain, %{ingress_id: nil})
-      Multi.update(multi, "subdomain_update_#{subdomain.id}", changeset)
+      Multi.delete(multi, "ingress_delete_#{ingress.id}", ingress)
     end)
   end
 
   defp publish_and_delete(multi) do
     Multi.run(multi, "publish_and_delete", fn %{"deployment" => deployment} ->
-      DeploymentStatusUpdateService.run(deployment)
+      DeploymentChannel.update_deployment_status(deployment)
       delete_deployment(deployment)
 
       {:ok, :ok}

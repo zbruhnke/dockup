@@ -8,7 +8,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     blueprint = insert(:blueprint)
-    deployment = insert({:deployment, blueprint})
+    deployment = insert(:deployment, %{}, %{blueprint_id: blueprint.id})
 
     conn = get conn, api_deployment_path(conn, :index)
     assert json_response(conn, 200)["data"] == [
@@ -26,7 +26,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
 
   test "shows chosen resource", %{conn: conn} do
     blueprint = insert(:blueprint)
-    deployment = insert({:deployment, blueprint})
+    deployment = insert(:deployment, %{}, %{blueprint_id: blueprint.id})
 
     conn = get conn, api_deployment_path(conn, :show, deployment)
     assert json_response(conn, 200)["data"] == %{
@@ -48,7 +48,7 @@ defmodule DockupUi.API.DeploymentControllerTest do
 
   test "create renders resource when DeployService runs fine", %{conn: conn} do
     blueprint = insert(:blueprint)
-    deployment = insert({:deployment, blueprint}, %{id: 1})
+    deployment = insert(:deployment, %{}, %{blueprint_id: blueprint.id, id: 1})
 
     defmodule FakeDeployService do
       def run(%{"foo" => "bar"}) do

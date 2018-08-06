@@ -4,20 +4,22 @@ defmodule DockupUi.DeleteDeploymentServiceTest do
 
   alias DockupUi.{
     DeleteDeploymentService,
+    Subdomain,
+    Ingress,
+    Repo
   }
 
-  defmodule FakeDeleteDeploymentJob do
-    def destroy(1, _callback) do
-      send self(), :ran_delete_deployment_job
-      :ok
-    end
-  end
+  test "run returns {:ok, deployment}" do
+    Application.put_env(:dockup_ui, :backend_module, Dockup.Backends.Fake)
 
-  test "run returns {:ok, deployment} if delete deployment job is scheduled" do
-    insert(:deployment, id: 1)
-    deps = [delete_deployment_job: FakeDeleteDeploymentJob]
-    {:ok, deployment} = DeleteDeploymentService.run(1, deps)
-    %{id: 1} = deployment
-    assert_received :ran_delete_deployment_job
+    subdomain = insert(:subdomain)
+    subdomain = Repo.preload(subdomain, [ingress: :container])
+    {:ok, deployment} = DeleteDeploymentService.run(subdomain.ingress.container.deployment_id)
+
+    nil = Repo.get(Ingress, subdomain.ingress.id)
+    subdomain = Repo.get!(Subdomain, subdomain.id)
+
+    %{ingress_id: nil} = subdomain
+    %{status: "deleting"} = deployment
   end
 end

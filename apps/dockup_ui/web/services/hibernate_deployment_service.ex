@@ -3,7 +3,7 @@ defmodule DockupUi.HibernateDeploymentService do
   require Logger
 
   alias DockupUi.{
-    DeploymentStatusUpdateService,
+    DeploymentChannel,
     Deployment,
     Repo
   }
@@ -25,7 +25,7 @@ defmodule DockupUi.HibernateDeploymentService do
        changeset <-
          Deployment.changeset(deployment, %{status: "hibernating"}),
        {:ok, deployment} <- Repo.update(changeset),
-       :ok <- DeploymentStatusUpdateService.run(deployment),
+       :ok <- DeploymentChannel.update_deployment_status(deployment),
        :ok <- hibernate(deployment)
      do
       {:ok, deployment}

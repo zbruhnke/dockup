@@ -14,3 +14,6 @@ config :dockup_ui, DockupUi.Repo,
   database: "dockup_ui_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :dockup_ui,
+  backend_module: Dockup.Backends.Fake

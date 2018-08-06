@@ -4,7 +4,7 @@ defmodule DockupUi.Repo.Migrations.CreateSubdomains do
   def change do
     create table(:subdomains) do
       add :subdomain, :string
-      add :ingress_id, references(:ingresses, on_delete: :nothing)
+      add :ingress_id, references(:ingresses, on_delete: :nilify_all)
     end
 
     create index(:subdomains, [:ingress_id])

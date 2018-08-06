@@ -30,13 +30,13 @@ defmodule DockupUi.Deployment do
   end
 
   @doc false
-  def changeset(%Deployment{} = deployment, attrs) do
-    deployment
-    |> cast(attrs, [:id, :name, :delete_at, :hibernate_at, :wake_up_at, :status, :deployed_at])
-    |> cast_assoc(:containers)
-    |> validate_required([:name, :status, :blueprint_id])
-    |> validate_inclusion(:status, @valid_statuses)
-  end
+def changeset(%Deployment{} = deployment, attrs) do
+  deployment
+  |> cast(attrs, [:name, :delete_at, :hibernate_at, :wake_up_at, :status, :deployed_at])
+  |> cast_assoc(:containers)
+  |> validate_required([:name, :status, :blueprint_id])
+  |> validate_inclusion(:status, @valid_statuses)
+end
 
   def transient_states do
     ~w(queued starting started hibernating waking_up deleting failed)
