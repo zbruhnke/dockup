@@ -1,10 +1,10 @@
 defmodule DockupUi.ConfigController do
   use DockupUi.Web, :controller
 
-  alias DockupUi.WhitelistedUrl
+  alias DockupUi.Subdomain
 
   def index(conn, _params) do
-    whitelisted_urls = Repo.all(WhitelistedUrl)
-    render(conn, "index.html", whitelisted_urls: whitelisted_urls)
+    subdomains = Repo.all(Subdomain)
+    render(conn, "index.html", subdomains: subdomains)
   end
 end

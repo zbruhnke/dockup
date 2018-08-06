@@ -1,0 +1,6 @@
+<h2>Edit Subdomain</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: subdomain_path(@conn, :update, @subdomain) %>
+
+<span><%= link "Back", to: config_path(@conn, :index) %></span>

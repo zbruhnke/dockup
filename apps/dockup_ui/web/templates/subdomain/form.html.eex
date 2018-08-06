@@ -6,9 +6,9 @@
   <% end %>
 
   <div class="form-group">
-    <%= label f, :git_url, class: "control-label" %>
-    <%= text_input f, :git_url, class: "form-control" %>
-    <%= error_tag f, :git_url %>
+    <%= label f, :subdomain, class: "control-label" %>
+    <%= text_input f, :subdomain, class: "form-control" %>
+    <%= error_tag f, :subdomain %>
   </div>
 
   <div class="form-group">
