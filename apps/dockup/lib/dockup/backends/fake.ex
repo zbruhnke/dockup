@@ -106,7 +106,6 @@ defmodule Dockup.Backends.Fake do
   end
 
   defp change_state(handle, status, state) do
-    IO.inspect "#{state[handle]} => #{status}"
     Map.put(state, handle, status)
   end
 end

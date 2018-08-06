@@ -13,7 +13,12 @@ defmodule DockupUi.Factory do
   def insert(model, args \\ %{}, data \\ %{})
 
   def insert(:subdomain, args, data) do
-    ingress_id = data[:ingress_id] || insert(:ingress).id
+    ingress_id =
+      if Map.has_key?(data, :ingress_id) do
+        data[:ingress_id]
+      else
+        insert(:ingress).id
+      end
 
     data =
       data
