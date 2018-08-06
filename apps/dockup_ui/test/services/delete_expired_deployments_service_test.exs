@@ -18,7 +18,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsServiceTest do
       |> NaiveDateTime.add(-(60 * 60 * 24 + 1))
       |> DateTime.from_naive!("Etc/UTC")
 
-    insert(:deployment, %{id: 1, inserted_at: insert_at})
+    insert(:deployment, %{}, %{id: 1, inserted_at: insert_at})
 
     assert capture_io(fn ->
       DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService, 1)
@@ -26,7 +26,7 @@ defmodule DockupUi.DeleteExpiredDeploymentsServiceTest do
   end
 
   test "does not delete deployments less than 1 day ago" do
-    insert(:deployment, id: 1)
+    insert(:deployment, %{}, %{id: 1})
     assert capture_io(fn ->
       DeleteExpiredDeploymentsService.run(FakeDeleteDeploymentService, 1)
     end) != "Deployment deleted"
