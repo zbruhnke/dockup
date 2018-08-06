@@ -13,6 +13,8 @@ defmodule DockupUi.DeploymentController do
       from b in Blueprint,
       preload: [:container_specs]
 
+    # TODO: This should be all blueprints and
+    # let front end choose blueprint from a UI
     blueprint = Repo.one!(query)
     render conn, "new.html", blueprint: blueprint
   end

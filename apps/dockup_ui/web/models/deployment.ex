@@ -32,7 +32,7 @@ defmodule DockupUi.Deployment do
   @doc false
   def changeset(%Deployment{} = deployment, attrs) do
     deployment
-    |> cast(attrs, [:name, :delete_at, :hibernate_at, :wake_up_at, :status, :deployed_at])
+    |> cast(attrs, [:id, :name, :delete_at, :hibernate_at, :wake_up_at, :status, :deployed_at])
     |> cast_assoc(:containers)
     |> validate_required([:name, :status, :blueprint_id])
     |> validate_inclusion(:status, @valid_statuses)

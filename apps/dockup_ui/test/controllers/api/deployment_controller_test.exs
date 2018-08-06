@@ -7,34 +7,36 @@ defmodule DockupUi.API.DeploymentControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
-    deployment = insert(:deployment)
+    blueprint = insert(:blueprint)
+    deployment = insert({:deployment, blueprint})
+
     conn = get conn, api_deployment_path(conn, :index)
     assert json_response(conn, 200)["data"] == [
       %{
         "id" => deployment.id,
         "inserted_at" => DateTime.to_iso8601(deployment.inserted_at),
         "updated_at" => DateTime.to_iso8601(deployment.updated_at),
-        "branch" => deployment.branch,
-        "git_url" => deployment.git_url,
-        "status" => deployment.status,
-        "log_url" => deployment.log_url,
-        "urls" => deployment.urls
+        "name" => deployment.name,
+        "blueprint_name" => blueprint.name,
+        "deployed_at" => nil,
+        "status" => "pending"
       }
     ]
   end
 
   test "shows chosen resource", %{conn: conn} do
-    deployment = insert(:deployment)
+    blueprint = insert(:blueprint)
+    deployment = insert({:deployment, blueprint})
+
     conn = get conn, api_deployment_path(conn, :show, deployment)
     assert json_response(conn, 200)["data"] == %{
       "id" => deployment.id,
       "inserted_at" => DateTime.to_iso8601(deployment.inserted_at),
       "updated_at" => DateTime.to_iso8601(deployment.updated_at),
-      "git_url" => deployment.git_url,
-      "branch" => deployment.branch,
-      "status" => deployment.status,
-      "log_url" => deployment.log_url,
-      "urls" => deployment.urls
+      "name" => deployment.name,
+      "blueprint_name" => blueprint.name,
+      "deployed_at" => nil,
+      "status" => "pending"
     }
   end
 
@@ -45,31 +47,33 @@ defmodule DockupUi.API.DeploymentControllerTest do
   end
 
   test "create renders resource when DeployService runs fine", %{conn: conn} do
-    deployment = insert(:deployment, %{id: 1})
+    blueprint = insert(:blueprint)
+    deployment = insert({:deployment, blueprint}, %{id: 1})
 
     defmodule FakeDeployService do
       def run(%{"foo" => "bar"}) do
-        {:ok, Repo.get(DockupUi.Deployment, 1)}
+        {:ok, %{deployment: Repo.get(DockupUi.Deployment, 1)}}
       end
     end
 
     conn = conn |> assign(:deploy_service, FakeDeployService)
-    conn = post conn, api_deployment_path(conn, :create), %{"foo" => "bar", "callback_url" => "callback_url"}
-    assert json_response(conn, 201)["data"]["id"] == deployment.id
+    conn = post conn, api_deployment_path(conn, :create), %{"containerSpecs" => %{"foo" => "bar"}}
+    assert json_response(conn, 201)["id"] == deployment.id
   end
 
   test "create renders errors on model when DeployService fails", %{conn: conn} do
     defmodule FakeFailingDeployService do
       def run(%{}) do
-        {:error, DockupUi.Deployment.create_changeset(%DockupUi.Deployment{}, %{})}
+        {:error, :deployment, DockupUi.Deployment.changeset(%DockupUi.Deployment{}, %{}), nil}
       end
     end
 
     conn = conn |> assign(:deploy_service, FakeFailingDeployService)
-    conn = post conn, api_deployment_path(conn, :create), deployment: %{}
+    conn = post conn, api_deployment_path(conn, :create), containerSpecs: %{}
     assert json_response(conn, 422)["errors"] == %{
-      "branch" => ["can't be blank"],
-      "git_url" => ["can't be blank"]
+      "blueprint_id" => ["can't be blank"],
+      "name" => ["can't be blank"],
+      "status" => ["can't be blank"]
     }
   end
 end
