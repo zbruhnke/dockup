@@ -11,8 +11,9 @@ defmodule DockupUi.Plugs.GetCurrentUser do
         |> put_session(:redirect_url, conn.request_path)
         |> Phoenix.Controller.redirect(to: Helpers.deployment_path(conn, :home))
         |> halt()
-      _ ->
+      current_user ->
         conn
+        |> assign(:user_token, Phoenix.Token.sign(conn, "user socket", current_user))
     end
   end
 

@@ -20,7 +20,6 @@ defmodule DockupUi.UserFromAuth do
   end
 
   defp basic_info(auth) do
-    IO.inspect auth
     auth.extra.raw_info.user["name"] || auth.extra.raw_info.user["email"]
   end
 end
