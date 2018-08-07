@@ -3,6 +3,7 @@ export const request = options => fetch(
   method: options.method,
   headers: {
     'Content-Type': 'application/json',
+    'x-csrf-token': window.csrfToken
   },
   credentials: options.credentials || 'include',
   body: options.body || {},

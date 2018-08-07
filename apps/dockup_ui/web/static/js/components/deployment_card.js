@@ -28,6 +28,7 @@ class DeploymentCard extends Component {
     return $.ajax({
       url: `/api/deployments/${this.props.deployment.id}/hibernate`,
       type: 'PUT',
+      beforeSend: (xhr) => {xhr.setRequestHeader('x-csrf-token', window.csrfToken);},
       contentType: 'application/json'
     });
   }
@@ -71,6 +72,7 @@ class DeploymentCard extends Component {
     return $.ajax({
       url: `/api/deployments/${this.props.deployment.id}/wake_up`,
       type: 'PUT',
+      beforeSend: (xhr) => {xhr.setRequestHeader('x-csrf-token', window.csrfToken);},
       contentType: 'application/json'
     });
   }
@@ -98,6 +100,7 @@ class DeploymentCard extends Component {
     return $.ajax({
       url: `/api/deployments/${this.props.deployment.id}`,
       type: 'DELETE',
+      beforeSend: (xhr) => {xhr.setRequestHeader('x-csrf-token', window.csrfToken);},
       contentType: 'application/json'
     });
   }

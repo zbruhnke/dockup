@@ -17,6 +17,12 @@ defmodule DockupUi.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :api_with_session do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug :protect_from_forgery
+  end
+
   scope "/", DockupUi do
     pipe_through :browser
     get "/", DeploymentController, :home
@@ -32,14 +38,12 @@ defmodule DockupUi.Router do
   end
 
   scope "/api", as: :api, alias: DockupUi.API do
-    pipe_through :api
+    pipe_through [:api_with_session, :with_current_user]
 
     resources "/deployments", DeploymentController, only: [:create, :index, :show, :delete] do
       put "/hibernate", DeploymentController, :hibernate
       put "/wake_up", DeploymentController, :wake_up
     end
-    resources "/github_webhook", GithubWebhookController, only: [:create]
-    resources "/bitbucket_webhook", BitbucketWebhookController, only: [:create]
   end
 
   scope "/auth", DockupUi do

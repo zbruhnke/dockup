@@ -3,7 +3,12 @@ defmodule DockupUi.API.DeploymentControllerTest do
   import DockupUi.Factory
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    conn =
+      conn
+      |> assign(:current_user, "foo")
+      |> put_req_header("accept", "application/json")
+
+    {:ok, conn: conn}
   end
 
   test "lists all entries on index", %{conn: conn} do
