@@ -1,7 +1,7 @@
-defmodule DockupUi.SlackWebhook do
+defmodule DockupUi.SlackNotification do
   alias DockupUi.Repo
 
-  def send_deployment_message(deployment) do
+  def send(deployment) do
     deployment = Repo.preload(deployment, [:blueprint, :containers])
     deployment_url =
       DockupUi.Router.Helpers.deployment_url(DockupUi.Endpoint, :show, deployment.id)

@@ -1,7 +1,7 @@
-defmodule DockupUi.Webhook do
+defmodule DockupUi.WebhookNotification do
   require Logger
 
-  def send_webhook_request(deployment) do
+  def send(deployment) do
     if webhook_url = Application.get_env(:dockup_ui, :webhook_url) do
       do_send_web_request(webhook_url, deployment)
     end

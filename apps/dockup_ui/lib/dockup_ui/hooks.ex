@@ -2,13 +2,13 @@ defmodule DockupUi.Hooks do
   require Logger
 
   alias DockupUi.{
-    SlackWebhook,
-    Webhook
+    SlackNotification,
+    WebhookNotification
   }
 
   def do_after("started", deployment) do
-    SlackWebhook.send_deployment_message(deployment)
-    Webhook.send_webhook_request(deployment)
+    SlackNotification.send(deployment)
+    WebhookNotification.send(deployment)
   end
 
   def do_after(_, _) do
