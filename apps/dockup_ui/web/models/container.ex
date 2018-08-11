@@ -12,7 +12,6 @@ defmodule DockupUi.Container do
 
   schema "containers" do
     field :handle, :string
-    field :autodeploy, :boolean, default: false
     field :status_synced_at, :utc_datetime
     field :status, :string
     field :tag, :string
@@ -25,9 +24,9 @@ defmodule DockupUi.Container do
   @doc false
   def changeset(%Container{} = container, attrs) do
     container
-    |> cast(attrs, [:autodeploy, :tag, :container_spec_id, :handle, :status])
+    |> cast(attrs, [:tag, :container_spec_id, :handle, :status])
     |> cast_assoc(:ingresses)
-    |> validate_required([:autodeploy, :status, :tag, :container_spec_id])
+    |> validate_required([:status, :tag, :container_spec_id])
   end
 
   def update_tag_changeset(id, handle) do

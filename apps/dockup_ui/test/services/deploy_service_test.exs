@@ -17,7 +17,7 @@ defmodule DeployServiceTest do
     port_spec = insert(:port_spec)
     port_spec = Repo.preload(port_spec, :container_spec)
     params = [
-      %{"id" => port_spec.container_spec.id, "name" => port_spec.container_spec.name, "tag" => "master"}
+      %{"id" => port_spec.container_spec.id, "tag" => "master"}
     ]
 
     {:ok, %{deployment: deployment}} = DockupUi.DeployService.run(params)

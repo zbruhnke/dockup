@@ -7,10 +7,20 @@ defmodule DockupUi.Factory do
     PortSpec,
     Ingress,
     Subdomain,
+    AutoDeployment,
     Repo
   }
 
   def insert(model, args \\ %{}, data \\ %{})
+
+  def insert(:auto_deployment, args, data) do
+    container_spec_id = data[:container_spec_id] || insert(:container_spec).id
+    data = Map.put(data, :container_spec_id, container_spec_id)
+
+    auto_deployment_factory(data)
+    |> AutoDeployment.changeset(args)
+    |> Repo.insert!
+  end
 
   def insert(:subdomain, args, data) do
     ingress_id =
@@ -144,6 +154,12 @@ defmodule DockupUi.Factory do
   defp subdomain_factory(data) do
     %Subdomain{
       subdomain: "foo"
+    } |> Map.merge(data)
+  end
+
+  defp auto_deployment_factory(data) do
+    %AutoDeployment{
+      tag: "*"
     } |> Map.merge(data)
   end
 end

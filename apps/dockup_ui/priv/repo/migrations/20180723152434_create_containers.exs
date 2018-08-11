@@ -5,7 +5,6 @@ defmodule DockupUi.Repo.Migrations.CreateContainers do
     create table(:containers) do
       add :handle, :string
       add :tag, :string
-      add :autodeploy, :boolean, default: false, null: false
       add :status, :string
       add :status_synced_at, :utc_datetime
       add :deployment_id, references(:deployments, on_delete: :nothing)

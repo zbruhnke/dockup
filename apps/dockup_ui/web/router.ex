@@ -46,6 +46,12 @@ defmodule DockupUi.Router do
     end
   end
 
+  scope "/api", as: :api, alias: DockupUi.API do
+    pipe_through :api
+
+    resources "/gcp_webhook", GcpPubSubController, only: [:create]
+  end
+
   scope "/auth", DockupUi do
     pipe_through :browser
 
