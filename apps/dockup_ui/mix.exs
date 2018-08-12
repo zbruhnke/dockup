@@ -23,7 +23,7 @@ defmodule DockupUi.Mixfile do
     [mod: {DockupUi.Application, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :httpotion,
-                    :ueberauth_google, :runtime_tools]]
+                    :ueberauth_google, :runtime_tools, :plug_proxy]]
   end
 
   # Specifies which paths to compile per environment.
@@ -48,7 +48,9 @@ defmodule DockupUi.Mixfile do
      {:ueberauth, "~> 0.4"},
      {:ueberauth_google, "~> 0.7"},
      {:dockup, in_umbrella: true, only: [:prod]},
-     {:fake_dockup, in_umbrella: true, only: [:dev, :test]}]
+     {:fake_dockup, in_umbrella: true, only: [:dev, :test]},
+     {:plug_proxy, "~> 0.3.1"}
+    ]
   end
 
   # Aliases are shortcut or tasks specific to the current project.

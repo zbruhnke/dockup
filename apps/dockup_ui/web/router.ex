@@ -1,12 +1,13 @@
 defmodule DockupUi.Router do
   use DockupUi.Web, :router
 
+  # TODO: Enable CSRF
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    # plug :protect_from_forgery
+    # plug :put_secure_browser_headers
   end
 
   pipeline :with_current_user do
@@ -22,10 +23,14 @@ defmodule DockupUi.Router do
     get "/", DeploymentController, :home
   end
 
+  # TODO: Enable Auth
   scope "/", DockupUi do
-    pipe_through [:browser, :with_current_user]
+    # pipe_through [:browser, :with_current_user]
+    pipe_through [:browser]
 
     get "/deploy", DeploymentController, :new
+    get "/dashboard", DashboardController, :new
+
     resources "/deployments", DeploymentController, only: [:new, :index, :show]
     resources "/config", ConfigController, only: [:index]
     resources "/whitelisted_urls", WhitelistedUrlController, except: [:index, :show]
@@ -49,5 +54,10 @@ defmodule DockupUi.Router do
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :callback
     delete "/logout", AuthController, :delete
+  end
+
+  scope "/", DockupUi do
+    pipe_through :browser
+    forward "/logs", Plugs.KibanaProxy
   end
 end
