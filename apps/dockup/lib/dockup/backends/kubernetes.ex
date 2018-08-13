@@ -124,6 +124,13 @@ defmodule Dockup.Backends.Kubernetes do
     end
   end
 
+  @impl Spec
+  def hostname(deployment_id, container_name) do
+    deployment_id
+    |> container_handle(container_name)
+    |> service_name()
+  end
+
   def get_pods(container_handle) do
     get_pods_by_label("app", container_handle)
   end

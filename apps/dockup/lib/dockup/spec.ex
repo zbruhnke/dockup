@@ -61,4 +61,10 @@ defmodule Dockup.Spec do
   This function is used to get the logs of a container.
   """
   @callback logs(String.t()) :: String.t()
+
+  @doc """
+  This function is used to get the hostname for a container.
+  It takes a container struct as the argument.
+  """
+  @callback hostname(integer(), String.t()) :: String.t()
 end

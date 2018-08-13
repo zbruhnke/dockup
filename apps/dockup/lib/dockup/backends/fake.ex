@@ -46,6 +46,11 @@ defmodule Dockup.Backends.Fake do
     "Log string"
   end
 
+  @impl Spec
+  def hostname(_, _) do
+    "example.com"
+  end
+
   ##########GenServer###########
   @impl GenServer
   def init(_) do

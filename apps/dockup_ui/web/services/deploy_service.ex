@@ -13,6 +13,23 @@ defmodule DockupUi.DeployService do
 
   import Ecto.Query
 
+  @doc """
+  Creates deployments, containers, ports and ingresses and deploys
+  containers using the backend module.
+
+  This also interpolates dockup variables in environment variables
+  configured for containers. Supported dockup variables are:
+
+  DOCKUP_SERVICE_<container name> - gets replaced by the hostname of a service
+  which is part of this deployment.
+  DOCKUP_ENDPOINT_<port> - gets replaced by the ingress endpoint of container
+  in which this environment variable is defined.
+
+  container_spec_params is a map of following data:
+  [%{"id" => container_spec_id, "tag" => "new-tag"}]
+  "new-tag" will override the default tag of the container_spec_id when
+  containers of the blueprint of container_spec_id is deployed.
+  """
   def run(container_spec_params, name \\ nil) do
     container_spec_params
     |> create_deployment(name)
@@ -92,7 +109,7 @@ defmodule DockupUi.DeployService do
   defp prepare_containers(container_specs, container_spec_params) do
     Enum.map(container_specs, fn container_spec ->
       %{
-        tag: get_tag(container_spec_params, container_spec.id),
+        tag: get_tag(container_spec_params, container_spec),
         container_spec_id: container_spec.id,
         ingresses: prepare_ingresses(container_spec.port_specs),
         status: "unknown"
@@ -139,20 +156,24 @@ defmodule DockupUi.DeployService do
   end
 
   defp fetch_container_specs(container_spec_params) do
-    container_spec_ids = Enum.map(container_spec_params,  & &1["id"])
+    container_spec_id = Enum.find_value(container_spec_params, fn %{"id" => id} -> id end)
+    container = Repo.get!(ContainerSpec, container_spec_id)
+    blueprint_id = container.blueprint_id
 
     query =
       from c in ContainerSpec,
-      where: c.id in ^container_spec_ids,
+      where: c.blueprint_id == ^blueprint_id,
       preload: [:port_specs, :init_container_specs]
 
     Repo.all(query)
   end
 
-  defp get_tag(container_spec_params, id) do
+  defp get_tag(container_spec_params, container_spec) do
     Enum.find_value(container_spec_params, fn %{"tag" => tag, "id" => spec_id} ->
-      if spec_id == id do
+      if spec_id == container_spec.id do
         tag
+      else
+        container_spec.default_tag
       end
     end)
   end
@@ -160,7 +181,7 @@ defmodule DockupUi.DeployService do
   defp autogenerate_name(container_specs, container_spec_params) do
     name =
       container_specs
-      |> Enum.map(&({&1.name, get_tag(container_spec_params, &1.id), &1.default_tag}))
+      |> Enum.map(&({&1.name, get_tag(container_spec_params, &1), &1.default_tag}))
       |> Enum.filter(fn {_name, tag, default_tag} -> tag != default_tag end)
       |> Enum.map(fn {name, tag, _} -> "#{name}:#{tag}" end)
       |> Enum.join(", ")
