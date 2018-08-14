@@ -61,7 +61,7 @@ class DeploymentList extends Component {
           return (
             <DeploymentCard key={deployment.id} deployment={deployment}/>
           )
-         })}
+        })}
       </div>
     )
   }

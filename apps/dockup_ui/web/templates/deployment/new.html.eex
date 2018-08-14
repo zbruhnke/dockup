@@ -1,5 +1,5 @@
 <div id="deployment_form_container"></div>
 
 <script type="text/javascript">
-Deployment.mountDeploymentForm("deployment_form_container", '<%=raw  container_specs_json(@blueprint) %>');
+  Deployment.mountDeploymentForm("deployment_form_container", '<%=raw  container_specs_json(@blueprint) %>');
 </script>
