@@ -6,7 +6,8 @@ defmodule DockupUi.DeployService do
     Subdomain,
     Repo,
     BackendAdapter,
-    NotificationChannel
+    NotificationChannel,
+    EnvVars
   }
 
   alias Ecto.Multi
@@ -16,14 +17,6 @@ defmodule DockupUi.DeployService do
   @doc """
   Creates deployments, containers, ports and ingresses and deploys
   containers using the backend module.
-
-  This also interpolates dockup variables in environment variables
-  configured for containers. Supported dockup variables are:
-
-  DOCKUP_SERVICE_<container name> - gets replaced by the hostname of a service
-  which is part of this deployment.
-  DOCKUP_ENDPOINT_<port> - gets replaced by the ingress endpoint of container
-  in which this environment variable is defined.
 
   container_spec_params is a map of following data:
   [%{"id" => container_spec_id, "tag" => "new-tag"}]
@@ -62,8 +55,10 @@ defmodule DockupUi.DeployService do
 
       containers =
         Enum.map(deployment.containers, fn container ->
-          {container.id, BackendAdapter.prepare_container(container)}
+          BackendAdapter.prepare_container(container)
         end)
+
+      containers = EnvVars.interpolate_dockup_variables(containers)
 
       {:ok, containers}
     end)
@@ -76,9 +71,9 @@ defmodule DockupUi.DeployService do
 
     Multi.run(multi, :backend_response, fn %{backend_containers: containers} ->
       container_handles =
-        Enum.map(containers, fn {id, container} ->
+        Enum.map(containers, fn container ->
           {:ok, container_handle} = backend.start(container)
-          {id, container_handle}
+          {container.id, container_handle}
         end)
 
       {:ok, container_handles}

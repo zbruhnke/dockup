@@ -14,7 +14,7 @@ defmodule DeployServiceTest do
 
     # Reserve an empty subdomain
     insert(:subdomain, %{subdomain: "foo"}, %{ingress_id: nil})
-    container_spec = insert(:container_spec, %{env_vars: %{"FOO" => "prefix.${DOCKUP_ENDPOINT_4000}/login"}})
+    container_spec = insert(:container_spec, %{name: "foo", env_vars: %{"FOO" => "prefix.${DOCKUP_ENDPOINT_foo_4000}/login"}})
     insert(:container_spec, %{name: "bar", env_vars: %{"BAR" => "foo-${DOCKUP_SERVICE_#{container_spec.name}}-bar"}}, %{blueprint_id: container_spec.blueprint_id})
     insert(:port_spec, %{}, %{container_spec_id: container_spec.id})
 
@@ -29,7 +29,7 @@ defmodule DeployServiceTest do
     refute is_nil(handle)
     [%{endpoint: "foo.dockup.example.com", subdomain: %{subdomain: "foo"}}] = ingresses
 
-    [{_, c1}, {_, c2}] = backend_containers
+    [c1, c2] = backend_containers
     assert c1.env_vars == [{"FOO", "prefix.foo.dockup.example.com/login"}]
     assert c2.env_vars == [{"BAR", "foo-example.com-bar"}]
 
