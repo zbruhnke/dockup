@@ -163,7 +163,8 @@ defmodule DockupUi.DeployService do
     query =
       from c in ContainerSpec,
       where: c.blueprint_id == ^blueprint_id,
-      preload: [:port_specs, :init_container_specs]
+      preload: [:port_specs, :init_container_specs],
+      order_by: c.id
 
     Repo.all(query)
   end

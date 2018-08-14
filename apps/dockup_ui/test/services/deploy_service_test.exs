@@ -25,13 +25,13 @@ defmodule DeployServiceTest do
     {:ok, %{deployment: deployment, backend_containers: backend_containers}} = DockupUi.DeployService.run(params)
     deployment = Repo.get(Deployment, deployment.id)
     deployment = Repo.preload(deployment, [containers: [ingresses: :subdomain]])
-    [%{tag: "master", handle: handle, ingresses: ingresses}, %{tag: "master", handle: _, ingresses: []}] = deployment.containers
+    [%{tag: "master", handle: _, ingresses: []}, %{tag: "master", handle: handle, ingresses: ingresses}] = deployment.containers
     refute is_nil(handle)
     [%{endpoint: "foo.dockup.example.com", subdomain: %{subdomain: "foo"}}] = ingresses
 
     [{_, c1}, {_, c2}] = backend_containers
-    assert c1.env_vars == [{"BAR", "foo-example.com-bar"}]
-    assert c2.env_vars == [{"FOO", "prefix.foo.dockup.example.com/login"}]
+    assert c1.env_vars == [{"FOO", "prefix.foo.dockup.example.com/login"}]
+    assert c2.env_vars == [{"BAR", "foo-example.com-bar"}]
 
     wait_for_container_status(handle, "running")
   end
