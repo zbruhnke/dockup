@@ -21,7 +21,7 @@ defmodule DockupUi.DeleteDeploymentService do
       |> update_deployment_status()
       |> delete_ingress_endpoints(ingresses)
       |> publish_and_delete()
-      |> Repo.transaction()
+      |> Repo.transaction(timeout: 100_000)
 
     {:ok, deployment}
   end
