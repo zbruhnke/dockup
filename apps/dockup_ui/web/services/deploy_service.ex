@@ -29,7 +29,7 @@ defmodule DockupUi.DeployService do
     |> prepare_backend_containers()
     |> start_containers()
     |> update_container_handles()
-    |> Repo.transaction()
+    |> Repo.transaction(timeout: 100_000)
   end
 
   # Returns a multi for creating a deployment along with the associated
