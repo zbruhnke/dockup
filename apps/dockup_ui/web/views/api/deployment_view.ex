@@ -44,6 +44,7 @@ defmodule DockupUi.API.DeploymentView do
     %{
       id: container.id,
       status: container.status,
+      status_reason: container.status_reason,
       name: container.container_spec.name,
       image: container.container_spec.image,
       tag: container.tag,

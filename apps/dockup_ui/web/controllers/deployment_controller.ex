@@ -15,6 +15,7 @@ defmodule DockupUi.DeploymentController do
 
     # TODO: This should be all blueprints and
     # let front end choose blueprint from a UI
+    # for now, there's only one blueprint which is loaded via seed script.
     blueprint = Repo.one!(query)
     render conn, "new.html", blueprint: blueprint
   end

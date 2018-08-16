@@ -66,6 +66,7 @@ class ContainersSection extends Component {
             })}
           >
             {container.name}:{container.tag} ({container.status}) {this.renderEndpoints(container.endpoints)}
+            {container.status_reason}
           </div>
         );
       })

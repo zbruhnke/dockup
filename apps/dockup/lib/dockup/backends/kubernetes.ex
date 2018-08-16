@@ -104,23 +104,20 @@ defmodule Dockup.Backends.Kubernetes do
       case pods do
         [] -> "Unknown"
         [%{status: %{phase: "Succeeded"}}] -> "Succeeded"
-        [%{status: %{phase: "Failed"}}] -> "Failed"
-        [%{status: %{container_statuses: [status]}}] -> status
+        [%{status: %{container_statuses: statuses}}] ->
+          List.last(statuses)
         [%{status: %{phase: "Pending"}}] -> "Pending"
       end
 
     case pod_status do
-      %{state: %{waiting: %{reason: "ContainerCreating"}}} -> "pending"
-      %{state: %{waiting: %{reason: reason}}} ->
-        # For debugging, keep it here until stable
-        IO.inspect reason
-        "failed"
-      %{state: %{terminated: %{reason: _}}} -> "failed"
-      %{state: %{running: %{started_at: _}}} -> "running"
-      "Unknown" -> "unknown"
-      "Pending" -> "pending"
-      "Succeeded" -> "running"
-      "Failed" -> "failed"
+      %{state: %{waiting: %{reason: "ContainerCreating"}}} -> {"pending", nil}
+      %{state: %{waiting: %{reason: reason}}} -> {"failed", translate_reason(reason)}
+      %{state: %{terminated: %{reason: reason}}} -> {"failed", translate_reason(reason)}
+      %{state: %{running: %{started_at: _}}} -> {"running", nil}
+      "Unknown" -> {"unknown", nil}
+      "Pending" -> {"pending", nil}
+      "Succeeded" -> {"running", nil}
+      _ -> {"unknown", nil}
     end
   end
 
@@ -403,5 +400,20 @@ defmodule Dockup.Backends.Kubernetes do
     |> AppsV1.patch_namespaced_deployment!(@namespace, deployment_name(container_handle))
     |> Kazan.run()
     |> handle_response()
+  end
+
+  defp translate_reason(reason) do
+    case reason do
+      "ErrImagePull" -> "Image cannot be pulled"
+      "ImagePullBackOff" -> "Retrying image pull"
+      "CrashLoopBackOff" -> "Retrying container run"
+      "RunContainerError" -> "Error occured when running container"
+      "Error" -> "Error occured when running container"
+      nil -> nil
+      x ->
+        #TODO: remove once we have figured out all reasons
+        IO.inspect "Unhandled container status reason: #{inspect x}"
+        "Unknown reason"
+    end
   end
 end

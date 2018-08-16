@@ -14,6 +14,7 @@ defmodule DockupUi.Container do
     field :handle, :string
     field :status_synced_at, :utc_datetime
     field :status, :string
+    field :status_reason, :string
     field :tag, :string
 
     belongs_to :deployment, Deployment
@@ -35,9 +36,9 @@ defmodule DockupUi.Container do
   end
 
   @doc false
-  def status_update_changeset(%Container{} = container, status) do
+  def status_update_changeset(%Container{} = container, status, reason) do
     container
-    |> cast(%{status: status, status_synced_at: DateTime.utc_now()}, [:status, :status_synced_at])
+    |> cast(%{status: status, status_reason: reason, status_synced_at: DateTime.utc_now()}, [:status, :status_synced_at, :status_reason])
     |> validate_required([:status, :status_synced_at])
     |> validate_inclusion(:status, @valid_statuses)
   end

@@ -34,7 +34,11 @@ defmodule DockupUi.API.DeploymentController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
-      {:error, :start_containers, error, _} ->
+      {:error, :backend_response, error, _} ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{errors: [error]})
+      {:error, :dockup_error, error} ->
         conn
         |> put_status(:internal_server_error)
         |> json(%{errors: [error]})

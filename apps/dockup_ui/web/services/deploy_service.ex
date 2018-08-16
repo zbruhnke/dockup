@@ -7,12 +7,15 @@ defmodule DockupUi.DeployService do
     Repo,
     BackendAdapter,
     NotificationChannel,
-    EnvVars
+    EnvVars,
+    DockupError
   }
 
   alias Ecto.Multi
 
   import Ecto.Query
+
+  require Logger
 
   @doc """
   Creates deployments, containers, ports and ingresses and deploys
@@ -24,6 +27,18 @@ defmodule DockupUi.DeployService do
   containers of the blueprint of container_spec_id is deployed.
   """
   def run(container_spec_params, name \\ nil) do
+    try do
+      do_run(container_spec_params, name)
+    rescue
+      x in [DockupError] ->
+        NotificationChannel.send_notification("error", x.message)
+        #TODO: After moving to Elixir v1.7, use __STACKTRACE__ here
+        Logger.error("DockupError: #{inspect x.message}, #{inspect System.stacktrace()}")
+        {:error, :dockup_error, x.message}
+    end
+  end
+
+  defp do_run(container_spec_params, name) do
     container_spec_params
     |> create_deployment(name)
     |> prepare_backend_containers()
@@ -142,8 +157,7 @@ defmodule DockupUi.DeployService do
 
     case Repo.one(query) do
       nil ->
-        NotificationChannel.send_notification("error", "No free subdomains. Create new ones or free up existing ones.")
-        raise "No free subdomains"
+        raise DockupError, "No free subdomains. Create new ones or free up existing ones."
 
       subdomain ->
         subdomain
@@ -165,11 +179,9 @@ defmodule DockupUi.DeployService do
   end
 
   defp get_tag(container_spec_params, container_spec) do
-    Enum.find_value(container_spec_params, fn %{"tag" => tag, "id" => spec_id} ->
+    Enum.find_value(container_spec_params, container_spec.default_tag, fn %{"tag" => tag, "id" => spec_id} ->
       if spec_id == container_spec.id do
         tag
-      else
-        container_spec.default_tag
       end
     end)
   end

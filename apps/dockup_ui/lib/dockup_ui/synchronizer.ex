@@ -49,7 +49,6 @@ defmodule DockupUi.Synchronizer do
     |> get_container_statuses()
     |> update_container_statuses()
     |> update_deployment_status(deployment)
-    # Also update statuses via websockets here
     |> publish_status_update()
     |> run_in_transaction()
   end
@@ -62,9 +61,9 @@ defmodule DockupUi.Synchronizer do
   end
 
   defp update_container_statuses(containers_and_statuses) do
-    Enum.reduce(containers_and_statuses, {Multi.new(), []}, fn ({container, status}, {multi, statuses}) ->
-      if(container.status != status) do
-        changeset = Container.status_update_changeset(container, status)
+    Enum.reduce(containers_and_statuses, {Multi.new(), []}, fn ({container, {status, reason}}, {multi, statuses}) ->
+      if(container.status != status || container.status_reason != reason) do
+        changeset = Container.status_update_changeset(container, status, reason)
         {Multi.update(multi, "status-#{container.id}", changeset), [status | statuses]}
       else
         {multi, [status | statuses]}

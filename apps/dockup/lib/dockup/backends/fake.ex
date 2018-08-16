@@ -84,7 +84,7 @@ defmodule Dockup.Backends.Fake do
   @impl GenServer
   def handle_call({:get_status, handle}, _from, state) do
     status = Map.get(state, handle, "running")
-    {:reply, status, state}
+    {:reply, {status, nil}, state}
   end
 
   @impl GenServer

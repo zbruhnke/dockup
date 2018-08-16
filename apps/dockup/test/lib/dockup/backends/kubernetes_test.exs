@@ -77,7 +77,8 @@ defmodule Dockup.Backends.KubernetesTest do
   end
 
   defp wait_for_deployment(container_handle, expected_status, i) do
-    if Kubernetes.status(container_handle) != expected_status do
+    {status, _reason} = Kubernetes.status(Kubernetes.status(container_handle))
+    if status != expected_status do
       :timer.sleep(1000)
       wait_for_deployment(container_handle, expected_status, i - 1)
     end

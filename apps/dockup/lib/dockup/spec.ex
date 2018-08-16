@@ -35,12 +35,14 @@ defmodule Dockup.Spec do
   @doc """
   This function is used to get the status of a container.
   It takes a container handle as the argument.
+  Returns {<state>, <reason>}
+
   Backends should return one of these states:
-  1. :pending - When the backend is pulling the image and preparing to run
-  2. :running - When the container is running (or starting or restarting)
-  3. :succeeded - When the container terminated after running successfully
-  4. :failed - When the container terminated in failure
-  5. :unknown - When the status of the container cannot be fetched
+  1. pending - When the backend is pulling the image and preparing to run
+  2. running - When the container is running (or starting or restarting)
+  3. succeeded - When the container terminated after running successfully
+  4. failed - When the container terminated in failure
+  5. unknown - When the status of the container cannot be fetched
 
   # Dockup Deployment status and pod status
   # (By deployment below, we mean the deployment entity in DockupUI)
@@ -55,7 +57,7 @@ defmodule Dockup.Spec do
   # All pods -> "unknown", deployment -> "deleted"
   # Any pod -> "Failed", deployment -> "failed"
   """
-  @callback status(String.t()) :: :pending | :running | :succeeded | :failed | :unknown
+  @callback status(String.t()) :: {String.t(), String.t() | nil}
 
   @doc """
   This function is used to get the logs of a container.
