@@ -46,26 +46,35 @@ class ContainersSection extends Component {
     }
 
     return endpoints.map(([endpoint, port]) => (
-      <a key={port} href={`https://${endpoint}`}>
+      <a key={port} href={`https://${endpoint}`} target="_blank">
         {endpoint}
       </a>
     ));
   }
 
   renderContainers() {
+    const icons = {
+      'running': 'fa-check-circle',
+      'failed': 'fa-times',
+      'unknown': 'fa-exclamation-circle',
+      'pending': 'fa-circle-notch',
+    };
+
     return(
       this.state.containers.map((container) => {
         return(
           <div
             key={container.id}
-            className={cx({
+            className={cx('container-row', {
               running: container.status === 'running',
               failed: container.status === 'failed',
               unknown: container.status === 'unknown',
               pending: container.status === 'pending',
             })}
           >
-            {container.name}:{container.tag} ({container.status}) {this.renderEndpoints(container.endpoints)}
+            {container.name}:{container.tag} ({container.status})
+            <i className={`fa ${icons[container.status]}`} />
+            <div>{this.renderEndpoints(container.endpoints)}</div>
             {container.status_reason}
           </div>
         );

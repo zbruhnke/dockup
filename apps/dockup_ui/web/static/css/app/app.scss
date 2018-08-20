@@ -1,6 +1,10 @@
 @import "bootstrap";
-@import "font-awesome";
 @import "toastr";
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+html, body {
+  font-family: 'Open Sans', sans-serif;
+}
 
 .container {
   max-width: 800px;
@@ -13,7 +17,7 @@
 .alert:empty { display: none; }
 
 .dockup-card {
-width: 100%
+  width: 100%
 }
 
 .dockup-card-timeago {
@@ -27,17 +31,61 @@ width: 100%
 }
 
 .dockup-card-icon {
-  font-size: 1.5rem !important;
-  margin-left: 10px;
+  font-size: 1.3rem !important;
+  margin-left: 8px;
 }
 
 .dockup-card-status {
-  font-size: 1.5rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  text-transform: uppercase;
 }
 
 .dockup-card-branch {
   font-size: 1.5rem;
+
+  i {
+    margin-left: 8px;
+    font-size: 1.1rem;
+    color: #7d7d7d;
+  }
+}
+
+button, a, input[type="submit"] {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.dockup-card {
+  border-color: transparent !important;
+  border: 1px solid #e2e2e2;
+  box-shadow: 0 0 3px 1px #cecece;
+  color: #333 !important;
+}
+
+.container-row {
+  font-size: 14px;
+  margin-top: 10px;
+
+  i {
+    margin-left: 8px;
+    font-size: 1.1rem;
+    color: #7d7d7d;
+  }
+
+  &.running i {
+    color: #4ca746;
+  }
+  &.failed i {
+    color: #c0392b;
+  }
+  &.unknown i {
+    color: #f1c40f;
+  }
+  &.pending i {
+    color: #f1c40f;
+  }
 }

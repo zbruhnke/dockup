@@ -89,7 +89,7 @@ class DeploymentForm extends Component {
 
     return (
       <div>
-        <form onSubmit={this.handleOnDeploy}>
+        <form onSubmit={this.handleOnDeploy} className="mb-5">
           {containerSpecs.map((spec) => (
             <div className="form-group" key={spec.id}>
               <label htmlFor={spec.name}>{spec.name}</label>
