@@ -8,6 +8,7 @@ defmodule DockupUi.Factory do
     Ingress,
     Subdomain,
     AutoDeployment,
+    InitContainerSpec,
     Repo
   }
 
@@ -19,6 +20,15 @@ defmodule DockupUi.Factory do
 
     auto_deployment_factory(data)
     |> AutoDeployment.changeset(args)
+    |> Repo.insert!
+  end
+
+  def insert(:init_container_spec, args, data) do
+    container_spec_id = data[:container_spec_id] || insert(:container_spec).id
+    data = Map.put(data, :container_spec_id, container_spec_id)
+
+    init_container_spec_factory(data)
+    |> InitContainerSpec.changeset(args)
     |> Repo.insert!
   end
 
@@ -160,6 +170,14 @@ defmodule DockupUi.Factory do
   defp auto_deployment_factory(data) do
     %AutoDeployment{
       tag: "*"
+    } |> Map.merge(data)
+  end
+
+  defp init_container_spec_factory(data) do
+    %InitContainerSpec{
+      image: "init_image",
+      tag: "master",
+      order: 1
     } |> Map.merge(data)
   end
 end

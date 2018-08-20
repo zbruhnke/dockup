@@ -8,7 +8,7 @@ defmodule DockupUi.Repo.Migrations.CreateInitContainerSpecs do
       add :tag, :string
       add :command, :string
       add :args, {:array, :string}
-      add :env_vars, {:array, :map}
+      add :env_vars, {:map, :string}
       add :container_spec_id, references(:container_specs, on_delete: :nothing)
     end
 

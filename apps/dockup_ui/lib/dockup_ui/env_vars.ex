@@ -10,7 +10,17 @@ defmodule DockupUi.EnvVars do
   """
   def interpolate_dockup_variables(containers) do
     Enum.map(containers, fn container ->
-      %{container | env_vars: rewrite_variables(container.env_vars, container.deployment_id, containers)}
+      %{
+        container
+        | env_vars: rewrite_variables(container.env_vars, container.deployment_id, containers),
+          init_containers:
+            interpolate_dockup_variables(container.init_containers, container.deployment_id, containers)
+      }
+    end)
+  end
+  def interpolate_dockup_variables(init_containers, deployment_id, containers) do
+    Enum.map(init_containers, fn container ->
+      %{container | env_vars: rewrite_variables(container.env_vars, deployment_id, containers)}
     end)
   end
 

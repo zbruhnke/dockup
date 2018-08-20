@@ -15,6 +15,8 @@ defmodule DeployServiceTest do
     # Reserve an empty subdomain
     insert(:subdomain, %{subdomain: "foo"}, %{ingress_id: nil})
     container_spec = insert(:container_spec, %{name: "foo", env_vars: %{"FOO" => "prefix.${DOCKUP_ENDPOINT_foo_4000}/login"}})
+    insert(:init_container_spec, %{env_vars: %{"FOO" => "${DOCKUP_ENDPOINT_foo_4000}/init2"}, order: 2}, %{container_spec_id: container_spec.id})
+    insert(:init_container_spec, %{env_vars: %{"FOO" => "${DOCKUP_ENDPOINT_foo_4000}/init1"}, order: 1}, %{container_spec_id: container_spec.id})
     insert(:container_spec, %{name: "bar", env_vars: %{"BAR" => "foo-${DOCKUP_SERVICE_#{container_spec.name}}-bar"}}, %{blueprint_id: container_spec.blueprint_id})
     insert(:port_spec, %{}, %{container_spec_id: container_spec.id})
 
@@ -31,6 +33,9 @@ defmodule DeployServiceTest do
 
     [c1, c2] = backend_containers
     assert c1.env_vars == [{"FOO", "prefix.foo.dockup.example.com/login"}]
+    [init_container_1, init_container_2] = c1.init_containers
+    assert init_container_1.env_vars == [{"FOO", "foo.dockup.example.com/init1"}]
+    assert init_container_2.env_vars == [{"FOO", "foo.dockup.example.com/init2"}]
     assert c2.env_vars == [{"BAR", "foo-example.com-bar"}]
 
     wait_for_container_status(handle, "running")

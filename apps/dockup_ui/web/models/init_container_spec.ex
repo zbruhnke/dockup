@@ -11,7 +11,7 @@ defmodule DockupUi.InitContainerSpec do
     field :order, :integer
     field :args, {:array, :string}, default: []
     field :command, :string
-    field :env_vars, {:array, :map}, default: []
+    field :env_vars, {:map, :string}, default: %{}
     field :image, :string
     field :tag, :string
 

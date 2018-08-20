@@ -25,7 +25,7 @@ defmodule DockupUi.BackendAdapter do
   end
 
   defp prepare_init_containers(init_container_specs) do
-    init_container_specs = Enum.sort_by(init_container_specs, &(&1[:order]))
+    init_container_specs = Enum.sort_by(init_container_specs, &(&1.order))
 
     Enum.map(init_container_specs, fn init_container_spec ->
       %Dockup.Container{
