@@ -305,7 +305,7 @@ defmodule Dockup.Backends.Kubernetes do
     ingress_rules =
       container.ports
       |> Enum.filter(fn %{public: public, host: host} -> public && host end)
-      |> Enum.map(&prepare_ingress_rule(container_handle, &1))
+      |> Enum.flat_map(&prepare_ingress_rules(container_handle, &1))
 
     if ingress_rules == [] do
       nil
@@ -317,21 +317,22 @@ defmodule Dockup.Backends.Kubernetes do
     end
   end
 
-  defp prepare_ingress_rule(container_handle, %{port: port, host: host}) do
-
-    %IngressRule{
-      host: host,
-      http: %HTTPIngressRuleValue{
-        paths: [
-          %HTTPIngressPath{
-            backend: %IngressBackend{
-              service_name: service_name(container_handle),
-              service_port: port
+  defp prepare_ingress_rules(container_handle, %{port: port, host: host}) do
+    Enum.map([host, "*.#{host}"], fn host ->
+      %IngressRule{
+        host: host,
+        http: %HTTPIngressRuleValue{
+          paths: [
+            %HTTPIngressPath{
+              backend: %IngressBackend{
+                service_name: service_name(container_handle),
+                service_port: port
+              }
             }
-          }
-        ]
+          ]
+        }
       }
-    }
+    end)
   end
 
   # Just a wrapper that logs errors from K8S api responses
