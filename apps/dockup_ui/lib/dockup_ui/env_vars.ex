@@ -32,6 +32,8 @@ defmodule DockupUi.EnvVars do
             replace_container_hostname(value, deployment_id)
           String.match?(value, ~r/\${DOCKUP_ENDPOINT_.*}/) ->
             replace_ingress_hostname(value, containers)
+          String.match?(value,  ~r/\${DOCKUP_DEPLOYMENT_ID}/) ->
+            replace_deployment_id(value, deployment_id)
           true ->
             value
         end
@@ -71,5 +73,9 @@ defmodule DockupUi.EnvVars do
       end)
 
     Regex.replace(~r/\${DOCKUP_ENDPOINT_.*}/, value, replace_string)
+  end
+
+  defp replace_deployment_id(value, deployment_id) do
+    Regex.replace(~r/\${DOCKUP_DEPLOYMENT_ID}/, value, "#{deployment_id}")
   end
 end

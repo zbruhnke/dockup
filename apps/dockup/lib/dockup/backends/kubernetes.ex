@@ -111,6 +111,7 @@ defmodule Dockup.Backends.Kubernetes do
 
     case pod_status do
       %{state: %{waiting: %{reason: "ContainerCreating"}}} -> {"pending", nil}
+      %{state: %{waiting: %{reason: "PodInitializing"}}} -> {"pending", nil}
       %{state: %{waiting: %{reason: reason}}} -> {"failed", translate_reason(reason)}
       %{state: %{terminated: %{reason: reason}}} -> {"failed", translate_reason(reason)}
       %{state: %{running: %{started_at: _}}} -> {"running", nil}

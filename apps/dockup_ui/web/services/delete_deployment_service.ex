@@ -13,7 +13,7 @@ defmodule DockupUi.DeleteDeploymentService do
     Logger.info "Deleting deployment with ID: #{deployment_id}"
 
     deployment = Repo.get!(Deployment, deployment_id)
-    deployment = Repo.preload(deployment, [containers: [ingresses: :subdomain]])
+    deployment = Repo.preload(deployment, [containers: :ingresses])
     ingresses = Enum.flat_map(deployment.containers, &(&1.ingresses))
 
     {:ok, %{"deployment" => deployment}} =
