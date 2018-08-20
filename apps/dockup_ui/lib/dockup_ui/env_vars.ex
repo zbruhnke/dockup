@@ -7,6 +7,7 @@ defmodule DockupUi.EnvVars do
   which is part of this deployment.
   DOCKUP_ENDPOINT_<container_name>_<port> - gets replaced by the ingress endpoint
   of given port of a container.
+  DOCKUP_DEPLOYMENT_ID - gets replaced by the deployment id.
   """
   def interpolate_dockup_variables(containers) do
     Enum.map(containers, fn container ->
