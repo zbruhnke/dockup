@@ -189,7 +189,7 @@ defmodule Dockup.Backends.Kubernetes do
     |> prepare_deployment()
     |> AppsV1.create_namespaced_deployment!(@namespace)
     |> Kazan.run()
-    |> handle_response()
+    |> handle_response_and_raise()
 
     args
   end
@@ -217,7 +217,7 @@ defmodule Dockup.Backends.Kubernetes do
     service
     |> CoreV1.create_namespaced_service!(@namespace)
     |> Kazan.run()
-    |> handle_response()
+    |> handle_response_and_raise()
   end
 
   defp create_k8s_ingress(nil) do
@@ -227,7 +227,7 @@ defmodule Dockup.Backends.Kubernetes do
     ingress
     |> V1beta1.create_namespaced_ingress!(@namespace)
     |> Kazan.run()
-    |> handle_response()
+    |> handle_response_and_raise()
   end
 
   ############## Functions to delete K8S resources ############
@@ -332,6 +332,12 @@ defmodule Dockup.Backends.Kubernetes do
         ]
       }
     }
+  end
+
+  # Just a wrapper that logs errors from K8S api responses
+  # and returns :ok or raises if not.
+  defp handle_response_and_raise(kazan_response) do
+    :ok = handle_response(kazan_response)
   end
 
   # Just a wrapper that logs errors from K8S api responses
