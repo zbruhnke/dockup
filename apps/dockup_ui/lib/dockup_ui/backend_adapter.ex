@@ -20,7 +20,7 @@ defmodule DockupUi.BackendAdapter do
       command: (container_spec.command && [container_spec.command]),
       args: container_spec.args,
       init_containers: prepare_init_containers(container_spec.init_container_specs),
-      ports: prepare_container_ports(container_spec.port_specs)
+      ports: prepare_container_ports(container)
     }
   end
 
@@ -38,12 +38,13 @@ defmodule DockupUi.BackendAdapter do
     end)
   end
 
-  defp prepare_container_ports(port_specs) do
-    Enum.map(port_specs, fn port_spec ->
+  defp prepare_container_ports(container) do
+    ingresses = container.ingresses |> Repo.preload(:port_spec)
+    Enum.map(ingresses, fn ingress ->
       %{
-        port: port_spec.port,
-        public: port_spec.public,
-        host: (port_spec.ingress && port_spec.ingress.endpoint)
+        port: ingress.port_spec.port,
+        public: ingress.port_spec.public,
+        host: ingress.endpoint
       }
     end)
   end
