@@ -36,7 +36,7 @@ class DeploymentCard extends Component {
   renderHibernateButton() {
     if (this.props.deployment.status == "started") {
       return(
-        <button type="button" onClick={this.handleHibernate} className="btn btn-outline-primary mr-2">Hibernate</button>
+        <button type="button" onClick={this.handleHibernate} className="btn btn-sm btn-outline-primary mr-2">Hibernate</button>
       );
     }
   }
@@ -44,7 +44,7 @@ class DeploymentCard extends Component {
   renderDetailsButton() {
     if (!this.props.showDetails && !(this.props.deployment.status == "deleted")) {
       return(
-        <a href={`/deployments/${this.props.deployment.id}`} className="btn btn-outline-primary mr-2">Details</a>
+        <a href={`/deployments/${this.props.deployment.id}`} className="btn btn-sm btn-outline-info mr-2">Details</a>
       );
     }
   }
@@ -80,7 +80,7 @@ class DeploymentCard extends Component {
   renderWakeUpButton() {
     if (this.props.deployment.status == "hibernated") {
       return(
-        <button type="button" onClick={this.handleWakeUp} className="btn btn-outline-primary mr-2">Wake Up</button>
+        <button type="button" onClick={this.handleWakeUp} className="btn btn-sm btn-outline-primary mr-2">Wake Up</button>
       );
     }
   }
@@ -108,7 +108,7 @@ class DeploymentCard extends Component {
   renderDeleteButton() {
     if(this.props.deployment.status != "deleted" && this.props.deployment.status != "deleting") {
       return(
-        <button type="button" onClick={this.handleDelete} className="btn btn-outline-danger">Delete</button>
+        <button type="button" onClick={this.handleDelete} className="btn btn-sm  btn-outline-danger">Delete</button>
       );
     }
   }
@@ -118,12 +118,15 @@ class DeploymentCard extends Component {
     let borderClass = `border-${statusClass}`;
     let textClass = `text-${statusClass}`;
     return(
-      <div className="row mt-5">
+      <div className="mb-5">
         <div className={`card ${borderClass} ${textClass} dockup-card`}>
           <div className="card-body">
             <div className="row">
               <div className="col-8">
-                <h4 className="card-title display-4 dockup-card-branch">{this.props.deployment.name}</h4>
+                <h4 className="card-title display-4 dockup-card-branch">
+                  {this.props.deployment.name}
+                  <i className="fa fa-code-branch"/>
+                </h4>
               </div>
               <div className="col text-right dockup-card-timeago">
                 <TimeAgo date={this.props.deployment.inserted_at} title={new Date(this.props.deployment.inserted_at)}/>
