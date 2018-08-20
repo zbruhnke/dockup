@@ -16,7 +16,7 @@ RUN ./node_modules/brunch/bin/brunch build --production
 FROM elixir:1.5.1-alpine AS application
 
 # RUN apt-get update && apt-get install -y build-essential
-RUN apk --update upgrade && apk add --no-cache build-base
+RUN apk --update upgrade && apk add --no-cache build-base git
 RUN mix local.hex --force && mix local.rebar --force
 RUN mkdir -p /dockup
 WORKDIR /dockup
