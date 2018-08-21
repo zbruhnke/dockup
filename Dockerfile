@@ -13,7 +13,7 @@ RUN ./node_modules/brunch/bin/brunch build --production
 
 # ================================================================================
 # Compile elixir app as a separate stage
-FROM elixir:1.5.1-alpine AS application
+FROM elixir:1.6.6-alpine AS application
 
 # RUN apt-get update && apt-get install -y build-essential
 RUN apk --update upgrade && apk add --no-cache build-base git
