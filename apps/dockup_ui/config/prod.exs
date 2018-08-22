@@ -68,4 +68,7 @@ config :logger, level: :info
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 
+# Set `in_cluster` server for kazan so that we can use service account
+config :kazan, :server, :in_cluster
+
 import_config "prod.secret.exs"
