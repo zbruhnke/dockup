@@ -34,10 +34,10 @@ defmodule DockupUi.API.DeploymentController do
         conn
         |> put_status(:unprocessable_entity)
         |> render(DockupUi.ChangesetView, "error.json", changeset: changeset)
-      {:error, :backend_response, error, _} ->
+      {:error, :backend_response, _, _} ->
         conn
         |> put_status(:internal_server_error)
-        |> json(%{errors: [error]})
+        |> json(%{errors: ["Containers cannot be created"]})
       {:error, :dockup_error, error} ->
         conn
         |> put_status(:internal_server_error)

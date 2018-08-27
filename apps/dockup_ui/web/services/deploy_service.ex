@@ -82,16 +82,43 @@ defmodule DockupUi.DeployService do
   # From the backend_containers multi, starts each backend container
   # and returns a multi with a list of {<container_id>, <container_handle>}
   defp start_containers(multi) do
+    Multi.run(multi, :backend_response, fn %{backend_containers: containers} ->
+      do_start_containers(containers, [])
+    end)
+  end
+
+  defp do_start_containers([], container_handles) do
+    {:ok, container_handles}
+  end
+  defp do_start_containers([container | containers], container_handles) do
+
+    case start_container(container) do
+      {:ok, container_handle} ->
+        do_start_containers(containers, [{container.id, container_handle} | container_handles])
+      _ ->
+        Task.start fn ->
+          cleanup_deployments(container_handles)
+        end
+
+        {:error, container_handles}
+    end
+  end
+
+  defp start_container(container) do
     backend = Application.fetch_env!(:dockup_ui, :backend_module)
 
-    Multi.run(multi, :backend_response, fn %{backend_containers: containers} ->
-      container_handles =
-        Enum.map(containers, fn container ->
-          {:ok, container_handle} = backend.start(container)
-          {container.id, container_handle}
-        end)
+    try do
+      backend.start(container)
+    rescue
+      _ -> :error
+    end
+  end
 
-      {:ok, container_handles}
+  defp cleanup_deployments(container_handles) do
+    backend = Application.fetch_env!(:dockup_ui, :backend_module)
+    Enum.each(container_handles, fn
+      nil -> :ok
+      {_, handle} -> backend.delete(handle)
     end)
   end
 
