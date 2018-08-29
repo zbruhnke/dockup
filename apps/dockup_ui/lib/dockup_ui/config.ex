@@ -15,7 +15,7 @@ defmodule DockupUi.Config do
 
   defp configs do
     [
-      {"DOCKUP_BACKEND", :backend_module, :module},
+      {"DOCKUP_URL_HOST", :dockup_url_host, :string},
       {"SLACK_WEBHOOK_URL", :slack_webhook_url, :string},
       {"DOCKUP_BACKEND", :backend_module, :module},
       {"DOCKUP_HIBERNATE_ALL_AT", :hibernate_all_at, :string},
