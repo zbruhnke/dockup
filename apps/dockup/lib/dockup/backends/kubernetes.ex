@@ -103,10 +103,9 @@ defmodule Dockup.Backends.Kubernetes do
     pod_status =
       case pods do
         [] -> "Unknown"
-        [%{status: %{phase: "Succeeded"}}] -> "Succeeded"
-        [%{status: %{container_statuses: statuses}}] ->
+        [%{status: %{container_statuses: statuses}}] when is_list(statuses) ->
           List.last(statuses)
-        [%{status: %{phase: "Pending"}}] -> "Pending"
+        [%{status: %{phase: phase}}] -> phase
       end
 
     case pod_status do
