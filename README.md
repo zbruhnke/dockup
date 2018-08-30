@@ -98,6 +98,6 @@ curl -XPOST  -d '{"git_url":"https://github.com/code-mancers/project.git","branc
 
 ### UI design by Sleekr
 
-Dockup is thankful to Sleekr (https://hr.sleekr.co) for providing their design and
+Dockup is thankful to Sleekr (https://sleekr.co) for providing their design and
 development efforts to give dockup a professional look. They also helped in
 piloting this project, and improving the tool.
