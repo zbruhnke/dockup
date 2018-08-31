@@ -23,7 +23,9 @@ defmodule DockupUi.Config do
       {"GOOGLE_CLIENT_ID", :google_client_id, :string},
       {"GOOGLE_CLIENT_SECRET", :google_client_secret, :string},
       {"GOOGLE_CLIENT_DOMAINS", :google_client_domains, :string},
-      {"DOCKUP_BASE_DOMAIN", :base_domain, :string}
+      {"DOCKUP_BASE_DOMAIN", :base_domain, :string},
+      {"DOCKUP_CUSTOMER_NAME", :customer_name, :string},
+      {"DOCKUP_METRICS_ENDPOINT", :metrics_endpoint, :string}
     ]
   end
 
