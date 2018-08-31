@@ -10,7 +10,7 @@ defmodule DockupUi.Hooks do
   def do_after("started", deployment) do
     SlackNotification.send(deployment)
     WebhookNotification.send(deployment)
-    deployment.containers |> length |> Metrics.send
+    Metrics.send(length(deployment.containers))
   end
 
   def do_after(_, _) do
