@@ -13,7 +13,8 @@ defmodule Dockup.Backends.Kubernetes do
     EnvVar,
     Service,
     ServiceSpec,
-    ServicePort
+    ServicePort,
+    ResourceRequirements
   }
 
   alias Kazan.Apis.Apps.V1.{Deployment, DeploymentSpec}
@@ -279,7 +280,17 @@ defmodule Dockup.Backends.Kubernetes do
                 ports: get_container_ports(container.ports),
                 command: container.command,
                 args: container.args,
-                env: get_env(container.env_vars)
+                env: get_env(container.env_vars),
+                resources: %ResourceRequirements{
+                  requests: %{
+                    cpu: container.requests_cpu,
+                    memory: container.requests_mem
+                  },
+                  limits: %{
+                    cpu: container.limits_cpu,
+                    memory: container.limits_mem
+                  }
+                }
               }
             ],
             init_containers: get_init_containers(container.init_containers, container.name)

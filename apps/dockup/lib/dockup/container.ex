@@ -1,5 +1,5 @@
 defmodule Dockup.Container do
-  defstruct [id: nil, name: nil, deployment_id: nil, image: nil, tag: nil, env_vars: [], command: [], args: [], init_containers: [], ports: []]
+  defstruct [id: nil, name: nil, deployment_id: nil, image: nil, tag: nil, env_vars: [], command: [], args: [], init_containers: [], ports: [], requests_cpu: nil, limits_cpu: nil, requests_mem: nil, limits_mem: nil]
 end
 
 # Example:

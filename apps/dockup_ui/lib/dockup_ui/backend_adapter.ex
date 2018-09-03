@@ -20,7 +20,11 @@ defmodule DockupUi.BackendAdapter do
       command: (container_spec.command && [container_spec.command]),
       args: container_spec.args,
       init_containers: prepare_init_containers(container_spec.init_container_specs),
-      ports: prepare_container_ports(container)
+      ports: prepare_container_ports(container),
+      requests_cpu: container_spec.requests_cpu,
+      limits_cpu: container_spec.limits_cpu,
+      requests_mem: container_spec.requests_mem,
+      limits_mem: container_spec.limits_mem
     }
   end
 
