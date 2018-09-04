@@ -1,5 +1,9 @@
 # Dockup
 
+## NOTE : DEPRECATED
+
+`master` branch is now deprecated in favour of `k8s-ui` branch
+
 Dockup creates disposable staging environments for your services using docker-compose.
 
 You can automate staging deployments when you submit pull requests:
@@ -25,6 +29,7 @@ Or whenever you feel like, using Slack etc:
 3. Run `docker-compose up`
 
 ## Supported Backends
+
 Dockup now supports multiple backends for deploying apps. They include:
 
 - `compose` : Uses `docker-compose.yaml` file in project root directory
@@ -33,7 +38,6 @@ Dockup now supports multiple backends for deploying apps. They include:
 
 Backend can be specified using `DOCKUP_BACKEND` environment variable. If no value
 is specified, backend will be defaulted to `fake`
-
 
 ## Development
 
@@ -50,6 +54,7 @@ is specified, backend will be defaulted to `fake`
 You can access Dockup UI at http://localhost:4000.
 
 ## Production
+
 Its advised to set dockup base domain using environment variable. Say if the
 environment variable `DOCKUP_BASE_DOMAIN` is set to `dockup.yourdomain.com`,
 then interface for dockup will be accessible at `ui.dockup.yourdomain.com`
@@ -70,13 +75,11 @@ generated using the desired username and password for basic auth. You can use
 string. The same username/password combo works for both dockup app and the log
 tailing page.
 
-
 ### Whitelisting Git URLs
 
 Dockup will not be able to deploy git repositories unless the git repo URLs
 are whitelisted. To do this, use the "Whitelisted URLs" navbar link to create
 whitelisted git URLs.
-
 
 ### Configuring github bot
 

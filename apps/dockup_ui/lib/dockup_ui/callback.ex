@@ -12,7 +12,8 @@ defmodule DockupUi.Callback do
     Webhook,
     Deployment,
     Repo,
-    DeploymentQueue
+    DeploymentQueue,
+    Metrics
   }
 
   @valid_states ~w(queued starting waiting_for_urls started hibernating
@@ -33,6 +34,7 @@ defmodule DockupUi.Callback do
       "started" ->
         send_slack_message(deployment, slack_webhook)
         send_webhook_request(deployment, webhook)
+        send_metrics(6)
 
       "waiting_for_urls" ->
         process_deployment_queue(deployment_queue)
@@ -49,6 +51,12 @@ defmodule DockupUi.Callback do
 
       _ ->
         :ok
+    end
+  end
+
+  def send_metrics(container_count) do
+    if webhook_url = Application.get_env(:dockup_ui, :metrics_url) do
+      Metrics.send(container_count, webhook_url)
     end
   end
 
@@ -98,6 +106,7 @@ defmodule DockupUi.Callback do
       "deleted"
     end
   end
+
   defp use_restarting_event(_, event), do: event
 
   defp requeue_deployment(deployment, deployment_queue) do
