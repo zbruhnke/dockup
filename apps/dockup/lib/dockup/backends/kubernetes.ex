@@ -282,15 +282,9 @@ defmodule Dockup.Backends.Kubernetes do
                 args: container.args,
                 env: get_env(container.env_vars),
                 resources: %ResourceRequirements{
-                  requests: %{
-                    cpu: container.requests_cpu,
-                    memory: container.requests_mem
-                  },
-                  limits: %{
-                    cpu: container.limits_cpu,
-                    memory: container.limits_mem
-                  }
-                }
+                  requests: get_resource_requests(container),
+                  limits: get_resource_limits(container)
+                },
               }
             ],
             init_containers: get_init_containers(container.init_containers, container.name)
@@ -375,6 +369,30 @@ defmodule Dockup.Backends.Kubernetes do
   defp get_container_ports(ports) do
     for %{port: port} <- ports do
       %ContainerPort{container_port: port}
+    end
+  end
+
+  defp get_resource_requests(container) do
+    cond do
+      container.requests_cpu && container.requests_mem ->
+        %{"cpu" => container.requests_cpu, "memory" => container.requests_mem}
+      container.requests_cpu && !container.requests_mem ->
+        %{"cpu" => container.requests_cpu}
+      !container.requests_cpu && container.requests_mem ->
+        %{"memory" => container.requests_mem}
+      true -> %{}
+    end
+  end
+
+  defp get_resource_limits(container) do
+    cond do
+      container.limits_cpu && container.limits_mem ->
+        %{"cpu" => container.limits_cpu, "memory" => container.limits_mem}
+      container.limits_cpu && !container.limits_mem ->
+        %{"cpu" => container.limits_cpu}
+      !container.limits_cpu && container.limits_mem ->
+        %{"memory" => container.limits_mem}
+      true -> %{}
     end
   end
 
