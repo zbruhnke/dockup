@@ -4,7 +4,7 @@ defmodule DockupUi.Metrics do
     has_endpoint = not is_nil(get_endpoint())
 
     if(has_customer_name and has_endpoint) do
-      route = "/" <> get_customer_name() <> ".json"
+      route = "/containers/" <> get_customer_name() <> ".json"
       url = get_endpoint() <> route
       body = Poison.encode!(%{count: container_count, timeStamp: DateTime.utc_now()})
 
