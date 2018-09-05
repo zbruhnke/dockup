@@ -55,7 +55,7 @@ defmodule Dockup.Project do
 
       # Retry 300 times in an interval of 5 seconds ~ 25 mins
       retry 300 in interval do
-        Logger.info "Checking if #{url} returns http satus #{response}"
+        Logger.info "Checking if #{url} returns http status #{response}"
         ^response = http.get_status(url)
       end
       Logger.info "URL #{url} seem up because they respond with #{response}."
