@@ -1,13 +1,13 @@
 // libraries
-import React, { Component } from 'react';
-import cx from 'classnames';
+import React, {Component} from "react";
+import cx from "classnames";
 
 // helpers
-import { request } from '../request';
+import {request} from "../request";
 
 // components
-import FlashMessage from '../flash_message';
-import DeploymentCard from './deployment_card';
+import FlashMessage from "../flash_message";
+import DeploymentCard from "./deployment_card";
 
 class DeploymentForm extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class DeploymentForm extends Component {
       containerSpecs: this.props.containerSpecs,
       deployment: null,
       errors: {}
-    }
+    };
 
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnDeploy = this.handleOnDeploy.bind(this);
@@ -26,26 +26,26 @@ class DeploymentForm extends Component {
   componentDidMount() {
     let channel = DockupUiSocket.getDeploymentsChannel();
 
-    channel.on("status_updated", (deployment) => {
+    channel.on("status_updated", deployment => {
       this.updateDeployment(deployment);
     });
   }
 
   updateDeployment(deployment) {
-    if(this.state.deployment.id == deployment.id) {
-      this.setState({ deployment });
+    if (this.state.deployment && this.state.deployment.id == deployment.id) {
+      this.setState({deployment});
     }
   }
 
   handleOnDeploy(e) {
     e.preventDefault();
-    const { containerSpecs } = this.state;
-    this.setState({ deployment: null });
+    const {containerSpecs} = this.state;
+    this.setState({deployment: null});
 
     this.createRequest(containerSpecs)
-      .then((response) => response.json())
-      .then((response) => {
-        this.setState({ deployment: response });
+      .then(response => response.json())
+      .then(response => {
+        this.setState({deployment: response});
       })
       .catch(() => {
         FlashMessage.showMessage("danger", "Deployment cannot be queued.");
@@ -54,8 +54,8 @@ class DeploymentForm extends Component {
 
   createRequest(containerSpecs) {
     return request({
-      url: '/api/deployments',
-      method: 'POST',
+      url: "/api/deployments",
+      method: "POST",
       body: JSON.stringify({
         containerSpecs
       })
@@ -63,8 +63,8 @@ class DeploymentForm extends Component {
   }
 
   handleOnChange(e) {
-    const { name, value } = e.target;
-    const { containerSpecs, errors } = this.state;
+    const {name, value} = e.target;
+    const {containerSpecs, errors} = this.state;
 
     containerSpecs.forEach(spec => {
       if (spec.name === name) {
@@ -73,24 +73,32 @@ class DeploymentForm extends Component {
     });
 
     if (!value.trim()) {
-      errors[name] = `Please enter an image tag for ${name}`
+      errors[name] = `Please enter an image tag for ${name}`;
     } else {
       delete errors[name];
     }
 
     this.setState({
       containerSpecs,
-      errors,
+      errors
     });
   }
 
   render() {
-    const { deployment, containerSpecs = [], errors } = this.state;
+    const {deployment, containerSpecs = [], errors} = this.state;
+    const cannotDeploy =
+      deployment &&
+      (deployment.status === "starting" ||
+        deployment.status === "pending" ||
+        deployment.status === "queued");
 
     return (
       <div>
+        <p className="alert alert-info" role="alert">
+          Fill image tags in the input fields.
+        </p>
         <form onSubmit={this.handleOnDeploy} className="mb-5">
-          {containerSpecs.map((spec) => (
+          {containerSpecs.map(spec => (
             <div className="form-group" key={spec.id}>
               <label htmlFor={spec.name}>{spec.name}</label>
               <input
@@ -105,18 +113,26 @@ class DeploymentForm extends Component {
               {errors[spec.name] && <span className="error">{errors[spec.name]}</span>}
             </div>
           ))}
-          <input
+          <button
             type="submit"
             value="Deploy"
-            className={cx("btn btn-primary", {
-              disabled: !!Object.keys(errors).length
-            })}
-          />
+            className={cx(
+              "btn btn-primary",
+              {
+                disabled: !!Object.keys(errors).length || cannotDeploy
+              },
+              {
+                "is-loading": cannotDeploy
+              }
+            )}
+          >
+            Deploy
+          </button>
         </form>
 
-        {deployment && <DeploymentCard deployment={deployment} showDetails={true}/>}
+        {deployment && <DeploymentCard deployment={deployment} showDetails={true} />}
       </div>
-    )
+    );
   }
 }
 
