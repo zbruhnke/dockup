@@ -86,7 +86,7 @@ class DeploymentForm extends Component {
 
   render() {
     const {deployment, containerSpecs = [], errors} = this.state;
-    const deploymentStatus =
+    const cannotDeploy =
       deployment &&
       (deployment.status === "starting" ||
         deployment.status === "pending" ||
@@ -119,10 +119,10 @@ class DeploymentForm extends Component {
             className={cx(
               "btn btn-primary",
               {
-                disabled: !!Object.keys(errors).length || deploymentStatus
+                disabled: !!Object.keys(errors).length || cannotDeploy
               },
               {
-                "is-loading": deploymentStatus
+                "is-loading": cannotDeploy
               }
             )}
           >
