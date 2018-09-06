@@ -71,6 +71,7 @@ class DeploymentCard extends Component {
       <ContainersSection
         containers={this.props.deployment.containers}
         deploymentId={this.props.deployment.id}
+        status={this.props.deployment.status}
       />
     );
   }

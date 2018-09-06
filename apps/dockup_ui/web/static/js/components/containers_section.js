@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import cx from 'classnames';
+import React, {Component} from "react";
+import cx from "classnames";
 
 class ContainersSection extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      containers: this.props.containers || [],
-    }
+      containers: this.props.containers || []
+    };
   }
 
   componentDidMount() {
@@ -17,31 +17,31 @@ class ContainersSection extends Component {
   connectToDeploymentChannel(deploymentId) {
     const channel = DockupUiSocket.getDeploymentChannel(deploymentId);
 
-    channel.on("status_updated", (container) => {
+    channel.on("status_updated", container => {
       this.updateContainerStatus(container);
-    })
+    });
   }
 
   updateContainerStatus(update) {
     let found = false;
 
-    const newContainers = this.state.containers.map((container) => {
-      if(container.id === update.id) {
+    const newContainers = this.state.containers.map(container => {
+      if (container.id === update.id) {
         container = Object.assign({}, update);
         found = true;
       }
       return container;
     });
 
-    if(found) {
+    if (found) {
       this.setState({
-        containers: newContainers,
+        containers: newContainers
       });
     }
   }
 
   renderEndpoints(endpoints) {
-    if(!endpoints) {
+    if (!endpoints) {
       return null;
     }
 
@@ -52,42 +52,59 @@ class ContainersSection extends Component {
     ));
   }
 
-  renderContainers() {
-    const icons = {
-      'running': 'fa-check-circle',
-      'failed': 'fa-times',
-      'unknown': 'fa-exclamation-circle',
-      'pending': 'fa-circle-notch',
+  renderContainerStatus(name, tag, status, endpoints) {
+    const truncateString = (str, length) => {
+      return str.length > length ? str.substring(0, length) + "..." : str;
     };
-
-    return(
-      this.state.containers.map((container) => {
-        return(
-          <div
-            key={container.id}
-            className={cx('container-row', {
-              running: container.status === 'running',
-              failed: container.status === 'failed',
-              unknown: container.status === 'unknown',
-              pending: container.status === 'pending',
-            })}
-          >
-            {container.name}:{container.tag} ({container.status})
-            <i className={`fa ${icons[container.status]}`} />
-            <div>{this.renderEndpoints(container.endpoints)}</div>
-            {container.status_reason}
-          </div>
-        );
-      })
+    const icons = {
+      running: "fa-check-circle",
+      failed: "fa-times",
+      unknown: "fa-exclamation-circle",
+      pending: "fa-circle-notch"
+    };
+    const deploymentStatus = this.props.status;
+    const renderContainersStatus = !(
+      deploymentStatus === "deleting" || deploymentStatus === "deleted"
+    );
+    return (
+      renderContainersStatus && (
+        <div>
+          {name}:{truncateString(tag, 10)}({status})<i className={`fa ${icons[status]}`} />
+          <div>{this.renderEndpoints(endpoints)}</div>
+        </div>
+      )
     );
   }
 
-  render() {
-    return(
-      <div className="row">
-        <div className="col">
-          {this.renderContainers()}
+  renderContainers() {
+    return this.state.containers.map(container => {
+      return (
+        <div
+          key={container.id}
+          className={cx("container-row", {
+            running: container.status === "running",
+            failed: container.status === "failed",
+            unknown: container.status === "unknown",
+            pending: container.status === "pending"
+          })}
+        >
+          {this.renderContainerStatus(
+            container.name,
+            container.tag,
+            container.status,
+            container.endpoints
+          )}
+
+          {container.status_reason}
         </div>
+      );
+    });
+  }
+
+  render() {
+    return (
+      <div className="row">
+        <div className="col">{this.renderContainers()}</div>
       </div>
     );
   }
