@@ -17,10 +17,10 @@ defmodule DockupUi.ContainerSpec do
     field :command, :string
     field :args, {:array, :string}, default: []
     field :env_vars, {:map, :string}, default: %{}
-    field :requests_cpu, :string
-    field :limits_cpu, :string
-    field :requests_mem, :string
-    field :limits_mem, :string
+    field :cpu_request, :string
+    field :cpu_limit, :string
+    field :mem_request, :string
+    field :mem_limit, :string
 
     belongs_to :blueprint, Blueprint
     has_one :container, Container

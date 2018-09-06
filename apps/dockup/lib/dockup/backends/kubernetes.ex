@@ -373,27 +373,29 @@ defmodule Dockup.Backends.Kubernetes do
   end
 
   defp get_resource_requests(container) do
-    cond do
-      container.requests_cpu && container.requests_mem ->
-        %{"cpu" => container.requests_cpu, "memory" => container.requests_mem}
-      container.requests_cpu && !container.requests_mem ->
-        %{"cpu" => container.requests_cpu}
-      !container.requests_cpu && container.requests_mem ->
-        %{"memory" => container.requests_mem}
-      true -> %{}
-    end
+    container
+    |> Map.from_struct
+    |> Enum.flat_map(fn {k, v} ->
+        cond do
+          k == :cpu_request && v != nil -> [cpu: v]
+          k == :mem_request && v != nil -> [memory: v]
+          true -> []
+        end
+      end)
+    |> Enum.into(%{})
   end
 
   defp get_resource_limits(container) do
-    cond do
-      container.limits_cpu && container.limits_mem ->
-        %{"cpu" => container.limits_cpu, "memory" => container.limits_mem}
-      container.limits_cpu && !container.limits_mem ->
-        %{"cpu" => container.limits_cpu}
-      !container.limits_cpu && container.limits_mem ->
-        %{"memory" => container.limits_mem}
-      true -> %{}
-    end
+    container
+    |> Map.from_struct
+    |> Enum.flat_map(fn {k, v} ->
+        cond do
+          k == :cpu_limit && v != nil -> [cpu: v]
+          k == :mem_limit && v != nil -> [memory: v]
+          true -> []
+        end
+      end)
+    |> Enum.into(%{})
   end
 
   defp get_service_ports(ports, container_handle) do
