@@ -370,51 +370,51 @@ defmodule Dockup.Backends.Kubernetes do
   end
 
   defp get_resource_requirements(container) do
-    %ResourceRequirements{}
+    %{requests: %{}, limits: %{}}
     |> get_cpu_request(container)
     |> get_cpu_limit(container)
     |> get_mem_request(container)
     |> get_mem_limit(container)
+    |> prepare_requirements_struct()
   end
 
-  defp get_cpu_request(resource_requirements, %{cpu_request: cpu_request}) do
+  defp get_cpu_request(requirements, %{cpu_request: cpu_request}) do
     if cpu_request do
-      requests = resource_requirements.requests || %{}
-      requests = Map.put(requests, :cpu, cpu_request)
-      %ResourceRequirements{resource_requirements | requests: requests}
+      put_in(requirements, [:requests, :cpu], cpu_request)
     else
-      resource_requirements
+      requirements
     end
   end
 
-  defp get_cpu_limit(resource_requirements, %{cpu_limit: cpu_limit}) do
+  defp get_cpu_limit(requirements, %{cpu_limit: cpu_limit}) do
     if cpu_limit do
-      limits = resource_requirements.limits || %{}
-      limits = Map.put(limits, :cpu, cpu_limit)
-      %ResourceRequirements{resource_requirements | limits: limits}
+      put_in(requirements, [:limits, :cpu], cpu_limit)
     else
-      resource_requirements
+      requirements
     end
   end
 
-  defp get_mem_request(resource_requirements, %{mem_request: mem_request}) do
+  defp get_mem_request(requirements, %{mem_request: mem_request}) do
     if mem_request do
-      requests = resource_requirements.requests || %{}
-      requests = Map.put(requests, :memory, mem_request)
-      %ResourceRequirements{resource_requirements | requests: requests}
+      put_in(requirements, [:requests, :memory], mem_request)
     else
-      resource_requirements
+      requirements
     end
   end
 
-  defp get_mem_limit(resource_requirements, %{mem_limit: mem_limit}) do
+  defp get_mem_limit(requirements, %{mem_limit: mem_limit}) do
     if mem_limit do
-      limits = resource_requirements.limits || %{}
-      limits = Map.put(limits, :memory, mem_limit)
-      %ResourceRequirements{resource_requirements | limits: limits}
+      put_in(requirements, [:limits, :memory], mem_limit)
     else
-      resource_requirements
+      requirements
     end
+  end
+
+  defp prepare_requirements_struct(requirements) do
+    %ResourceRequirements{
+      requests: requirements.requests,
+      limits: requirements.limits
+    }
   end
 
   defp get_service_ports(ports, container_handle) do
