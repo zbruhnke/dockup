@@ -281,11 +281,8 @@ defmodule Dockup.Backends.Kubernetes do
                 command: container.command,
                 args: container.args,
                 env: get_env(container.env_vars),
-                resources: %ResourceRequirements{
-                  requests: get_resource_requests(container),
-                  limits: get_resource_limits(container)
+                resources: get_resource_requirements(container)
                 },
-              }
             ],
             init_containers: get_init_containers(container.init_containers, container.name)
           }
@@ -372,30 +369,52 @@ defmodule Dockup.Backends.Kubernetes do
     end
   end
 
-  defp get_resource_requests(container) do
-    container
-    |> Map.from_struct
-    |> Enum.flat_map(fn {k, v} ->
-        cond do
-          k == :cpu_request && v != nil -> [cpu: v]
-          k == :mem_request && v != nil -> [memory: v]
-          true -> []
-        end
-      end)
-    |> Enum.into(%{})
+  defp get_resource_requirements(container) do
+    %ResourceRequirements{}
+    |> get_cpu_request(container)
+    |> get_cpu_limit(container)
+    |> get_mem_request(container)
+    |> get_mem_limit(container)
   end
 
-  defp get_resource_limits(container) do
-    container
-    |> Map.from_struct
-    |> Enum.flat_map(fn {k, v} ->
-        cond do
-          k == :cpu_limit && v != nil -> [cpu: v]
-          k == :mem_limit && v != nil -> [memory: v]
-          true -> []
-        end
-      end)
-    |> Enum.into(%{})
+  defp get_cpu_request(resource_requirements, %{cpu_request: cpu_request}) do
+    if cpu_request do
+      requests = resource_requirements.requests || %{}
+      requests = Map.put(requests, :cpu, cpu_request)
+      %ResourceRequirements{resource_requirements | requests: requests}
+    else
+      resource_requirements
+    end
+  end
+
+  defp get_cpu_limit(resource_requirements, %{cpu_limit: cpu_limit}) do
+    if cpu_limit do
+      limits = resource_requirements.limits || %{}
+      limits = Map.put(limits, :cpu, cpu_limit)
+      %ResourceRequirements{resource_requirements | limits: limits}
+    else
+      resource_requirements
+    end
+  end
+
+  defp get_mem_request(resource_requirements, %{mem_request: mem_request}) do
+    if mem_request do
+      requests = resource_requirements.requests || %{}
+      requests = Map.put(requests, :memory, mem_request)
+      %ResourceRequirements{resource_requirements | requests: requests}
+    else
+      resource_requirements
+    end
+  end
+
+  defp get_mem_limit(resource_requirements, %{mem_limit: mem_limit}) do
+    if mem_limit do
+      limits = resource_requirements.limits || %{}
+      limits = Map.put(limits, :memory, mem_limit)
+      %ResourceRequirements{resource_requirements | limits: limits}
+    else
+      resource_requirements
+    end
   end
 
   defp get_service_ports(ports, container_handle) do
