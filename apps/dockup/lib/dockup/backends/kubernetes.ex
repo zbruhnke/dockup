@@ -13,7 +13,8 @@ defmodule Dockup.Backends.Kubernetes do
     EnvVar,
     Service,
     ServiceSpec,
-    ServicePort
+    ServicePort,
+    ResourceRequirements
   }
 
   alias Kazan.Apis.Apps.V1.{Deployment, DeploymentSpec}
@@ -279,8 +280,9 @@ defmodule Dockup.Backends.Kubernetes do
                 ports: get_container_ports(container.ports),
                 command: container.command,
                 args: container.args,
-                env: get_env(container.env_vars)
-              }
+                env: get_env(container.env_vars),
+                resources: get_resource_requirements(container)
+                },
             ],
             init_containers: get_init_containers(container.init_containers, container.name)
           }
@@ -365,6 +367,54 @@ defmodule Dockup.Backends.Kubernetes do
     for %{port: port} <- ports do
       %ContainerPort{container_port: port}
     end
+  end
+
+  defp get_resource_requirements(container) do
+    %{requests: %{}, limits: %{}}
+    |> get_cpu_request(container)
+    |> get_cpu_limit(container)
+    |> get_mem_request(container)
+    |> get_mem_limit(container)
+    |> prepare_requirements_struct()
+  end
+
+  defp get_cpu_request(requirements, %{cpu_request: cpu_request}) do
+    if cpu_request do
+      put_in(requirements, [:requests, :cpu], cpu_request)
+    else
+      requirements
+    end
+  end
+
+  defp get_cpu_limit(requirements, %{cpu_limit: cpu_limit}) do
+    if cpu_limit do
+      put_in(requirements, [:limits, :cpu], cpu_limit)
+    else
+      requirements
+    end
+  end
+
+  defp get_mem_request(requirements, %{mem_request: mem_request}) do
+    if mem_request do
+      put_in(requirements, [:requests, :memory], mem_request)
+    else
+      requirements
+    end
+  end
+
+  defp get_mem_limit(requirements, %{mem_limit: mem_limit}) do
+    if mem_limit do
+      put_in(requirements, [:limits, :memory], mem_limit)
+    else
+      requirements
+    end
+  end
+
+  defp prepare_requirements_struct(requirements) do
+    %ResourceRequirements{
+      requests: requirements.requests,
+      limits: requirements.limits
+    }
   end
 
   defp get_service_ports(ports, container_handle) do

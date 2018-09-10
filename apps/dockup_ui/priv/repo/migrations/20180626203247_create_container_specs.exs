@@ -10,6 +10,10 @@ defmodule DockupUi.Repo.Migrations.CreateContainerSpecs do
       add :command, :string
       add :args, {:array, :string}
       add :blueprint_id, references(:blueprints, on_delete: :nothing)
+      add :cpu_request, :string
+      add :cpu_limit, :string
+      add :mem_request, :string
+      add :mem_limit, :string
     end
 
     create index(:container_specs, [:blueprint_id])
