@@ -68,7 +68,7 @@ class ContainersSection extends Component {
     );
     return (
       renderContainersStatus && (
-        <div>
+        <div title={tag}>
           {name}:{truncateString(tag, 10)}({status})<i className={`fa ${icons[status]}`} />
           <div>{this.renderEndpoints(endpoints)}</div>
         </div>
