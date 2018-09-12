@@ -89,7 +89,7 @@ class DeploymentList extends Component {
 
   renderFilter(){
     return (<div className="form-group col">
-    <label className="my-1 mr-2" htmlFor="filter-deployments">Filter Deployments</label>
+    <label className="my-1 mr-2" htmlFor="filter-deployments">Filter deployments</label>
     <select className="custom-select-sm my-3 mr-sm-2 " value={this.state.value} onChange={this.handleFilterChange}>
       <option value="all">all</option>
       <option value="queued">queued</option>
@@ -114,8 +114,9 @@ class DeploymentList extends Component {
   }
 
   renderPaginationOptions(){
-    return (<div className="form-group col">
-    <label className="my-1 mr-2" htmlFor="pagination-options">Items on a Page</label>
+    return (
+    <div className="form-group col">
+    <label className="my-1 mr-2" htmlFor="pagination-options">Items per page</label>
     <select className="custom-select-sm my-3 mr-sm-2 " value={this.state.itemsOnPage} onChange={this.changeitemsPerPage}>
       <option value="10">10</option>
       <option value="20">20</option>
@@ -123,7 +124,8 @@ class DeploymentList extends Component {
       <option value="40">40</option>
       <option value="50">50</option>
     </select>
-    </div>)
+    </div>
+    )
   }
 
   changePage(pageNumber){
@@ -144,16 +146,15 @@ class DeploymentList extends Component {
     return (
       <div>
         <h3 className="mb-5">Recent Deployments</h3>
-        <div className="row">
           {this.renderFilter()}
-          {this.renderPaginationOptions()}
-        </div>
-        {
-          this.renderDeploymentCards()
-        }
-        <ul className="pagination">
+        {this.renderDeploymentCards()}
+        <div className="row">
+        <ul className="pagination col">
         {this.renderPagination()}
         </ul>
+        {this.renderPaginationOptions()}
+        </div>
+
       </div>
     )
   }
