@@ -10,10 +10,14 @@ class DeploymentList extends Component {
       deployments: [],
       filteredDeployments : [],
       filtersApplied: [],
+      currentPageItems: [[]],
+      itemsPerPage: 10,
+      currentPage: 1
     }
     this.getDeployments();
     this.connectToDeploymentsChannel();
     this.handleFilterChange = this.handleFilterChange.bind(this)
+    this.changeitemsPerPage =  this.changeitemsPerPage.bind(this)
   }
 
   getDeployments() {
@@ -74,6 +78,19 @@ class DeploymentList extends Component {
     }
   }
 
+  chunkDeployments(array, chunk_size){
+    if(!array.length){
+      return [[]]
+    }
+    return array.map( function(_,index){
+      return index % chunk_size===0 ? array.slice(index,index+chunk_size) : null;
+  }).filter(item => item)
+  }
+
+  showAll() {
+    return !this.state.filtersApplied.length
+  }
+
   filterDeployments(){
     let filteredDeployments = []
     this.state.deployments.forEach(deployment =>
@@ -83,7 +100,13 @@ class DeploymentList extends Component {
          }
         })
     )
-    this.showAll() ? this.setState({filteredDeployments: this.state.deployments}) : this.setState({filteredDeployments})
+    this.showAll() ? this.setState({filteredDeployments: this.state.deployments}, () => this.paginate() ) : this.setState({filteredDeployments}, () => this.paginate())
+  }
+
+  paginate(){
+    const {itemsPerPage, filtersApplied, filteredDeployments, deployments} = this.state
+    const currentPageItems = filtersApplied.length ? this.chunkDeployments(filteredDeployments, itemsPerPage) : this.chunkDeployments(deployments, itemsPerPage)
+    this.setState({currentPageItems})
   }
 
 
@@ -98,12 +121,41 @@ class DeploymentList extends Component {
     )
   }
 
-
   renderDeploymentCards(){
-    if(!this.state.filtersApplied.length){
-      return this.state.deployments.map(deployment => <DeploymentCard key={deployment.id} deployment={deployment} />)
+    return this.state.filtersApplied.length ? this.state.currentPageItems[this.state.currentPage - 1].map((deployment) => <DeploymentCard key={deployment.id} deployment={deployment} />): this.state.deployments.map(deployment => <DeploymentCard key={deployment.id} deployment={deployment}/>) 
+  }
+
+  changeitemsPerPage(e){
+    const itemsPerPage = parseInt(e.target.value)
+    console.log(itemsPerPage)
+    this.setState({itemsPerPage, currentPage: 1}, () => this.filterDeployments() )
+  }
+
+  changePage(pageNumber){
+    this.setState({currentPage: pageNumber})
+  }
+
+  renderPagination(){
+    const noOfPages = this.state.currentPageItems.length;
+    const pageArray = [...Array(noOfPages).keys()]
+    return pageArray.map((item) => {
+      const isActivePage = this.state.currentPage === item + 1 ? "active" : ""
+      return <li key={item + 1} onClick={() => this.changePage(item+1)} className="page-item"><a className={`page-link ${isActivePage}`} href="#">{item + 1}</a></li>
     }
-    return this.state.filteredDeployments.map((deployment) => <DeploymentCard key={deployment.id} deployment={deployment} />)
+    )
+  }
+
+  renderPaginationOptions(){
+    return (<div className="form-group col">
+    <label className="my-1 mr-2" htmlFor="pagination-options">Items on a Page</label>
+    <select className="custom-select-sm my-3 mr-sm-2 " value={this.state.itemsPerPage} onChange={this.changeitemsPerPage}>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="40">40</option>
+      <option value="50">50</option>
+    </select>
+    </div>)
   }
 
   render() {
@@ -112,6 +164,14 @@ class DeploymentList extends Component {
         <h3 className="mb-5">Recent Deployments</h3>
         {this.renderFilter()}
         {this.renderDeploymentCards()}
+        {console.log(this.renderDeploymentCards())}
+
+        <div className="row">
+          <ul className="pagination">
+          {this.renderPagination()}
+          {this.renderPaginationOptions()}
+          </ul>
+        </div>
       </div>
     )
   }
