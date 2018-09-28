@@ -32,13 +32,4 @@ config :phoenix, :generators,
   migration: true,
   binary_id: false
 
-config :ueberauth, Ueberauth,
-  providers: [
-    google: {Ueberauth.Strategy.Google, []}
-  ]
-
-config :ueberauth, Ueberauth.Strategy.Google.OAuth,
-  client_id: "",
-  client_secret: ""
-
 config :dockup_ui, ecto_repos: [DockupUi.Repo]

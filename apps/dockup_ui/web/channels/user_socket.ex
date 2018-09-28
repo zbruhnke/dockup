@@ -20,14 +20,8 @@ defmodule DockupUi.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(%{"token" => token}, socket) do
+  def connect(_params, socket) do
     {:ok, socket}
-    case Phoenix.Token.verify(socket, "user socket", token, max_age: 86400) do
-      {:ok, user} ->
-        {:ok, assign(socket, :current_user, user)}
-      {:error, _} ->
-        :error
-    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -40,5 +34,5 @@ defmodule DockupUi.UserSocket do
   #     DockupUi.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "users_socket:#{socket.assigns.current_user}"
+  def id(_socket), do: nil
 end

@@ -9,12 +9,6 @@ defmodule DockupUi.Application do
     # Overrides configurations from ENV variables
     DockupUi.Config.set_configs_from_env()
 
-    # Set id and secret for google oauth config here
-    Application.put_env :ueberauth,
-      Ueberauth.Strategy.Google.OAuth,
-      [client_secret: Application.get_env(:dockup_ui, :google_client_secret),
-       client_id: Application.get_env(:dockup_ui, :google_client_id)]
-
     children = [
       # Start the endpoint when the application starts
       supervisor(DockupUi.Endpoint, []),

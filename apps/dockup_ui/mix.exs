@@ -22,8 +22,7 @@ defmodule DockupUi.Mixfile do
   def application do
     [mod: {DockupUi.Application, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpotion,
-                    :ueberauth_google, :runtime_tools]]
+                    :phoenix_ecto, :postgrex, :httpotion, :runtime_tools]]
   end
 
   # Specifies which paths to compile per environment.
@@ -44,8 +43,6 @@ defmodule DockupUi.Mixfile do
      {:cowboy, "~> 1.1"},
      {:httpotion, "~> 3.0.0"},
      {:poison, "~> 3.1.0"},
-     {:ueberauth, "~> 0.4"},
-     {:ueberauth_google, "~> 0.7"},
      {:dockup, in_umbrella: true}]
   end
 
