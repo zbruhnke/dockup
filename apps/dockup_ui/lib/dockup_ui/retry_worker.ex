@@ -41,7 +41,8 @@ defmodule DockupUi.RetryWorker do
   defp fetch_waking_up_deployments do
     query =
       from d in Deployment,
-      where: d.status == "waking_up"
+      where: d.status == "waking_up",
+      select: d.id
 
     Repo.all(query)
   end
